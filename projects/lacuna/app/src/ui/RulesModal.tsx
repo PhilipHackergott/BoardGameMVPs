@@ -1,9 +1,11 @@
+import { APP_NAME } from "../brand";
+
 export function RulesModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-head">
-          <h3>How to Play Lacuna</h3>
+          <h3>How to Play {APP_NAME}</h3>
           <button className="modal-close" onClick={onClose} aria-label="Close rules">
             ✕
           </button>

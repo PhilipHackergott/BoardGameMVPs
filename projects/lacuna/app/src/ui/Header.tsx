@@ -1,5 +1,6 @@
 import { beaconsLeft } from "../engine";
 import { useGame } from "../state/store";
+import { APP_NAME, APP_TAGLINE } from "../brand";
 
 export function Header({
   onRules,
@@ -39,8 +40,8 @@ export function Header({
           </svg>
         </span>
         <div>
-          <h1 className="brand-title">LACUNA</h1>
-          <p className="brand-sub">Cozy night pond sandbox</p>
+          <h1 className="brand-title">{APP_NAME}</h1>
+          <p className="brand-sub">{APP_TAGLINE}</p>
         </div>
       </div>
 

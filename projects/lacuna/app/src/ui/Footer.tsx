@@ -1,7 +1,9 @@
+import { APP_NAME } from "../brand";
+
 export function Footer() {
   return (
     <footer className="site-footer">
-      Lacuna board game designed by Mark Gerrits • Original-art digital prototype (unpublished)
+      {APP_NAME} • an original abstract game • digital prototype (unpublished)
     </footer>
   );
 }

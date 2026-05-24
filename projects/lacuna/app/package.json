@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Lacuna MVP (working title Nightweave) — clean reimplementation. Unpublished prototype.",
+  "description": "Nightweave — an original abstract pond/flower game (renamed off the prototype's earlier title). Unpublished.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",

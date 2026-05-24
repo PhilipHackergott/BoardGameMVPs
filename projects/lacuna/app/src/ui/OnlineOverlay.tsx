@@ -18,7 +18,7 @@ export function OnlineOverlay() {
     <>
       {online.status === "playing" && (
         <div className="online-strip" aria-live="polite">
-          <span className="online-tag">RANKED</span>
+          <span className="online-tag">{online.ranked ? "RANKED" : "CASUAL"}</span>
           <span className="online-vs">
             vs {online.opponent?.handle ?? "—"} <em>({online.opponent?.elo ?? "?"})</em>
           </span>
@@ -42,13 +42,17 @@ export function OnlineOverlay() {
               {online.result.youWon === true ? "Victory" : online.result.youWon === false ? "Defeat" : "Draw"}
             </h2>
             <p className="online-result-reason">{reasonText(online.result.reason, online.result.youWon)}</p>
-            <div className="online-elo">
-              <span className={`online-elo-delta ${online.result.eloChange >= 0 ? "up" : "down"}`}>
-                {online.result.eloChange >= 0 ? "+" : ""}
-                {online.result.eloChange}
-              </span>
-              <span className="online-elo-new">{online.result.newElo}</span>
-            </div>
+            {online.ranked ? (
+              <div className="online-elo">
+                <span className={`online-elo-delta ${online.result.eloChange >= 0 ? "up" : "down"}`}>
+                  {online.result.eloChange >= 0 ? "+" : ""}
+                  {online.result.eloChange}
+                </span>
+                <span className="online-elo-new">{online.result.newElo}</span>
+              </div>
+            ) : (
+              <p className="online-result-reason">Casual game — rating unchanged.</p>
+            )}
             <div className="victory-actions">
               <button
                 onClick={() => {

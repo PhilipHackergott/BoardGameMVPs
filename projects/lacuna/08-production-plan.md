@@ -2,11 +2,14 @@
 
 **From a local prototype to an online, ranked, account-based product.**
 
-Status: roadmap. **Phases 0–3 (minus chat) are now BUILT** on branch `lacuna/online-mp` —
+Status: roadmap. **Phases 0–4 (minus chat) are now BUILT** on branch `lacuna/online-mp` —
 a self-contained authoritative Node server (`server/`) with full accounts, strength-based
-Elo matchmaking, server-validated ranked matches, and the client **Find Match** (ranked) /
-**Local Match** (hotseat) flows. See `server/README.md`. Phases 4 (friends/social) and 5
-(hardening + IP clearance) remain. Each phase below still ends at a factory gate.
+Elo matchmaking, server-validated ranked matches, the client **Find Match** (ranked) /
+**Local Match** (hotseat) flows, and **friends + direct invites → casual games** with live
+presence. See `server/README.md`. The **IP question was handled by renaming** the product to
+**Nightweave** (original name, original art — no use of the trademarked mark); centralized in
+`app/src/brand.ts`. Remaining: Phase 5 deploy-time hardening (TLS/`wss`, horizontal scaling,
+monitoring) — basic rate limiting is in. Each phase below still ends at a factory gate.
 
 ---
 

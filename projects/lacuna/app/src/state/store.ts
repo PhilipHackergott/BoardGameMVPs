@@ -17,7 +17,7 @@ import { PLAYER_NAMES } from "../ui/colors";
 import { getTheme } from "../ui/theme";
 import type { ThemeId } from "../ui/theme";
 import { netConfig, netConnect, netSend } from "../net/client";
-import type { OpponentInfo, PublicUser, ServerMsg } from "../net/protocol";
+import type { FriendInfo, OpponentInfo, PublicUser, ServerMsg } from "../net/protocol";
 
 // Player-facing game setup chosen on the main menu.
 export interface MenuConfig {
@@ -137,6 +137,7 @@ export interface OnlineState {
   youAre: PlayerId | null; // your seat in the current online match
   opponent: OpponentInfo | null;
   opponentConnected: boolean;
+  ranked: boolean; // current match is ranked (vs casual friend game)
   queuedSince: number | null;
   result: { youWon: boolean | null; reason: string; eloChange: number; newElo: number } | null;
   authError: string | null; // last auth/account error to surface in the UI
@@ -150,11 +151,19 @@ const DEFAULT_ONLINE: OnlineState = {
   youAre: null,
   opponent: null,
   opponentConnected: true,
+  ranked: true,
   queuedSince: null,
   result: null,
   authError: null,
   busy: false,
 };
+
+export interface FriendsState {
+  list: FriendInfo[];
+  reqIn: FriendInfo[]; // incoming friend requests
+  reqOut: FriendInfo[]; // outgoing friend requests
+}
+const DEFAULT_FRIENDS: FriendsState = { list: [], reqIn: [], reqOut: [] };
 
 const TOKEN_KEY = "lacuna.token.v1";
 function loadToken(): string | null {
@@ -254,6 +263,8 @@ interface Store {
   netMode: "local" | "online"; // is the current game local (hotseat/CPU) or a server match?
   auth: AuthState | null;
   online: OnlineState;
+  friends: FriendsState;
+  incomingInvite: { userId: string; handle: string } | null;
   config: MenuConfig;
   history: RunRecord[];
   draft: DraftState | null;
@@ -313,6 +324,15 @@ interface Store {
   cancelQueue: () => void;
   resignOnline: () => void;
   leaveOnline: () => void;
+  // friends & invites
+  addFriend: (handle: string) => void;
+  acceptFriend: (userId: string) => void;
+  declineFriend: (userId: string) => void;
+  removeFriend: (userId: string) => void;
+  inviteFriend: (userId: string) => void;
+  acceptInvite: (fromUserId: string) => void;
+  declineInvite: (fromUserId: string) => void;
+  dismissInvite: () => void;
   _onServerMsg: (msg: ServerMsg) => void;
 }
 
@@ -438,6 +458,8 @@ export const useGame = create<Store>((set, get) => {
     netMode: "local",
     auth: null,
     online: { ...DEFAULT_ONLINE },
+    friends: { ...DEFAULT_FRIENDS },
+    incomingInvite: null,
     config: { ...DEFAULT_MENU_CONFIG },
     history: loadHistory(),
     draft: null,
@@ -959,6 +981,22 @@ export const useGame = create<Store>((set, get) => {
       }));
     },
 
+    // ─── Friends & invites ────────────────────────────────────────────────────
+    addFriend: (handle) => netSend({ t: "addFriend", handle }),
+    acceptFriend: (userId) => netSend({ t: "acceptFriend", userId }),
+    declineFriend: (userId) => netSend({ t: "declineFriend", userId }),
+    removeFriend: (userId) => netSend({ t: "removeFriend", userId }),
+    inviteFriend: (userId) => netSend({ t: "invite", userId }),
+    acceptInvite: (fromUserId) => {
+      set({ incomingInvite: null });
+      netSend({ t: "acceptInvite", fromUserId });
+    },
+    declineInvite: (fromUserId) => {
+      set({ incomingInvite: null });
+      netSend({ t: "declineInvite", fromUserId });
+    },
+    dismissInvite: () => set({ incomingInvite: null }),
+
     _onServerMsg: (msg) => handleServerMsg(set, get, msg),
   };
 });
@@ -981,7 +1019,24 @@ function handleServerMsg(set: SetFn, get: GetFn, msg: ServerMsg): void {
       break;
     case "loggedOut":
       saveToken(null);
-      set((s) => ({ auth: null, netMode: "local", screen: "menu", game: null, online: { ...DEFAULT_ONLINE, connected: s.online.connected } }));
+      set((s) => ({
+        auth: null,
+        netMode: "local",
+        screen: "menu",
+        game: null,
+        online: { ...DEFAULT_ONLINE, connected: s.online.connected },
+        friends: { ...DEFAULT_FRIENDS },
+        incomingInvite: null,
+      }));
+      break;
+    case "friends":
+      set({ friends: { list: msg.friends, reqIn: msg.reqIn, reqOut: msg.reqOut } });
+      break;
+    case "invited":
+      set({ incomingInvite: msg.from });
+      break;
+    case "inviteDeclined":
+      set({ message: `${msg.handle} declined your invite.` });
       break;
     case "queued":
       set((s) => ({ online: { ...s.online, status: "queued", queuedSince: msg.sinceMs } }));
@@ -1016,6 +1071,7 @@ function handleServerMsg(set: SetFn, get: GetFn, msg: ServerMsg): void {
           youAre: msg.youAre,
           opponent: msg.opponent,
           opponentConnected: true,
+          ranked: msg.ranked,
           result: null,
           queuedSince: null,
         },

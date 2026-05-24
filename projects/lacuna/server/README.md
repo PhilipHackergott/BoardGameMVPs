@@ -5,8 +5,9 @@ matchmaking, and server-validated matches. **Self-contained:** no external datab
 provider. It reuses the pure game engine from `../app/src/engine` so the same rules run on
 client and server, and the Elo math from `../app/src/rl/elo.ts`.
 
-Implements Phases 1–3 of [`../08-production-plan.md`](../08-production-plan.md) (accounts →
-private/authoritative online play → matchmaking + ranked Elo), minus chat, per the brief.
+Implements Phases 1–4 of [`../08-production-plan.md`](../08-production-plan.md) (accounts →
+authoritative online play → ranked Elo matchmaking → friends + direct invites), minus chat,
+per the brief. Basic rate limiting is in; TLS/`wss` + scaling/monitoring are deploy-time.
 
 ## Run
 
@@ -42,8 +43,9 @@ The web client connects to `ws://localhost:8787` by default; override with the V
 
 ## Notes / next
 
-- Ranked is **1v1**; local hotseat (2–4) stays fully client-side.
+- Ranked is **1v1** (Find Match); **friends** can be invited to **casual** 1v1 games (no Elo).
+  Local hotseat (2–4) stays fully client-side.
 - Built for the base game (powers/affinities cut on the ship branch). The action surface is
   `claim` / `place` / `pass`, all server-validated.
-- Production hardening still owed (plan Phase 5): rate limiting, TLS/`wss`, horizontal scaling,
-  monitoring — and the **IP clearance** before any public launch.
+- In place: per-connection rate limit + max payload. Still owed (deploy-time): TLS/`wss`,
+  horizontal scaling, monitoring. (IP was handled by renaming the product to **Nightweave**.)

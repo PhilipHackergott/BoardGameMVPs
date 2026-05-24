@@ -20,6 +20,9 @@ export interface PlayerRecord {
   losses: number;
   draws: number;
   createdAt: number;
+  friends: string[]; // accepted friend user-ids
+  reqIn: string[]; // incoming friend requests (their user-ids)
+  reqOut: string[]; // outgoing friend requests (their user-ids)
 }
 
 export interface MatchRecord {
@@ -61,6 +64,12 @@ export class Store {
     this.matchesPath = join(dataDir, "matches.json");
     this.players = readJson<PlayerRecord[]>(this.playersPath, []);
     this.matches = readJson<MatchRecord[]>(this.matchesPath, []);
+    // Migrate older records that predate the friends fields.
+    for (const p of this.players) {
+      p.friends ??= [];
+      p.reqIn ??= [];
+      p.reqOut ??= [];
+    }
   }
 
   private savePlayers(): void {
@@ -94,6 +103,9 @@ export class Store {
       losses: 0,
       draws: 0,
       createdAt: Date.now(),
+      friends: [],
+      reqIn: [],
+      reqOut: [],
     };
     this.players.push(rec);
     this.savePlayers();
@@ -114,6 +126,60 @@ export class Store {
     this.players.splice(i, 1);
     this.savePlayers();
     return true;
+  }
+
+  // ─── Friends ────────────────────────────────────────────────────────────────
+  /** Record an outgoing friend request from -> to (idempotent). */
+  friendRequest(fromId: string, toId: string): { ok: boolean; error?: string } {
+    const from = this.getById(fromId);
+    const to = this.getById(toId);
+    if (!from || !to) return { ok: false, error: "User not found." };
+    if (fromId === toId) return { ok: false, error: "You can't friend yourself." };
+    if (from.friends.includes(toId)) return { ok: false, error: "Already friends." };
+    if (to.reqIn.includes(fromId)) return { ok: false, error: "Request already sent." };
+    // If they already requested us, accept instead of duplicating.
+    if (from.reqIn.includes(toId)) {
+      this.acceptFriend(fromId, toId);
+      return { ok: true };
+    }
+    if (!from.reqOut.includes(toId)) from.reqOut.push(toId);
+    if (!to.reqIn.includes(fromId)) to.reqIn.push(fromId);
+    this.savePlayers();
+    return { ok: true };
+  }
+
+  acceptFriend(userId: string, fromId: string): boolean {
+    const me = this.getById(userId);
+    const them = this.getById(fromId);
+    if (!me || !them) return false;
+    me.reqIn = me.reqIn.filter((id) => id !== fromId);
+    them.reqOut = them.reqOut.filter((id) => id !== userId);
+    if (!me.friends.includes(fromId)) me.friends.push(fromId);
+    if (!them.friends.includes(userId)) them.friends.push(userId);
+    this.savePlayers();
+    return true;
+  }
+
+  declineFriend(userId: string, fromId: string): void {
+    const me = this.getById(userId);
+    const them = this.getById(fromId);
+    if (me) {
+      me.reqIn = me.reqIn.filter((id) => id !== fromId);
+      me.reqOut = me.reqOut.filter((id) => id !== fromId);
+    }
+    if (them) {
+      them.reqOut = them.reqOut.filter((id) => id !== userId);
+      them.reqIn = them.reqIn.filter((id) => id !== userId);
+    }
+    this.savePlayers();
+  }
+
+  removeFriend(userId: string, otherId: string): void {
+    const me = this.getById(userId);
+    const them = this.getById(otherId);
+    if (me) me.friends = me.friends.filter((id) => id !== otherId);
+    if (them) them.friends = them.friends.filter((id) => id !== userId);
+    this.savePlayers();
   }
 
   addMatch(rec: MatchRecord): void {

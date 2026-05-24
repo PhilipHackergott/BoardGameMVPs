@@ -22,7 +22,13 @@ const RANKED_CLOCK_SECONDS = 180; // 3-minute chess clock per player
 interface Ctx {
   ws: WebSocket;
   userId: string | null;
+  msgs: number; // messages seen in the current rate-limit window
+  windowStart: number;
 }
+
+const RATE_WINDOW_MS = 2000;
+const RATE_MAX = 60; // generous for turn-based play; blocks floods
+const MAX_PAYLOAD = 64 * 1024;
 
 export class GameServer {
   private store: Store;
@@ -36,7 +42,7 @@ export class GameServer {
 
   constructor(opts: { store: Store; port: number }) {
     this.store = opts.store;
-    this.wss = new WebSocketServer({ port: opts.port });
+    this.wss = new WebSocketServer({ port: opts.port, maxPayload: MAX_PAYLOAD });
     this.wss.on("connection", (ws) => this.onConnection(ws));
     this.mmTimer = setInterval(() => this.runMatchmaking(), 1000);
   }
@@ -61,8 +67,16 @@ export class GameServer {
 
   // ─── Connection plumbing ────────────────────────────────────────────────────
   private onConnection(ws: WebSocket): void {
-    const ctx: Ctx = { ws, userId: null };
+    const ctx: Ctx = { ws, userId: null, msgs: 0, windowStart: Date.now() };
     ws.on("message", (data) => {
+      // Per-connection rate limit: drop floods silently.
+      const now = Date.now();
+      if (now - ctx.windowStart > RATE_WINDOW_MS) {
+        ctx.windowStart = now;
+        ctx.msgs = 0;
+      }
+      if (++ctx.msgs > RATE_MAX) return;
+
       let msg: ClientMsg;
       try {
         msg = JSON.parse(String(data)) as ClientMsg;
@@ -88,6 +102,7 @@ export class GameServer {
     const m = this.activeMatch(uid);
     if (m) m.detach(m.seatOf(uid) as PlayerId);
     this.userToConn.delete(uid);
+    this.notifyPresence(uid); // let online friends see them go offline
   }
 
   private activeMatch(userId: string): Match | null {
@@ -126,6 +141,20 @@ export class GameServer {
         return this.onFindMatch(ctx);
       case "cancelQueue":
         return this.onCancelQueue(ctx);
+      case "addFriend":
+        return this.onAddFriend(ctx, msg);
+      case "acceptFriend":
+        return this.onFriendOp(ctx, "accept", msg.userId);
+      case "declineFriend":
+        return this.onFriendOp(ctx, "decline", msg.userId);
+      case "removeFriend":
+        return this.onFriendOp(ctx, "remove", msg.userId);
+      case "invite":
+        return this.onInvite(ctx, msg.userId);
+      case "acceptInvite":
+        return this.onAcceptInvite(ctx, msg.fromUserId);
+      case "declineInvite":
+        return this.onDeclineInvite(ctx, msg.fromUserId);
       case "act":
       case "resign":
       case "leaveMatch":
@@ -144,6 +173,7 @@ export class GameServer {
     if (prev && prev !== ctx) prev.userId = null;
     ctx.userId = userId;
     this.userToConn.set(userId, ctx);
+    this.notifyPresence(userId); // send this user their friends list + tell online friends they're on
     return this.sessions.issue(userId);
   }
 
@@ -269,55 +299,137 @@ export class GameServer {
   }
 
   private runMatchmaking(): void {
-    const pairs = this.matchmaker.pair();
-    for (const [a, b] of pairs) {
-      const pa = this.store.getById(a.userId);
-      const pb = this.store.getById(b.userId);
-      if (!pa || !pb) continue;
-      // Randomize who takes seat 0 (the opening claim) for fairness.
-      const [s0, s1] = Math.random() < 0.5 ? [pa, pb] : [pb, pa];
-      const match = new Match({
-        players: [
-          { userId: s0.id, handle: s0.handle, elo: s0.elo },
-          { userId: s1.id, handle: s1.handle, elo: s1.elo },
-        ],
-        clockSeconds: RANKED_CLOCK_SECONDS,
-        store: this.store,
-        onEnd: (id) => this.onMatchEnd(id),
-      });
-      this.matches.set(match.id, match);
-      this.userToMatch.set(s0.id, match.id);
-      this.userToMatch.set(s1.id, match.id);
-      for (const seat of [0, 1] as PlayerId[]) {
-        const uid = seat === 0 ? s0.id : s1.id;
-        match.attach(seat, this.routeFn(uid));
-        this.sendToUser(uid, {
-          t: "matchFound",
-          matchId: match.id,
-          youAre: seat,
-          opponent: match.opponentInfo(seat),
-          clockSeconds: match.clockSeconds,
-          state: match.getState(),
-          clocks: match.getClocks(),
-        });
-      }
+    for (const [a, b] of this.matchmaker.pair()) this.createMatch(a.userId, b.userId, true);
+  }
+
+  /** Build a match between two users, register it, attach both, and notify them. */
+  private createMatch(aId: string, bId: string, ranked: boolean): void {
+    const pa = this.store.getById(aId);
+    const pb = this.store.getById(bId);
+    if (!pa || !pb) return;
+    // Randomize who takes seat 0 (the opening claim) for fairness.
+    const [s0, s1] = Math.random() < 0.5 ? [pa, pb] : [pb, pa];
+    const match = new Match({
+      players: [
+        { userId: s0.id, handle: s0.handle, elo: s0.elo },
+        { userId: s1.id, handle: s1.handle, elo: s1.elo },
+      ],
+      clockSeconds: RANKED_CLOCK_SECONDS,
+      ranked,
+      store: this.store,
+      onEnd: (id) => this.onMatchEnd(id),
+    });
+    this.matches.set(match.id, match);
+    this.userToMatch.set(s0.id, match.id);
+    this.userToMatch.set(s1.id, match.id);
+    for (const seat of [0, 1] as PlayerId[]) {
+      const uid = seat === 0 ? s0.id : s1.id;
+      match.attach(seat, this.routeFn(uid));
+      this.sendMatchFound(uid, match);
     }
+    this.notifyPresence(s0.id); // both now "in-game" — refresh friends' lists
+    this.notifyPresence(s1.id);
+  }
+
+  private sendMatchFound(userId: string, match: Match): void {
+    const seat = match.seatOf(userId) as PlayerId;
+    this.sendToUser(userId, {
+      t: "matchFound",
+      matchId: match.id,
+      youAre: seat,
+      opponent: match.opponentInfo(seat),
+      clockSeconds: match.clockSeconds,
+      ranked: match.ranked,
+      state: match.getState(),
+      clocks: match.getClocks(),
+    });
   }
 
   private maybeRejoinMatch(userId: string): void {
     const m = this.activeMatch(userId);
     if (!m) return;
-    const seat = m.seatOf(userId) as PlayerId;
-    m.attach(seat, this.routeFn(userId));
-    this.sendToUser(userId, {
-      t: "matchFound",
-      matchId: m.id,
-      youAre: seat,
-      opponent: m.opponentInfo(seat),
-      clockSeconds: m.clockSeconds,
-      state: m.getState(),
-      clocks: m.getClocks(),
-    });
+    m.attach(m.seatOf(userId) as PlayerId, this.routeFn(userId));
+    this.sendMatchFound(userId, m);
+  }
+
+  // ─── Friends & presence ─────────────────────────────────────────────────────
+  private presenceOf(userId: string): "offline" | "online" | "in-game" {
+    if (this.userToMatch.has(userId)) return "in-game";
+    if (this.userToConn.has(userId)) return "online";
+    return "offline";
+  }
+
+  private friendInfo(userId: string): { userId: string; handle: string; elo: number; presence: "offline" | "online" | "in-game" } | null {
+    const p = this.store.getById(userId);
+    if (!p) return null;
+    return { userId: p.id, handle: p.handle, elo: p.elo, presence: this.presenceOf(userId) };
+  }
+
+  private pushFriends(userId: string): void {
+    if (!this.userToConn.has(userId)) return; // only push to a live socket
+    const p = this.store.getById(userId);
+    if (!p) return;
+    const map = (ids: string[]) => ids.map((id) => this.friendInfo(id)).filter((x): x is NonNullable<typeof x> => !!x);
+    this.sendToUser(userId, { t: "friends", friends: map(p.friends), reqIn: map(p.reqIn), reqOut: map(p.reqOut) });
+  }
+
+  /** Refresh this user's own list and every online friend's list (presence ripples out). */
+  private notifyPresence(userId: string): void {
+    this.pushFriends(userId);
+    const p = this.store.getById(userId);
+    if (!p) return;
+    for (const fid of p.friends) if (this.userToConn.has(fid)) this.pushFriends(fid);
+  }
+
+  private onAddFriend(ctx: Ctx, msg: Extract<ClientMsg, { t: "addFriend" }>): void {
+    const uid = this.requireUser(ctx);
+    if (!uid) return;
+    const target = this.store.getByHandle((msg.handle ?? "").trim());
+    if (!target) return send(ctx, { t: "error", reason: "No player with that handle." });
+    const res = this.store.friendRequest(uid, target.id);
+    if (!res.ok) return send(ctx, { t: "error", reason: res.error ?? "Could not send request." });
+    this.pushFriends(uid);
+    this.pushFriends(target.id);
+  }
+
+  private onFriendOp(ctx: Ctx, op: "accept" | "decline" | "remove", otherId: string): void {
+    const uid = this.requireUser(ctx);
+    if (!uid) return;
+    if (op === "accept") this.store.acceptFriend(uid, otherId);
+    else if (op === "decline") this.store.declineFriend(uid, otherId);
+    else this.store.removeFriend(uid, otherId);
+    this.pushFriends(uid);
+    this.pushFriends(otherId);
+  }
+
+  private onInvite(ctx: Ctx, friendId: string): void {
+    const uid = this.requireUser(ctx);
+    if (!uid) return;
+    const me = this.store.getById(uid);
+    if (!me || !me.friends.includes(friendId)) return send(ctx, { t: "error", reason: "Not your friend." });
+    if (this.activeMatch(uid)) return send(ctx, { t: "error", reason: "You're already in a match." });
+    if (this.presenceOf(friendId) !== "online") return send(ctx, { t: "error", reason: "That friend isn't available." });
+    this.sendToUser(friendId, { t: "invited", from: { userId: uid, handle: me.handle } });
+  }
+
+  private onAcceptInvite(ctx: Ctx, fromUserId: string): void {
+    const uid = this.requireUser(ctx);
+    if (!uid) return;
+    const me = this.store.getById(uid);
+    if (!me || !me.friends.includes(fromUserId)) return send(ctx, { t: "error", reason: "Not your friend." });
+    if (this.activeMatch(uid) || this.activeMatch(fromUserId))
+      return send(ctx, { t: "error", reason: "Someone is already in a match." });
+    if (this.presenceOf(fromUserId) === "offline") return send(ctx, { t: "error", reason: "They went offline." });
+    this.matchmaker.remove(uid);
+    this.matchmaker.remove(fromUserId);
+    this.createMatch(fromUserId, uid, false); // casual: no Elo
+  }
+
+  private onDeclineInvite(ctx: Ctx, fromUserId: string): void {
+    const uid = ctx.userId;
+    if (!uid) return;
+    const me = this.store.getById(uid);
+    this.sendToUser(fromUserId, { t: "inviteDeclined", handle: me?.handle ?? "Your friend" });
   }
 
   // ─── In-match messages ──────────────────────────────────────────────────────
@@ -336,7 +448,10 @@ export class GameServer {
     const m = this.matches.get(matchId);
     if (m) m.publicUsersAfter(); // push refreshed ratings/records to both clients
     this.matches.delete(matchId);
-    for (const [uid, id] of this.userToMatch) if (id === matchId) this.userToMatch.delete(uid);
+    const affected: string[] = [];
+    for (const [uid, id] of this.userToMatch) if (id === matchId) affected.push(uid);
+    for (const uid of affected) this.userToMatch.delete(uid);
+    for (const uid of affected) this.notifyPresence(uid); // back to "online" — refresh friends
   }
 }
 

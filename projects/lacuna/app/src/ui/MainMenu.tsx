@@ -7,8 +7,10 @@ import { PlasmaBackdrop } from "./PlasmaBackdrop";
 import { getTheme, THEMES } from "./theme";
 import type { ThemeId } from "./theme";
 import { AccountPanel, AuthScreen } from "./AccountUI";
+import { FriendsPanel, InviteToast } from "./FriendsUI";
+import { APP_NAME } from "../brand";
 
-type View = "home" | "new" | "settings" | "runs" | "auth";
+type View = "home" | "new" | "settings" | "runs" | "auth" | "friends";
 
 const AI_OPTS: { label: string; value: Difficulty | null }[] = [
   { label: "Human", value: null },
@@ -57,6 +59,7 @@ export function MainMenu() {
   const savedSnapshot = useGame((s) => s.savedSnapshot);
   const auth = useGame((s) => s.auth);
   const online = useGame((s) => s.online);
+  const friends = useGame((s) => s.friends);
   const findMatch = useGame((s) => s.findMatch);
   const cancelQueue = useGame((s) => s.cancelQueue);
 
@@ -142,7 +145,7 @@ export function MainMenu() {
       <div className="menu-brand">
         <BrandMark />
         <div>
-          <h1 className="brand-title">LACUNA</h1>
+          <h1 className="brand-title">{APP_NAME}</h1>
           <p className="brand-sub">{theme.subtitle}</p>
         </div>
       </div>
@@ -175,6 +178,20 @@ export function MainMenu() {
             <span className="nav-btn-sub">Pass-and-play or vs CPU on this device</span>
           </button>
 
+          <button className="nav-btn" onClick={() => setView("friends")}>
+            <span className="nav-btn-title">
+              Friends
+              {auth && friends.reqIn.length > 0 && <span className="nav-badge">{friends.reqIn.length}</span>}
+            </span>
+            <span className="nav-btn-sub">
+              {auth
+                ? friends.reqIn.length > 0
+                  ? `${friends.reqIn.length} new friend request${friends.reqIn.length > 1 ? "s" : ""}`
+                  : `${friends.list.length} friend${friends.list.length === 1 ? "" : "s"} · invite to play`
+                : "Sign in to add friends"}
+            </span>
+          </button>
+
           <button className="nav-btn" onClick={continueGame} disabled={!canContinue}>
             <span className="nav-btn-title">Continue</span>
             <span className="nav-btn-sub">
@@ -195,6 +212,8 @@ export function MainMenu() {
       )}
 
       {view === "auth" && <AuthScreen onDone={() => setView("home")} onBack={() => setView("home")} />}
+
+      {view === "friends" && <FriendsPanel onBack={() => setView("home")} onSignIn={() => setView("auth")} />}
 
       {view === "new" && (
         <div className="menu-sheet">
@@ -463,6 +482,8 @@ export function MainMenu() {
           </div>
         </div>
       )}
+
+      <InviteToast />
     </div>
   );
 }

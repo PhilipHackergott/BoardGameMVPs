@@ -1,8 +1,9 @@
-# Lacuna (MVP)
+# Nightweave (MVP)
 
-Digital adaptation of the board game **Lacuna** — pond + flower theme, Gold vs Silver. Artwork is
-drawn from scratch (no publisher illustrations/logo reproduced). **Unpublished prototype** — see
-the project's IP decision in `../project-state.json` (revisit licensing before any release).
+**Nightweave** — an original abstract game on a cozy night-pond theme (place pawns between
+same-colour flowers to collect them; most-colours wins). Renamed off the prototype's earlier
+working title; all artwork is drawn from scratch. **Unpublished prototype.** The folder slug
+stays `lacuna` for internal continuity; the product name is centralized in `src/brand.ts`.
 
 ## Stack
 Vite + React + TypeScript (strict) + PixiJS v8. Pure deterministic game engine in `src/engine/`

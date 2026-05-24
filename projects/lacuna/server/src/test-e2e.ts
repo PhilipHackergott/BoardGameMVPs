@@ -25,6 +25,10 @@ function check(cond: boolean, label: string): void {
 class Bot {
   ws: WebSocket;
   youAre = -1;
+  userId = "";
+  ranked = true;
+  friends: { list: { userId: string; handle: string }[]; reqIn: { userId: string; handle: string }[] } = { list: [], reqIn: [] };
+  invited: { userId: string; handle: string } | null = null;
   over: { youWon: boolean | null; eloChange: number; newElo: number } | null = null;
   private acted = new Set<string>(); // guard: act once per (phase:turnIndex) seen as ours
   constructor(url: string, private onOver: () => void, private label: string) {
@@ -35,8 +39,17 @@ class Bot {
     this.ws.send(JSON.stringify(m));
   }
   private handle(m: ServerMsg): void {
-    if (m.t === "matchFound") {
+    if (m.t === "authOk") {
+      this.userId = m.user.id;
+    } else if (m.t === "friends") {
+      this.friends = { list: m.friends, reqIn: m.reqIn };
+    } else if (m.t === "invited") {
+      this.invited = m.from;
+    } else if (m.t === "matchFound") {
       this.youAre = m.youAre;
+      this.ranked = m.ranked;
+      this.over = null;
+      this.acted.clear();
       this.autoPlay(m.state);
     } else if (m.t === "state") {
       this.autoPlay(m.state);
@@ -85,6 +98,15 @@ function once(ws: WebSocket, pred: (m: ServerMsg) => boolean): Promise<ServerMsg
 }
 const open = (ws: WebSocket) => new Promise<void>((r) => ws.once("open", () => r()));
 const sendRaw = (ws: WebSocket, m: ClientMsg) => ws.send(JSON.stringify(m));
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+async function until(fn: () => boolean, label: string, timeout = 10000): Promise<void> {
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    if (fn()) return;
+    await sleep(60);
+  }
+  throw new Error(`timeout: ${label}`);
+}
 
 async function main(): Promise<void> {
   const dataDir = mkdtempSync(join(tmpdir(), "lacuna-e2e-"));
@@ -176,6 +198,53 @@ async function main(): Promise<void> {
   const carolRec = players.find((p) => p.handle === "Carol");
   check(!!bobRec && !!carolRec, "both ranked players persisted");
   if (!draw) check((bobRec!.elo === 1000) === false || (carolRec!.elo === 1000) === false, "a persisted Elo changed");
+
+  // ── Friends + direct invite → casual (no-Elo) match ────────────────────────
+  console.log("\nFriends + invite:");
+  let casualOvers = 0;
+  let casualFinish: () => void = () => {};
+  const casualDone = new Promise<void>((resolve) => {
+    casualFinish = () => {
+      if (++casualOvers === 2) resolve();
+    };
+  });
+  const dave = new Bot(url, () => casualFinish(), "Dave");
+  const erin = new Bot(url, () => casualFinish(), "Erin");
+  await open(dave.ws);
+  await open(erin.ws);
+  dave.send({ t: "signup", email: `dave_${Date.now()}@x.com`, handle: "Dave", password: "davepassword" });
+  erin.send({ t: "signup", email: `erin_${Date.now()}@x.com`, handle: "Erin", password: "erinpassword" });
+  await until(() => !!dave.userId && !!erin.userId, "both signed up");
+
+  dave.send({ t: "addFriend", handle: "Erin" });
+  await until(() => erin.friends.reqIn.some((r) => r.userId === dave.userId), "Erin got the friend request");
+  check(true, "friend request delivered to Erin");
+
+  erin.send({ t: "acceptFriend", userId: dave.userId });
+  await until(
+    () => dave.friends.list.some((f) => f.userId === erin.userId) && erin.friends.list.some((f) => f.userId === dave.userId),
+    "both now friends",
+  );
+  check(true, "friend request accepted (mutual friends)");
+
+  dave.send({ t: "invite", userId: erin.userId });
+  await until(() => erin.invited?.userId === dave.userId, "Erin received the invite");
+  check(true, "direct game invite delivered");
+
+  erin.send({ t: "acceptInvite", fromUserId: dave.userId });
+  const casualTimeout = new Promise<void>((_, rej) => setTimeout(() => rej(new Error("casual timed out")), 20000));
+  await Promise.race([casualDone, casualTimeout]);
+  check(dave.over !== null && erin.over !== null, "casual game played to completion");
+  check(!dave.ranked && !erin.ranked, "invite produced a CASUAL (unranked) match");
+  check(dave.over?.eloChange === 0 && erin.over?.eloChange === 0, "casual game left Elo unchanged");
+
+  dave.ws.close();
+  erin.ws.close();
+
+  const players2 = JSON.parse(readFileSync(join(dataDir, "players.json"), "utf8")) as { handle: string; elo: number }[];
+  check(players2.find((p) => p.handle === "Dave")?.elo === 1000, "Dave's persisted Elo still 1000 after casual game");
+  const matches2 = JSON.parse(readFileSync(join(dataDir, "matches.json"), "utf8")) as unknown[];
+  check(matches2.length === 1, "casual game was NOT added to ranked match history");
 
   server.close();
   rmSync(dataDir, { recursive: true, force: true });

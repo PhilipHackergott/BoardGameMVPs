@@ -25,6 +25,16 @@ export interface OpponentInfo {
   elo: number;
 }
 
+export type Presence = "offline" | "online" | "in-game";
+
+/** A friend / friend-request entry, with live presence. */
+export interface FriendInfo {
+  userId: string;
+  handle: string;
+  elo: number;
+  presence: Presence;
+}
+
 /** Per-seat remaining thinking time (ms), index = PlayerId. */
 export type Clocks = number[];
 
@@ -41,6 +51,14 @@ export type ClientMsg =
   // ranked matchmaking
   | { t: "findMatch" }
   | { t: "cancelQueue" }
+  // friends & invites
+  | { t: "addFriend"; handle: string }
+  | { t: "acceptFriend"; userId: string }
+  | { t: "declineFriend"; userId: string }
+  | { t: "removeFriend"; userId: string }
+  | { t: "invite"; userId: string }
+  | { t: "acceptInvite"; fromUserId: string }
+  | { t: "declineInvite"; fromUserId: string }
   // in-match
   | { t: "act"; action: Action }
   | { t: "resign" }
@@ -63,9 +81,14 @@ export type ServerMsg =
       youAre: PlayerId;
       opponent: OpponentInfo;
       clockSeconds: number;
+      ranked: boolean; // false = casual game with a friend
       state: GameState;
       clocks: Clocks;
     }
+  // friends & invites
+  | { t: "friends"; friends: FriendInfo[]; reqIn: FriendInfo[]; reqOut: FriendInfo[] }
+  | { t: "invited"; from: { userId: string; handle: string } }
+  | { t: "inviteDeclined"; handle: string }
   // in-match
   | { t: "state"; matchId: string; state: GameState; clocks: Clocks; current: PlayerId }
   | { t: "clocks"; matchId: string; clocks: Clocks; current: PlayerId }

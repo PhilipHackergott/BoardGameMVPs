@@ -37,6 +37,7 @@ export interface MatchPlayerInit {
 export class Match {
   readonly id = randomUUID();
   readonly clockSeconds: number;
+  readonly ranked: boolean;
   readonly seed: number;
   private state: GameState;
   private seats: [Seat, Seat];
@@ -52,10 +53,12 @@ export class Match {
   constructor(opts: {
     players: [MatchPlayerInit, MatchPlayerInit]; // index = seat
     clockSeconds: number;
+    ranked: boolean;
     store: Store;
     onEnd: (matchId: string) => void;
   }) {
     this.clockSeconds = opts.clockSeconds;
+    this.ranked = opts.ranked;
     this.store = opts.store;
     this.onEnd = opts.onEnd;
     this.seed = (Math.random() * 0xffffffff) >>> 0;
@@ -176,24 +179,27 @@ export class Match {
 
     const e0 = this.seats[0].eloBefore;
     const e1 = this.seats[1].eloBefore;
-    const score0 = result === 0 ? 1 : result === "draw" ? 0.5 : 0;
-    const [new0, new1] = updateElo(e0, e1, score0, ELO_K).map(Math.round) as [number, number];
+    let new0 = e0;
+    let new1 = e1;
 
-    this.settlePlayer(0, new0, result);
-    this.settlePlayer(1, new1, result);
-
-    this.store.addMatch({
-      id: this.id,
-      ts: Date.now(),
-      mode: "ranked",
-      seed: this.seed,
-      result,
-      reason,
-      players: [
-        { id: this.seats[0].userId, handle: this.seats[0].handle, seat: 0, eloBefore: e0, eloAfter: new0 },
-        { id: this.seats[1].userId, handle: this.seats[1].handle, seat: 1, eloBefore: e1, eloAfter: new1 },
-      ],
-    });
+    if (this.ranked) {
+      const score0 = result === 0 ? 1 : result === "draw" ? 0.5 : 0;
+      [new0, new1] = updateElo(e0, e1, score0, ELO_K).map(Math.round) as [number, number];
+      this.settlePlayer(0, new0, result);
+      this.settlePlayer(1, new1, result);
+      this.store.addMatch({
+        id: this.id,
+        ts: Date.now(),
+        mode: "ranked",
+        seed: this.seed,
+        result,
+        reason,
+        players: [
+          { id: this.seats[0].userId, handle: this.seats[0].handle, seat: 0, eloBefore: e0, eloAfter: new0 },
+          { id: this.seats[1].userId, handle: this.seats[1].handle, seat: 1, eloBefore: e1, eloAfter: new1 },
+        ],
+      });
+    }
 
     for (const seat of [0, 1] as PlayerId[]) {
       const newElo = seat === 0 ? new0 : new1;
@@ -205,7 +211,7 @@ export class Match {
         result,
         youWon,
         reason,
-        eloChange: newElo - before,
+        eloChange: this.ranked ? newElo - before : 0, // casual games don't move Elo
         newElo,
       });
     }
