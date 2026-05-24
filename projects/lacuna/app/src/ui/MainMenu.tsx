@@ -65,8 +65,9 @@ export function MainMenu() {
   });
   const [timerOn, setTimerOn] = useState(saved.clockSeconds > 0);
   const [clockSeconds, setClockSeconds] = useState(saved.clockSeconds > 0 ? saved.clockSeconds : 120);
-  const [draftPicks, setDraftPicks] = useState(saved.draftPicks);
-  const [affinitiesOn, setAffinitiesOn] = useState(saved.affinitiesOn);
+  // alpha-0.1: hotseat ("Local") is the one live mode; online ranked/friends play is on
+  // the roadmap (see 08-production-plan.md). Mode is surfaced so the structure is ready.
+  const [mode, setMode] = useState<"local" | "online">("local");
   const [ai, setAi] = useState<(Difficulty | null)[]>(() => {
     const a = saved.ai.slice(0, 4);
     while (a.length < 4) a.push(null);
@@ -102,8 +103,11 @@ export function MainMenu() {
       players,
       names: names.map((n, i) => n.trim() || PLAYER_NAMES[i]),
       clockSeconds: timerOn ? clockSeconds : 0,
-      draftPicks,
-      affinitiesOn,
+      // Special powers & colour affinities are cut from the alpha-0.1 ship build. The
+      // feature code still lives on `main`; here we force them off so the draft flow is
+      // never entered (startGame deals straight into the game when both are off).
+      draftPicks: 0,
+      affinitiesOn: false,
       ai,
     };
     startGame(cfg);
@@ -177,8 +181,32 @@ export function MainMenu() {
             </button>
           </div>
 
-          <div className="field">
-            <label>Players</label>
+          {/* Mode — local hotseat is live; online is the planned default (roadmap). */}
+          <section className="setup-group">
+            <div className="setup-group-head">
+              <h3>Mode</h3>
+            </div>
+            <div className="segmented mode-seg">
+              <button className={mode === "local" ? "seg on" : "seg"} onClick={() => setMode("local")}>
+                Local
+              </button>
+              <button className="seg soon" disabled aria-disabled title="Coming soon">
+                Online <span className="seg-badge">Soon</span>
+              </button>
+            </div>
+            <span className="field-hint">
+              {mode === "local"
+                ? "Pass-and-play on this device — take turns at one screen. "
+                : ""}
+              Ranked online matches, friend lobbies &amp; accounts are coming next.
+            </span>
+          </section>
+
+          {/* Players */}
+          <section className="setup-group">
+            <div className="setup-group-head">
+              <h3>Players</h3>
+            </div>
             <div className="segmented">
               {[2, 3, 4].map((n) => (
                 <button key={n} className={players === n ? "seg on" : "seg"} onClick={() => setPlayers(n)}>
@@ -186,14 +214,18 @@ export function MainMenu() {
                 </button>
               ))}
             </div>
-            <span className="field-hint">{12 / players} pawns each · 12 total</span>
-          </div>
+            <span className="field-hint">{12 / players} pawns each · 12 on the pond</span>
+          </section>
 
-          <div className="field">
-            <label>Names &amp; players</label>
-            <div className="name-list">
+          {/* Seats — name each player and choose human or CPU strength. */}
+          <section className="setup-group">
+            <div className="setup-group-head">
+              <h3>Seats</h3>
+              <span className="setup-group-note">Name each player; pick who's human or CPU.</span>
+            </div>
+            <div className="seat-list">
               {Array.from({ length: players }, (_, i) => (
-                <div className="name-row" key={i}>
+                <div className="seat-row" key={i}>
                   <span className="name-dot" style={{ background: PLAYER_COLOR_CSS[i] }} aria-hidden />
                   <input
                     value={names[i]}
@@ -202,7 +234,7 @@ export function MainMenu() {
                     placeholder={PLAYER_NAMES[i]}
                     aria-label={`Player ${i + 1} name`}
                   />
-                  <div className="segmented sm" role="group" aria-label={`Player ${i + 1} type`}>
+                  <div className="segmented sm seat-type" role="group" aria-label={`Player ${i + 1} type`}>
                     {AI_OPTS.map((o) => (
                       <button
                         key={o.label}
@@ -216,9 +248,13 @@ export function MainMenu() {
                 </div>
               ))}
             </div>
-          </div>
+          </section>
 
-          <div className="field">
+          {/* Match options */}
+          <section className="setup-group">
+            <div className="setup-group-head">
+              <h3>Match options</h3>
+            </div>
             <label className="field-toggle">
               <input type="checkbox" checked={timerOn} onChange={(e) => setTimerOn(e.target.checked)} />
               Turn timer (chess clock)
@@ -240,40 +276,12 @@ export function MainMenu() {
             <span className="field-hint">
               {timerOn
                 ? `${fmtMMSS(clockSeconds)} per player — flag and you forfeit your remaining pawns.`
-                : "No timer."}
+                : "No timer — play at your own pace."}
             </span>
-          </div>
-
-          <div className="field">
-            <label>Special powers (drafted per player)</label>
-            <div className="segmented">
-              {[0, 1, 2].map((n) => (
-                <button key={n} className={draftPicks === n ? "seg on" : "seg"} onClick={() => setDraftPicks(n)}>
-                  {n === 0 ? "Off" : n}
-                </button>
-              ))}
-            </div>
-            <span className="field-hint">
-              {draftPicks === 0
-                ? "No powers — pure Lacuna."
-                : `Each player drafts ${draftPicks} power${draftPicks > 1 ? "s" : ""} from a shared pool before play.`}
-            </span>
-          </div>
-
-          <div className="field">
-            <label className="field-toggle">
-              <input type="checkbox" checked={affinitiesOn} onChange={(e) => setAffinitiesOn(e.target.checked)} />
-              Colour affinities
-            </label>
-            <span className="field-hint">
-              {affinitiesOn
-                ? "Each player also drafts one colour affinity — a bonus triggered by collecting that flower."
-                : "Off."}
-            </span>
-          </div>
+          </section>
 
           <button className="menu-start" onClick={start}>
-            {draftPicks > 0 || affinitiesOn ? "Draft & start" : "Start game"}
+            Start game
           </button>
         </div>
       )}
