@@ -16,6 +16,8 @@ import type { Difficulty } from "../ai/ai";
 import { PLAYER_NAMES } from "../ui/colors";
 import { getTheme } from "../ui/theme";
 import type { ThemeId } from "../ui/theme";
+import { netConfig, netConnect, netSend } from "../net/client";
+import type { OpponentInfo, PublicUser, ServerMsg } from "../net/protocol";
 
 // Player-facing game setup chosen on the main menu.
 export interface MenuConfig {
@@ -120,6 +122,57 @@ function saveSettings(s: AppSettings): void {
   }
 }
 
+// ─── Online play: account + matchmaking state ──────────────────────────────--
+export interface AuthState {
+  token: string;
+  user: PublicUser;
+}
+
+export type OnlineStatus = "offline" | "queued" | "playing" | "ended";
+
+export interface OnlineState {
+  connected: boolean; // websocket is open
+  status: OnlineStatus; // matchmaking/match lifecycle
+  matchId: string | null;
+  youAre: PlayerId | null; // your seat in the current online match
+  opponent: OpponentInfo | null;
+  opponentConnected: boolean;
+  queuedSince: number | null;
+  result: { youWon: boolean | null; reason: string; eloChange: number; newElo: number } | null;
+  authError: string | null; // last auth/account error to surface in the UI
+  busy: boolean; // an auth/account request is in flight
+}
+
+const DEFAULT_ONLINE: OnlineState = {
+  connected: false,
+  status: "offline",
+  matchId: null,
+  youAre: null,
+  opponent: null,
+  opponentConnected: true,
+  queuedSince: null,
+  result: null,
+  authError: null,
+  busy: false,
+};
+
+const TOKEN_KEY = "lacuna.token.v1";
+function loadToken(): string | null {
+  try {
+    return localStorage.getItem(TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+function saveToken(t: string | null): void {
+  try {
+    if (t) localStorage.setItem(TOKEN_KEY, t);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    /* ignore */
+  }
+}
+
 // A resumable snapshot of an in-progress game (engine state is plain serializable data).
 export interface SavedGame {
   game: GameState;
@@ -198,6 +251,9 @@ function makeTransferFlight(color: number, fromPlayer: PlayerId, owner: PlayerId
 
 interface Store {
   screen: "menu" | "draft" | "game";
+  netMode: "local" | "online"; // is the current game local (hotseat/CPU) or a server match?
+  auth: AuthState | null;
+  online: OnlineState;
   config: MenuConfig;
   history: RunRecord[];
   draft: DraftState | null;
@@ -244,6 +300,20 @@ interface Store {
   tickClock: (deltaMs: number) => void;
   recordRun: () => void;
   clearHistory: () => void;
+  // online / account
+  signup: (email: string, handle: string, password: string) => void;
+  login: (email: string, password: string) => void;
+  logout: () => void;
+  resumeSession: () => void;
+  updateAccount: (patch: { handle?: string; email?: string }) => void;
+  changePassword: (oldPassword: string, newPassword: string) => void;
+  deleteAccount: (password: string) => void;
+  clearAuthError: () => void;
+  findMatch: () => void;
+  cancelQueue: () => void;
+  resignOnline: () => void;
+  leaveOnline: () => void;
+  _onServerMsg: (msg: ServerMsg) => void;
 }
 
 // Split a flower's same-colour neighbours into clear (green), Flying-only (sky), blocked (red).
@@ -365,6 +435,9 @@ export const useGame = create<Store>((set, get) => {
 
   return {
     screen: "menu",
+    netMode: "local",
+    auth: null,
+    online: { ...DEFAULT_ONLINE },
     config: { ...DEFAULT_MENU_CONFIG },
     history: loadHistory(),
     draft: null,
@@ -489,7 +562,17 @@ export const useGame = create<Store>((set, get) => {
       }
     },
 
-    returnToMenu: () => set({ screen: "menu", draft: null, paused: false }),
+    returnToMenu: () => {
+      const { netMode, online } = get();
+      if (netMode === "online" && online.status === "playing") netSend({ t: "leaveMatch" });
+      set((s) => ({
+        screen: "menu",
+        draft: null,
+        paused: false,
+        netMode: "local",
+        online: { ...DEFAULT_ONLINE, connected: s.online.connected, status: "offline" },
+      }));
+    },
 
     newGame: (seedInput?: string, powers?: PowerId[][], affinity?: (number | null)[]) => {
       const { config } = get();
@@ -519,9 +602,14 @@ export const useGame = create<Store>((set, get) => {
     // Click a flower: take it in hand (revealing red/green lines), or drop it if it
     // was already the one in hand. Clicking a different flower switches to it.
     selectStar: (id: number) => {
-      const { game, selection, flights } = get();
+      const { game, selection, flights, netMode, online } = get();
       if (!game) return;
+      const myTurn = netMode !== "online" || (online.youAre != null && game.current === online.youAre);
       if (game.phase === "setup") {
+        if (netMode === "online") {
+          if (myTurn) netSend({ t: "act", action: { type: "claim", starId: id } });
+          return;
+        }
         claimStar(id);
         return;
       }
@@ -612,19 +700,37 @@ export const useGame = create<Store>((set, get) => {
         set({ selection: { ...emptySelection }, message: null });
         return;
       }
+      const { netMode, online } = get();
+      if (netMode === "online") {
+        if (online.youAre == null || game.current !== online.youAre) return; // not your turn
+        netSend({ t: "act", action: { type: "place", aStarId: selection.aStarId, bStarId: target.bStarId, x: target.x, y: target.y } });
+        set({ selection: { ...emptySelection }, message: null });
+        return;
+      }
       placePawn(selection.aStarId, target.bStarId, target.x, target.y);
     },
 
     // Keyboard affordance (Enter): commit the current hovered preview.
     confirmPlace: () => {
-      const { game, selection } = get();
+      const { game, selection, netMode, online } = get();
       if (!game || selection.aStarId === null || !selection.hover) return;
+      if (netMode === "online") {
+        if (online.youAre == null || game.current !== online.youAre) return;
+        netSend({ t: "act", action: { type: "place", aStarId: selection.aStarId, bStarId: selection.hover.bStarId, x: selection.hover.x, y: selection.hover.y } });
+        set({ selection: { ...emptySelection }, message: null });
+        return;
+      }
       placePawn(selection.aStarId, selection.hover.bStarId, selection.hover.x, selection.hover.y);
     },
 
     passTurn: () => {
-      const { game } = get();
+      const { game, netMode, online } = get();
       if (!game || game.phase !== "play") return;
+      if (netMode === "online") {
+        if (online.youAre == null || game.current !== online.youAre) return;
+        netSend({ t: "act", action: { type: "pass" } });
+        return;
+      }
       set({
         game: applyAction(game, { type: "pass" }),
         selection: { ...emptySelection },
@@ -788,19 +894,190 @@ export const useGame = create<Store>((set, get) => {
       saveHistory([]);
       set({ history: [] });
     },
+
+    // ─── Online: account ──────────────────────────────────────────────────────
+    signup: (email, handle, password) => {
+      set((s) => ({ online: { ...s.online, busy: true, authError: null } }));
+      netConnect();
+      netSend({ t: "signup", email, handle, password });
+    },
+    login: (email, password) => {
+      set((s) => ({ online: { ...s.online, busy: true, authError: null } }));
+      netConnect();
+      netSend({ t: "login", email, password });
+    },
+    logout: () => {
+      netSend({ t: "logout" });
+      saveToken(null);
+      set((s) => ({
+        auth: null,
+        netMode: "local",
+        screen: "menu",
+        game: null,
+        online: { ...DEFAULT_ONLINE, connected: s.online.connected },
+      }));
+    },
+    resumeSession: () => {
+      const token = loadToken();
+      if (!token) return;
+      netConnect();
+      netSend({ t: "resume", token });
+    },
+    updateAccount: (patch) => {
+      set((s) => ({ online: { ...s.online, busy: true, authError: null } }));
+      netSend({ t: "updateAccount", ...patch });
+    },
+    changePassword: (oldPassword, newPassword) => {
+      set((s) => ({ online: { ...s.online, busy: true, authError: null } }));
+      netSend({ t: "changePassword", oldPassword, newPassword });
+    },
+    deleteAccount: (password) => {
+      set((s) => ({ online: { ...s.online, busy: true, authError: null } }));
+      netSend({ t: "deleteAccount", password });
+    },
+    clearAuthError: () => set((s) => ({ online: { ...s.online, authError: null } })),
+
+    // ─── Online: matchmaking + match ──────────────────────────────────────────
+    findMatch: () => {
+      if (!get().auth) return;
+      netConnect();
+      netSend({ t: "findMatch" });
+      set((s) => ({ online: { ...s.online, status: "queued", queuedSince: Date.now(), result: null } }));
+    },
+    cancelQueue: () => {
+      netSend({ t: "cancelQueue" });
+      set((s) => ({ online: { ...s.online, status: "offline", queuedSince: null } }));
+    },
+    resignOnline: () => netSend({ t: "resign" }),
+    leaveOnline: () => {
+      if (get().online.status === "playing") netSend({ t: "leaveMatch" });
+      set((s) => ({
+        netMode: "local",
+        screen: "menu",
+        game: null,
+        online: { ...DEFAULT_ONLINE, connected: s.online.connected, status: "offline" },
+      }));
+    },
+
+    _onServerMsg: (msg) => handleServerMsg(set, get, msg),
   };
 });
+
+// ─── Server → store reducer ─────────────────────────────────────────────────--
+type SetFn = (partial: Partial<Store> | ((s: Store) => Partial<Store>)) => void;
+type GetFn = () => Store;
+
+function handleServerMsg(set: SetFn, get: GetFn, msg: ServerMsg): void {
+  switch (msg.t) {
+    case "authOk":
+      saveToken(msg.token);
+      set((s) => ({ auth: { token: msg.token, user: msg.user }, online: { ...s.online, busy: false, authError: null } }));
+      break;
+    case "authErr":
+      set((s) => ({ online: { ...s.online, busy: false, authError: msg.reason } }));
+      break;
+    case "accountUpdated":
+      set((s) => (s.auth ? { auth: { ...s.auth, user: msg.user }, online: { ...s.online, busy: false, authError: null } } : {}));
+      break;
+    case "loggedOut":
+      saveToken(null);
+      set((s) => ({ auth: null, netMode: "local", screen: "menu", game: null, online: { ...DEFAULT_ONLINE, connected: s.online.connected } }));
+      break;
+    case "queued":
+      set((s) => ({ online: { ...s.online, status: "queued", queuedSince: msg.sinceMs } }));
+      break;
+    case "queueCancelled":
+      set((s) => ({ online: { ...s.online, status: "offline", queuedSince: null } }));
+      break;
+    case "matchFound": {
+      const myHandle = get().auth?.user.handle ?? PLAYER_NAMES[msg.youAre];
+      const names = [...DEFAULT_MENU_CONFIG.names];
+      names[msg.youAre] = myHandle;
+      names[msg.youAre === 0 ? 1 : 0] = msg.opponent.handle;
+      set((s) => ({
+        screen: "game",
+        netMode: "online",
+        game: msg.state,
+        config: { ...s.config, players: 2, clockSeconds: msg.clockSeconds, names, ai: [null, null, null, null] },
+        clocks: msg.clocks,
+        flagged: [false, false],
+        selection: { ...emptySelection },
+        message: null,
+        reveal: 0,
+        revealAuto: true,
+        flights: [],
+        recorded: false,
+        pickupMode: false,
+        paused: false,
+        online: {
+          ...s.online,
+          status: "playing",
+          matchId: msg.matchId,
+          youAre: msg.youAre,
+          opponent: msg.opponent,
+          opponentConnected: true,
+          result: null,
+          queuedSince: null,
+        },
+      }));
+      break;
+    }
+    case "state":
+      set((s) => (s.netMode === "online" ? { game: msg.state, clocks: msg.clocks, selection: { ...emptySelection } } : {}));
+      break;
+    case "clocks":
+      set((s) => (s.netMode === "online" ? { clocks: msg.clocks } : {}));
+      break;
+    case "opponentDisconnected":
+      set((s) => ({ online: { ...s.online, opponentConnected: false } }));
+      break;
+    case "opponentReconnected":
+      set((s) => ({ online: { ...s.online, opponentConnected: true } }));
+      break;
+    case "matchOver":
+      set((s) => ({
+        online: {
+          ...s.online,
+          status: "ended",
+          result: { youWon: msg.youWon, reason: msg.reason, eloChange: msg.eloChange, newElo: msg.newElo },
+        },
+        auth: s.auth ? { ...s.auth, user: { ...s.auth.user, elo: msg.newElo } } : s.auth,
+      }));
+      break;
+    case "error":
+      set({ message: msg.reason });
+      break;
+    case "pong":
+      break;
+  }
+}
 
 // Persist the active game so "Continue" survives a reload; drop the save once a
 // game ends. Runs on every game-state change (cheap identity guard).
 useGame.subscribe((s, prev) => {
   if (s.game === prev.game) return;
+  if (s.netMode === "online") return; // online matches live on the server, not the local save
   if (s.game && s.game.phase !== "ended") {
     saveSnapshot({ game: s.game, config: s.config, clocks: s.clocks, flagged: s.flagged });
   } else {
     clearSave();
   }
 });
+
+// Route every server message into the store, mirror connection status, and re-authenticate
+// on each (re)connect so a dropped socket transparently rejoins a live match.
+netConfig({
+  onMsg: (m) => useGame.getState()._onServerMsg(m),
+  onStatus: (connected) => useGame.setState((s) => ({ online: { ...s.online, connected } })),
+  onReady: () => {
+    const token = loadToken();
+    if (token) netSend({ t: "resume", token });
+  },
+});
+
+// If the player was signed in last session, reconnect + resume now (otherwise we connect
+// lazily the first time they sign in or hit Find Match).
+if (loadToken()) netConnect();
 
 export function currentHasLegalMove(game: GameState | null): boolean {
   return game ? hasLegalMove(game) : false;

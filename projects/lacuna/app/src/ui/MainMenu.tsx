@@ -6,8 +6,9 @@ import { PLAYER_COLOR_CSS, PLAYER_NAMES } from "./colors";
 import { PlasmaBackdrop } from "./PlasmaBackdrop";
 import { getTheme, THEMES } from "./theme";
 import type { ThemeId } from "./theme";
+import { AccountPanel, AuthScreen } from "./AccountUI";
 
-type View = "home" | "new" | "settings" | "runs";
+type View = "home" | "new" | "settings" | "runs" | "auth";
 
 const AI_OPTS: { label: string; value: Difficulty | null }[] = [
   { label: "Human", value: null },
@@ -54,6 +55,10 @@ export function MainMenu() {
   const continueGame = useGame((s) => s.continueGame);
   const game = useGame((s) => s.game);
   const savedSnapshot = useGame((s) => s.savedSnapshot);
+  const auth = useGame((s) => s.auth);
+  const online = useGame((s) => s.online);
+  const findMatch = useGame((s) => s.findMatch);
+  const cancelQueue = useGame((s) => s.cancelQueue);
 
   const [view, setView] = useState<View>("home");
 
@@ -65,9 +70,6 @@ export function MainMenu() {
   });
   const [timerOn, setTimerOn] = useState(saved.clockSeconds > 0);
   const [clockSeconds, setClockSeconds] = useState(saved.clockSeconds > 0 ? saved.clockSeconds : 120);
-  // alpha-0.1: hotseat ("Local") is the one live mode; online ranked/friends play is on
-  // the roadmap (see 08-production-plan.md). Mode is surfaced so the structure is ready.
-  const [mode, setMode] = useState<"local" | "online">("local");
   const [ai, setAi] = useState<(Difficulty | null)[]>(() => {
     const a = saved.ai.slice(0, 4);
     while (a.length < 4) a.push(null);
@@ -147,60 +149,61 @@ export function MainMenu() {
 
       {view === "home" && (
         <nav className="menu-nav">
-          <button className="nav-btn primary" onClick={() => setView("new")}>
-            <span className="nav-btn-title">New Game</span>
-            <span className="nav-btn-sub">Set up a fresh pond</span>
+          <button className="account-chip" onClick={() => setView(auth ? "settings" : "auth")}>
+            {auth ? (
+              <>
+                <span className="account-chip-rank">{auth.user.elo}</span>
+                <span className="account-chip-name">{auth.user.handle}</span>
+                <span className="account-chip-rec">
+                  {auth.user.wins}W · {auth.user.losses}L
+                </span>
+              </>
+            ) : (
+              <span className="account-chip-name">Sign in to play ranked →</span>
+            )}
           </button>
+
+          <button className="nav-btn primary" onClick={() => (auth ? findMatch() : setView("auth"))}>
+            <span className="nav-btn-title">Find Match</span>
+            <span className="nav-btn-sub">
+              {auth ? `Ranked online · Elo ${auth.user.elo}` : "Sign in to play ranked online"}
+            </span>
+          </button>
+
+          <button className="nav-btn" onClick={() => setView("new")}>
+            <span className="nav-btn-title">Local Match</span>
+            <span className="nav-btn-sub">Pass-and-play or vs CPU on this device</span>
+          </button>
+
           <button className="nav-btn" onClick={continueGame} disabled={!canContinue}>
             <span className="nav-btn-title">Continue</span>
             <span className="nav-btn-sub">
-              {canContinue
-                ? `Resume your ${resumeCfg?.players ?? 2}-player game`
-                : "No game in progress"}
+              {canContinue ? `Resume your ${resumeCfg?.players ?? 2}-player game` : "No game in progress"}
             </span>
           </button>
+
           <button className="nav-btn" onClick={() => setView("runs")}>
             <span className="nav-btn-title">Past Runs</span>
-            <span className="nav-btn-sub">
-              {history.length > 0 ? `${history.length} recorded` : "No games yet"}
-            </span>
+            <span className="nav-btn-sub">{history.length > 0 ? `${history.length} recorded` : "No games yet"}</span>
           </button>
+
           <button className="nav-btn" onClick={() => setView("settings")}>
             <span className="nav-btn-title">Settings</span>
-            <span className="nav-btn-sub">Background &amp; motion</span>
+            <span className="nav-btn-sub">Account, audio &amp; display</span>
           </button>
         </nav>
       )}
 
+      {view === "auth" && <AuthScreen onDone={() => setView("home")} onBack={() => setView("home")} />}
+
       {view === "new" && (
         <div className="menu-sheet">
           <div className="sheet-head">
-            <h2>New Game</h2>
+            <h2>Local Match</h2>
             <button className="ghost-btn" onClick={() => setView("home")}>
               ← Back
             </button>
           </div>
-
-          {/* Mode — local hotseat is live; online is the planned default (roadmap). */}
-          <section className="setup-group">
-            <div className="setup-group-head">
-              <h3>Mode</h3>
-            </div>
-            <div className="segmented mode-seg">
-              <button className={mode === "local" ? "seg on" : "seg"} onClick={() => setMode("local")}>
-                Local
-              </button>
-              <button className="seg soon" disabled aria-disabled title="Coming soon">
-                Online <span className="seg-badge">Soon</span>
-              </button>
-            </div>
-            <span className="field-hint">
-              {mode === "local"
-                ? "Pass-and-play on this device — take turns at one screen. "
-                : ""}
-              Ranked online matches, friend lobbies &amp; accounts are coming next.
-            </span>
-          </section>
 
           {/* Players */}
           <section className="setup-group">
@@ -294,6 +297,8 @@ export function MainMenu() {
               ← Back
             </button>
           </div>
+
+          <AccountPanel onSignIn={() => setView("auth")} />
 
           <div className="field">
             <label>Theme</label>
@@ -443,6 +448,19 @@ export function MainMenu() {
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {online.status === "queued" && (
+        <div className="modal-overlay">
+          <div className="queue-card">
+            <div className="queue-spinner" aria-hidden />
+            <h3>Finding a ranked match…</h3>
+            <p className="field-hint">Pairing you with a similarly-rated player.</p>
+            <button className="ghost-btn" onClick={cancelQueue}>
+              Cancel
+            </button>
+          </div>
         </div>
       )}
     </div>

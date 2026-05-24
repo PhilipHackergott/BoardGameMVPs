@@ -1,0 +1,4 @@
+node_modules/
+# Runtime state (accounts, ratings, match history) — never committed.
+data/
+*.log

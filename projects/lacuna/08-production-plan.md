@@ -2,9 +2,11 @@
 
 **From a local prototype to an online, ranked, account-based product.**
 
-Status: planning artifact (no production code written yet). Drafted on the
-`lacuna/alpha-0.1` branch alongside the ship-polish work. Each phase below ends at a
-factory gate — this is a roadmap, not a licence to auto-build through the build gate.
+Status: roadmap. **Phases 0–3 (minus chat) are now BUILT** on branch `lacuna/online-mp` —
+a self-contained authoritative Node server (`server/`) with full accounts, strength-based
+Elo matchmaking, server-validated ranked matches, and the client **Find Match** (ranked) /
+**Local Match** (hotseat) flows. See `server/README.md`. Phases 4 (friends/social) and 5
+(hardening + IP clearance) remain. Each phase below still ends at a factory gate.
 
 ---
 

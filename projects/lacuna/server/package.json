@@ -1,0 +1,22 @@
+{
+  "name": "lacuna-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Lacuna authoritative online server — accounts, Elo matchmaking, and real-time matches over WebSocket. Reuses the pure game engine from ../app/src/engine.",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "test": "tsx src/test-e2e.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

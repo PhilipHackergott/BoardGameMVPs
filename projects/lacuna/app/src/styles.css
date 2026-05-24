@@ -1521,3 +1521,243 @@ button {
 .roster-empty {
   color: var(--muted);
 }
+
+/* ─── Online: account chip, auth/account forms, queue, match status ──────────── */
+.account-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: center;
+  padding: 8px 16px;
+  margin-bottom: 4px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--ink);
+  backdrop-filter: blur(4px);
+  transition: border-color 0.2s, background 0.2s;
+}
+.account-chip:hover {
+  border-color: var(--indigo-300);
+  background: rgba(49, 46, 129, 0.5);
+}
+.account-chip-rank {
+  font-family: "Cinzel", serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #07112e;
+  background: var(--gold);
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.account-chip-name {
+  font-weight: 700;
+}
+.account-chip-rec {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.acct-field {
+  margin-bottom: 14px;
+}
+.acct-field > label {
+  display: block;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.acct-field input {
+  width: 100%;
+  padding: 9px 12px;
+  color: var(--ink);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+.acct-field input:focus {
+  outline: none;
+  border-color: var(--indigo-400);
+}
+.acct-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.acct-row input {
+  flex: 1;
+}
+.acct-error {
+  margin: 4px 0 12px;
+  font-size: 0.82rem;
+  color: #fda4af;
+}
+.acct-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.acct-rank {
+  font-family: "Cinzel", serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #07112e;
+  background: linear-gradient(135deg, var(--gold), #f59e0b);
+  border-radius: 12px;
+  padding: 8px 14px;
+  min-width: 64px;
+  text-align: center;
+}
+.acct-handle {
+  font-family: "Cinzel", serif;
+  font-size: 1.1rem;
+  color: var(--indigo-200);
+}
+
+/* Matchmaking queue overlay */
+.queue-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  padding: 32px 40px;
+  border-radius: 18px;
+  background: #0f172a;
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+}
+.queue-card h3 {
+  margin: 0;
+  font-family: "Cinzel", serif;
+  color: var(--indigo-200);
+}
+.queue-spinner {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid rgba(129, 140, 248, 0.25);
+  border-top-color: var(--indigo-300);
+  animation: queue-spin 0.9s linear infinite;
+}
+@keyframes queue-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ranked status strip + result during an online match */
+.online-strip {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 30px rgba(2, 6, 23, 0.5);
+  backdrop-filter: blur(6px);
+  font-size: 0.82rem;
+}
+.online-tag {
+  font-family: "Cinzel", serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: #07112e;
+  background: var(--gold);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.online-vs {
+  color: #cbd5e1;
+}
+.online-vs em {
+  color: var(--muted);
+  font-style: normal;
+}
+.online-turn {
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.online-turn.you {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.18);
+}
+.online-turn.them {
+  color: #cbd5e1;
+  background: rgba(148, 163, 184, 0.15);
+}
+.online-resign {
+  padding: 4px 10px;
+  font-size: 0.74rem;
+}
+.online-disconnect {
+  position: fixed;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 40;
+  padding: 6px 14px;
+  border-radius: 10px;
+  background: rgba(76, 5, 25, 0.5);
+  border: 1px solid rgba(136, 19, 55, 0.5);
+  color: #fecaca;
+  font-size: 0.8rem;
+}
+.online-result {
+  min-width: 300px;
+}
+.online-result-title {
+  font-family: "Cinzel", serif;
+  font-size: 2.4rem;
+  margin: 0 0 6px;
+  letter-spacing: 0.06em;
+}
+.online-result-title.win {
+  color: #86efac;
+  text-shadow: 0 0 28px rgba(34, 197, 94, 0.6);
+}
+.online-result-title.loss {
+  color: #fda4af;
+}
+.online-result-title.draw {
+  color: var(--indigo-200);
+}
+.online-result-reason {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.online-elo {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.online-elo-delta {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.online-elo-delta.up {
+  color: #86efac;
+}
+.online-elo-delta.down {
+  color: #fda4af;
+}
+.online-elo-new {
+  font-family: "Cinzel", serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-text);
+}

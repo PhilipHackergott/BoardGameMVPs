@@ -26,9 +26,11 @@ import { LogModal } from "./LogModal";
 import { Footer } from "./Footer";
 import { FlyLayer } from "./FlyLayer";
 import { VictoryOverlay } from "./VictoryOverlay";
+import { OnlineOverlay } from "./OnlineOverlay";
 
 export function App() {
   const screen = useGame((s) => s.screen);
+  const netMode = useGame((s) => s.netMode);
   const game = useGame((s) => s.game);
   const clocks = useGame((s) => s.clocks);
   const config = useGame((s) => s.config);
@@ -45,6 +47,7 @@ export function App() {
   // at a time through whichever phase/sub-phase is active, with a short delay.
   useEffect(() => {
     const s = useGame.getState();
+    if (s.netMode === "online") return; // online: both seats are humans, server is authoritative
     if (s.paused) return; // all-AI match paused for analysis — don't step the AI
     let diff = null as null | "low" | "medium" | "hard";
     if (s.screen === "draft" && s.draft) diff = s.config.ai[s.draft.order[s.draft.turn]] ?? null;
@@ -114,14 +117,15 @@ export function App() {
     return () => clearInterval(id);
   }, [game, revealAuto]);
 
-  // Record a finished game to the scoreboard (guarded against double-recording).
+  // Record a finished game to the LOCAL scoreboard (online results live on the server).
   useEffect(() => {
-    if (game && game.phase === "ended") useGame.getState().recordRun();
+    if (game && game.phase === "ended" && useGame.getState().netMode === "local") useGame.getState().recordRun();
   }, [game]);
 
-  // Chess-clock ticker: burns the active player's time while in play.
+  // Chess-clock ticker: burns the active player's time while in play. Online matches are
+  // timed authoritatively by the server (clocks arrive over the wire), so skip the local tick.
   useEffect(() => {
-    if (screen !== "game") return;
+    if (screen !== "game" || useGame.getState().netMode === "online") return;
     let last = performance.now();
     const id = setInterval(() => {
       const now = performance.now();
@@ -135,6 +139,7 @@ export function App() {
   // When the active player's clock reaches zero, auto-pass their turn (forfeit).
   useEffect(() => {
     if (screen !== "game" || !game || game.phase !== "play") return;
+    if (useGame.getState().netMode === "online") return; // server enforces online timeouts
     if (config.clockSeconds > 0 && (clocks[game.current] ?? 1) <= 0) {
       useGame.getState().passTurn();
     }
@@ -202,7 +207,8 @@ export function App() {
       <Footer />
 
       <FlyLayer />
-      <VictoryOverlay />
+      {netMode === "local" && <VictoryOverlay />}
+      <OnlineOverlay />
       {rulesOpen && <RulesModal onClose={() => setRulesOpen(false)} />}
       {logOpen && <LogModal onClose={() => setLogOpen(false)} />}
     </div>
