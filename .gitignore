@@ -1,0 +1,55 @@
+# ─── BoardGameMVPs factory .gitignore ───────────────────────────────────────
+# The factory is one repo; every project folder is tracked. Source is committed;
+# dependencies, build output, and regenerable RL artifacts are not.
+
+# Dependencies (every project has its own app/node_modules)
+node_modules/
+.pnp
+.pnp.js
+
+# Build / bundler output
+dist/
+build/
+out/
+.vite/
+.cache/
+*.tsbuildinfo
+
+# Test & coverage
+coverage/
+.nyc_output/
+
+# Reinforcement-learning runtime artifacts — large and regenerated on demand.
+# (Lacuna's RL trainer spawns a throwaway Chrome profile and writes checkpoints.)
+.rl-chrome/
+**/rl-runs/
+**/rl-checkpoints/
+**/checkpoints/
+*.weights.bin
+*.ckpt
+*.onnx
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment / secrets — never commit these
+.env
+.env.*
+!.env.example
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.idea/
+*.swp
+*~
+
+# Factory runtime lock (a drainer/operator holds this transiently)
+registry/queue.lock

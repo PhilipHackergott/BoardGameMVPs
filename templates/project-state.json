@@ -1,0 +1,30 @@
+{
+  "slug": "{{SLUG}}",
+  "title": "{{TITLE}}",
+  "created": "{{DATE}}",
+  "updated": "{{DATE}}",
+  "stage": "discovery",
+  "status": "in-progress",
+  "source": "manual-seed",
+  "targets": ["web", "desktop", "mobile"],
+  "stack": "react-ts-pixi",
+  "ip": { "status": "unknown", "decision": null, "decided_by": null, "date": null, "notes": "" },
+  "gates": {
+    "discovery":     { "approved": false, "date": null, "notes": "" },
+    "analysis":      { "approved": false, "date": null, "notes": "" },
+    "specification": { "approved": false, "date": null, "notes": "" },
+    "build":         { "approved": false, "date": null, "notes": "" },
+    "test":          { "approved": false, "date": null, "notes": "" }
+  },
+  "artifacts": {
+    "candidate_brief": null,
+    "market_analysis": null,
+    "mvp_spec": null,
+    "build_plan": null,
+    "playtest_report": null,
+    "retrospective": null
+  },
+  "history": [
+    { "ts": "{{DATE}}", "event": "created", "by": "new-project" }
+  ]
+}

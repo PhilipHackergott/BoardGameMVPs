@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lacuna RL — WebGPU Trainer</title>
+    <style>
+      body { font-family: system-ui, sans-serif; margin: 18px; background: #0d1117; color: #c9d1d9; }
+      h2 { margin: 0 0 4px; }
+      .sub { color: #8b949e; font-size: 13px; margin-bottom: 12px; }
+      button { margin: 2px 6px 2px 0; padding: 8px 14px; border: 1px solid #30363d; background: #21262d; color: #c9d1d9; border-radius: 6px; cursor: pointer; }
+      button:hover { background: #30363d; }
+      #status { margin-left: 10px; color: #58a6ff; }
+      #log { white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 12px; background: #161b22; padding: 12px; border-radius: 8px; max-height: 72vh; overflow: auto; border: 1px solid #30363d; }
+      .elo { color: #7ee787; }
+      .err { color: #ff7b72; }
+    </style>
+  </head>
+  <body>
+    <h2>Lacuna RL — WebGPU self-play trainer</h2>
+    <div class="sub">
+      Trains on your GPU via tfjs-webgpu. Keep this tab open. Tune via URL, e.g.
+      <code>?concurrent=256&amp;sims=48&amp;hidden=512&amp;layers=3</code>. Reports are 1-ply value-greedy
+      (a lower bound on true MCTS strength). Download the checkpoint and rate it precisely with <code>npm run arena</code>.
+    </div>
+    <div>
+      <button id="start">▶ Start</button>
+      <button id="stop">⏸ Stop</button>
+      <button id="dl">⬇ Download best checkpoint</button>
+      <span id="status">idle</span>
+    </div>
+    <div id="log"></div>
+    <script type="module" src="/src/rl-web/trainer.ts"></script>
+  </body>
+</html>

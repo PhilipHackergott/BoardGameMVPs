@@ -1,0 +1,38 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:boardgamegeek.com)",
+      "Bash(npm --version)",
+      "Bash(npm config *)",
+      "PowerShell($ErrorActionPreference='SilentlyContinue'; \\(Get-Command node\\).Source; node --version; npm --version; \\(Get-Command npm\\).Source)",
+      "PowerShell(winget install OpenJS.NodeJS.LTS --silent --accept-source-agreements --accept-package-agreements --disable-interactivity)",
+      "PowerShell(winget install Gyan.FFmpeg --silent --accept-source-agreements --accept-package-agreements --disable-interactivity 2>&1)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx tsc --noEmit; if \\($?\\) { \"TSC_OK\" })",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 25)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm run build 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx playwright test 2>&1 | Select-Object -Last 40)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx playwright test playtest 2>&1 | Select-Object -Last 30)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx playwright test playtest 2>&1 | Select-Object -Last 25)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 12; \"===BUILD===\"; npm run build 2>&1 | Select-Object -Last 6)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm run build 2>&1 | Select-Object -Last 8)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx playwright test 2>&1 | Select-Object -Last 20)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm run build 2>&1 | Select-Object -Last 5; \"===TEST===\"; npm test 2>&1 | Select-Object -Last 6)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx playwright test 2>&1 | Select-Object -Last 15)",
+      "WebFetch(domain:boardgamematcher.com)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx tsc --noEmit; if \\($?\\) { \"TSC_OK\" } else { \"TSC_FAIL\" })",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 8; \"===BUILD===\"; npm run build 2>&1 | Select-Object -Last 4)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 16)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx tsc --noEmit 2>&1 | Select-Object -First 40; if \\($?\\) { \"TSC_OK\" })",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx tsc --noEmit 2>&1 | Select-Object -First 30; if \\($?\\) { \"TSC_OK\" })",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 5; \"===BUILD===\"; npm run build 2>&1 | Select-Object -Last 3)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 14)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npm test 2>&1 | Select-Object -Last 8)",
+      "PowerShell($env:Path = [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"Machine\"\\) + \";\" + [System.Environment]::GetEnvironmentVariable\\(\"Path\",\"User\"\\); Set-Location \"c:\\\\Users\\\\phili\\\\Documents\\\\BoardGameMVPs\\\\projects\\\\lacuna\\\\app\"; npx vitest run powers 2>&1 | Select-Object -Last 30)",
+      "WebFetch(domain:www.ultraboardgames.com)",
+      "WebFetch(domain:rules.dized.com)",
+      "WebFetch(domain:images-cdn.fantasyflightgames.com)",
+      "WebFetch(domain:www.warofthering.eu)"
+    ]
+  }
+}

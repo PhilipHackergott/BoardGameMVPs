@@ -1,0 +1,41 @@
+{
+  "slug": "compile",
+  "title": "Compile",
+  "created": "2026-05-21",
+  "updated": "2026-05-21",
+  "stage": "build",
+  "status": "awaiting-approval",
+  "source": "user-rulebook",
+  "targets": ["web", "desktop", "mobile"],
+  "stack": "react-ts-canvas",
+  "ip": {
+    "status": "risky",
+    "decision": "Proceed as an internal, user-directed prototype using the real title and protocol names. Faithful 1:1 adaptation requested by the user; higher exposure than a mechanics-only reskin. Any public/commercial release requires a licensing decision before shipping.",
+    "decided_by": "human",
+    "date": "2026-05-21",
+    "notes": "Compile (c) 2024 Flat River Group, LLC; designer Michael Yang. Card art/branding NOT used; original neon UI. Card *effect texts* are placeholders until the user supplies the published data."
+  },
+  "gates": {
+    "discovery":     { "approved": true,  "date": "2026-05-21", "notes": "Skipped at user direction ('the game is quite simple'). Seeded directly at build from the user's rulebook PDF." },
+    "analysis":      { "approved": true,  "date": "2026-05-21", "notes": "Skipped at user direction. IP recorded as risky (real title/names, user-directed personal prototype)." },
+    "specification": { "approved": true,  "date": "2026-05-21", "notes": "Skipped at user direction ('skip the spec phase and just implement 1:1 as hot seat multiplayer'). One scoping decision taken: card data sourced via 'user will provide' -> build against a documented schema with placeholder cards." },
+    "build":         { "approved": false, "date": null, "notes": "Awaiting human gate: good enough to playtest?" },
+    "test":          { "approved": false, "date": null, "notes": "" }
+  },
+  "artifacts": {
+    "candidate_brief": null,
+    "market_analysis": null,
+    "mvp_spec": null,
+    "build_plan": null,
+    "playtest_report": null,
+    "retrospective": null,
+    "rulebook_extracted": "rulebook-extracted.txt"
+  },
+  "history": [
+    { "ts": "2026-05-21", "event": "created inline at user request; discovery/analysis/spec skipped per directive (implement 1:1, hot-seat + Easy/Medium/Hard AI, futuristic neon-arcade look modeled on cull-the-crown)", "by": "operator" },
+    { "ts": "2026-05-21", "event": "scoping decision: rulebook PDF has no card texts; user chose 'I'll provide data' -> engine/UI/draft/AI built against a documented CardDef schema with clearly-flagged placeholder cards (12 protocols x 6, values 0-5, themed to rulebook verb summaries)", "by": "operator" },
+    { "ts": "2026-05-21", "event": "build complete: pure engine (draft 1-2-2-1, lines/values, face-down=2, full turn order Start->Control->Compile->Action->Cache->End, control component + rearrange, compile/recompile-steal, refresh, clear-cache, win, LIFO effect stack w/ uncover triggers), generator-based effect runtime, 3 AI tiers (random / 1-ply search / sharper eval). Neon-arcade UI: synthwave canvas backdrop + CRT scanlines + particle bursts, React/Zustand board (hot-seat + vs AI), draft screen, choice prompts. 17 Vitest tests pass incl. 9 AI-vs-AI full games (all tier matchups) + 20 medium-vs-medium games, all terminating with valid winners. tsc clean; vite build clean; dev server boots. DEFERRED: real card texts (user to supply -> edit app/src/engine/cards.ts only); owner-decides sub-choices simplified to active-player; rearrange is rotate/skip; no desktop/mobile wrap; visual feel needs human eyes. Awaiting build gate.", "by": "operator" },
+    { "ts": "2026-05-21", "event": "revision (user feedback: 'rules not fully implemented; AI moves instant/illegible — add animation'). (1) RULES AUDIT + harder tests: added tests/rules.test.ts — card-conservation invariant (exactly 36 cards across both sides, asserted after EVERY turn over a full game + 12 mixed-tier games), forced-compile-skips-action, recompile-steal ownership flip, control seize/transfer + single-line non-grant, cache cap. All pass -> rules SYSTEM verified sound (no card loss/dup; compile/control/cache correct). Confirmed the only non-1:1 piece remains placeholder card EFFECT text (awaiting user data). 24 tests total pass. (2) RESPONSIVENESS: draft now paces AI picks one at a time (~700ms) with a pick-flash + filled-slot pop + 'drafting' highlight (was instant); Engine.aiDraftStep() added so the UI drives picks (autoDraft kept for headless/tests). AI game turns get a 'COMPUTING' state + a persistent move banner announcing the AI's action (parsed from the log), held until the human acts. Added card entrance animations (field + hand), draft animations, blink/banner CSS. tsc clean; vite build clean; boots. Awaiting build gate.", "by": "operator" },
+    { "ts": "2026-05-22", "event": "feature (user request): added a CARD CODEX overlay (browse all 12 protocols x 6 cards, filter by protocol or ALL, full command text + placeholder flags) and a paged TUTORIAL overlay (8 steps: goal, field/lines, face-up vs face-down, the 6-step turn order, card commands, compiling/recompile, control + rearrange, ready). Both reachable from the menu, an in-board HELP/CODEX tool row, and the end screen via a store `overlay` route. New components in ui/App.tsx + CSS; engine untouched. tsc clean; 24 tests still pass; vite build clean; boots. Awaiting build gate.", "by": "operator" }
+  ]
+}

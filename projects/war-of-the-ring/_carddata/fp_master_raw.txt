@@ -1,0 +1,327 @@
+Theses are the "Master Cards" which were provided to everybody for translations.
+If you have difficulties interpreting some of your FP Event Cards or Battle Effects please
+consult this document to solve the issue. If you still have questions you can post them on the
+message board on the playtester's web site, located at:
+http://www.warofthering.webb.se
+
+(CHARACTER)                                 (CHARACTER)                                 (CHARACTER)
+Elven Cloak                                 Elven Rope                                  Phial of Galadriel
+
+Put "Elven Cloaks" Special Hunt Tile        Put "Elven Rope" Special Hunt Tile in       Put "Phial of Galadriel" Special Hunt
+in play.                                    play.                                       Tile in play.
+
+BATTLE:                                      BATTLE:                                    BATTLE:
+It is a gift                                 It is a gift                               It is a gift
+Play if the defending Army is in the         Play if the defending Army is in the       Play if the defending Army is in the
+same Region as the Fellowship.               same Region as the Fellowship.             same Region as the Fellowship.
+Add +1 to your Combat and Leader Reroll.     Add +1 to your Combat and Leader Reroll.   Add +1 to your Combat and Leader Reroll
+
+(CHARACTER)                                  (CHARACTER)                                (CHARACTER)
+Sméagol Helps Nice Master                    Mithril Coat and Sting                     Wizard's Staff
+
+Put "Sméagol Helps Nice Master"             Play on the table.                          Play on the table if Gandalf the Grey
+Special Hunt Tile in play.                                                              is in the Fellowship.
+                                             In case of a successful Hunt, discard
+                                             "Mithril Coat and Sting" to replace        In case of a successful Hunt, discard
+                                             the Hunt tile just drawn with another      "Wizard's Staff" instead of drawing a
+                                             one. Apply the effects of the second       Hunt tile.
+                                             tile, and put the first tile back in the
+                                             Hunt pool.                                 Discard immediately if Gandalf the
+                                                                                        Grey leaves the Fellowship.
+
+ BATTLE:                                    BATTLE:                                     BATTLE:
+ It is a gift                               Blade of Westernesse                        Servant of the Secret Fire
+ Play if the defending Army is in the       Play if a Hobbit is in the Battle.          Play if Gandalf is in the Battle.
+ same Region as the Fellowship.             Use one hit in the Leader Reroll to         Add +1 to your Combat Roll.
+ Add +1 to your Combat and Leader Reroll.   eliminate one Minion of your choice.
+                                                                                        (CHARACTER)
+ (CHARACTER)                                (CHARACTER)                                 Bilbo's Song
+ Axe and Bow                                Horn of Gondor                              Heal one Corruption point.
+                                                                                        If Gollum is the Guide, heal two
+ Play on the table if Gimli or Legolas      Play on the table if Boromir is in the      Corruption points instead.
+ are in the Fellowship.                     Fellowship.
+                                                                                        BATTLE:
+ In case of a successful Hunt, discard      In case of a successful Hunt, discard       Fateful Strike
+ "Axe and Bow" to reduce the Hunt           "Horn of Gondor" to reduce the Hunt         If you score one hit with your Leader
+ damage by one. Any remaining Hunt          damage by one. Any remaining Hunt           Reroll, additionally eliminate one Nazgûl.
+ damage must be confronted normally.        damage must be confronted normally.         If you score two or more hits, you can
+                                                                                        eliminate a Minion instead.
+ Discard immediately if both                Discard immediately if Boromir leaves
+                                            the Fellowship,
+ Companions leave the Fellowship.
+                                            BATTLE:
+ BATTLE:                                    Mighty Attack
+Mighty Attack                               Forfeit the Leadership of one Companion to
+Forfeit the Leadership of one Companion to  score one automatic hit.
+score one automatic hit.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(CHARACTER)                                (CHARACTER)                                 (ARMY)
+Athelas                                    Gwahir the Windlord                         To the Last Battle
+                                                                                       Play on the table if Aragorn or
+Roll three dice and heal one               Move or separate one Companion or           Gandalf the White is with a Free
+Corruption point for every die result      one group of Companions from the            Peoples Army in South or North
+of 5+.                                     Fellowship as if their Level was 4.         Ithilien, Dagorlad, or in any Region
+                                                                                       in Mordor.
+If Strider is the Guide, heal one          This movement can end in a
+Corruption point for each result of 3+     Stronghold under siege.                     The Action Dice used to move the
+instead.                                                                               Fellowship are not added to the Hunt
+                                           BATTLE:                                     box.
+BATTLE:                                    Daring Defiance.
+Andúril                                    Play if a Companion is in the Battle.       Discard "To the Last Battle" as soon
+Forfeit Strider's Leadership to score one  Forfeit your total Companions' Leadership   as there is not a Free Peoples Army in
+automatic hit, or forfeit Aragorn's        to cancel the Combat Card played by the     the Regions listed above.
+Leadership to score two automatic hits.    Shadow player.
+                                                                                       BATTLE:
+(CHARACTER)                                (CHARACTER)                                 Daylight
+House of the Stewards                      Dead Men of Dunharrow                       The Shadow player rolls a maximum of
+                                                                                       three Combat dice.
+Play if Boromir is in a Gondor             Play if Strider/Aragorn is in any
+Region.                                    Rohan Region.                               (CHARACTER)
+                                           Move him (and optionally one group of       Challenge of the King
+Recruit one Gondor unit (Regular or        Companions in the same Region) to           Play if Strider/Aragorn is with a
+Elite) in the Region with Boromir.         Erech, Lamedon or Pelargir. If the          Free Peoples Army in Gondor or
+                                           chosen Region is occupied by a              Rohan.
+Draw two Strategy cards.                   Shadow Army, that Army takes a              Draw three Hunt tiles and discard all
+                                           number of hits equal to the roll of a       tiles bearing an Eye. However, if all
+BATTLE:                                    die and must then retreat. Recruit up       three drawn tiles show Eyes, put
+Brave Stand.                               to three Gondor Regular units in the        them back in the Hunt pool and
+Play if a Companion is in the Battle.      chosen Region.                              eliminate Strider/Aragorn.
+The Shadow player rolls one Combat die     BATTLE:
+less for every Companion present (to a     Sudden Strike.                              Put back in the Hunt pool all tiles not
+minimum of one).                           Before the Combat Roll, roll an additional  bearing an Eye.
+                                           attack using a number of dice equal to
+(CHARACTER)                                your Leadership (up to 5) and apply         BATTLE:
+The Grey Company                           immediately the result.                     Sudden Strike
+                                                                                       Before the Combat Roll, roll an additional
+Play if Strider/Aragorn is with a          (CHARACTER)                                 attack using a number of dice equal to your
+Free Peoples Army.                         I Will Go Alone                             Leadership (up to 5) and apply the result
+                                                                                       immediately.
+Recruit one Elite unit and eliminate       Separate one Companion or a group of
+one Regular unit, of the same Nation,      Companions as if their Level was +1 to      (CHARACTER)
+in the Army.                               heal one Corruption point.                  Ents Awake: Treebeard
+
+Draw two Strategy cards.                   BATTLE:                                     Play if Saruman is in play and
+                                           Daring Defiance                             Gandalf the White is in a Rohan
+BATTLE:                                    Play if a Companion is in the Battle.       Region or in Fangorn.
+Brave Stand.                               Forfeit your total Companions' Leadership
+Play if a Companion is in the Battle.      to cancel the Combat Card played by the     Attack a Shadow Army in Orthanc. Roll
+The Shadow player rolls one Combat die     Shadow player.                              three dice and score hits on results of
+less for every Companion present (to a                                                 4+. If no Shadow units remain in
+minimum of one).                                                                       Orthanc, eliminate Saruman.
+
+                                                                                       If a Companion is in Fangorn, you may
+                                                                                       play another Character Event card.
+
+                                                                                       BATTLE:
+                                                                                       Ents Rage.
+                                                                                       Play if the defending Army is in a
+                                                                                       Rohan Region, Fangorn or Orthanc.
+                                                                                       Add +2 to your Combat roll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(CHARACTER)                               (CHARACTER)                                  (CHARACTER)
+Ents Awake: Entmoot                       Ents Awake: Huorns                           Mirror of Galadriel
+Play if Saruman is in play and            Play if Saruman is in play and               Turn any one unused Character Action
+Gandalf the White is in a Rohan           Gandalf the White is in a Rohan              Die result into a Will of the West
+Region or in Fangorn.                     Region or in Fangorn.                        Action Die result.
+
+Attack a Shadow Army in Orthanc. Roll     Attack a Shadow Army in Orthanc. Roll        If the Fellowship is in Lorien, heal one
+three dice and score hits on results of   three dice and score hits on results of      Corruption point.
+4+. If no Shadow units remain in          4+. If no Shadow units remain in
+Orthanc, eliminate Saruman.               Orthanc, eliminate Saruman.                  BATTLE:
+                                                                                       Heroic Death
+If a Companion is in Fangorn, you may     If a Companion is in Fangorn, you may        Before you remove casualties, eliminate a
+play another Character Event card.        play another Character Event card.           Leader to cancel one hit, or eliminate a
+BATTLE:                                                                                Companion to cancel a number of hits up to
+Nameless Wood.                            BATTLE:                                      the Companion's Level.
+Play if the defending Army is in a        Huorn-dark.
+Rohan Region, Fangorn or Orthanc.         Play if the defending Army is in a           (CHARACTER)
+If you score at least one hit during the  Rohan Region, Fangorn or Orthanc.            A Safe Hiding Place
+current Combat round, score two           The Shadow player rolls a maximum of
+additional hits.                          two Combat dice.                             Heal one Corruption point.
+                                                                                       If Gollum is the Guide, hide or move
+(CHARACTER)                               (CHARACTER)                                  the Fellowship.
+There and Back Again                      We Prove the Swifter
+                                                                                       BATTLE:
+Separate one Companion or group of        Move or separate one Companion or            Heroic Death
+Companions from the Fellowship as if      one group of Companions as if their          Before you remove casualties, eliminate a
+their Level was +1.                       Level was +2.                                Leader to cancel one hit, or eliminate a
+                                                                                       Companion to cancel a number of hits up
+If Gimli or Legolas are in Dale, Erebor   This movement can end in a                   to the Companion's Level.
+or Woodland Realm, activate the           Stronghold under siege.
+Dwarves and The North and advance                                                      (MUSTER)
+the Dwarves, Elves and The North one      BATTLE:                                      Grimbeorn the Old, son of Beorn
+step each on the Political Track.         Daring Defiance.                             Recruit one North unit (Regular or
+                                          Play if a Companion is in the Battle.        Elite) and one North Leader in
+BATTLE:                                   Forfeit your total Companions' Leadership    Carrock.
+Brave Stand                               to cancel the Combat Card played by the
+Play if a Companion is in the Battle.     Shadow player.
+The Shadow player rolls one Combat die
+less for every Companion present (to a    (MUSTER)
+minimum of one).                          Dain Ironfoot's Guard
+
+(MUSTER)                                  Recruit one Dwarven unit (Regular or
+Imrahil of Dol Amroth                     Elite) and one Dwarven Leader in
+                                          Erebor.
+Recruit one Gondor unit (Regular or
+Elite) and one Gondor Leader in Dol
+Amroth.
+
+BATTLE:                                   BATTLE:                                      BATTLE:
+Shield-wall.                              Valour.                                      Scouts.
+Before you remove casualties, if your     Play if a Free Peoples Elite unit is in the  Before the Combat Roll, retreat your
+opponent scored two or more hits, cancel  Battle.                                      Army.
+one hit.                                  Add +1 to your Combat Roll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(MUSTER)                                     (MUSTER)                                  (MUSTER)
+Thranduil's Archers                          King Brand's Men                          Fire! Fear! Foes!
+
+Recruit one Elven unit (Regular or           Recruit two North Regular units in        Move all Companions on the map.
+Elite) in Woodland Realm.                    Dale.                                     If a Companion is in The Shire or
+                                                                                       Bree, move the North directly to the
+Draw one Strategy card.                      Draw one Strategy card.                   "At War" step, even if the North is
+                                                                                       not Active.
+
+BATTLE:                                      BATTLE:                                   BATTLE:
+Valour.                                      Shield-wall.                              Shield-wall.
+Play if a Free Peoples Elite unit is in the  Before you remove casualties, if your     Before you remove casualties, if your
+Battle.                                      opponent scored two or more hits, cancel  opponent scored two or more hits, cancel
+Add +1 to your Combat Roll.                  one hit.                                  one hit.
+
+(MUSTER)                                     (MUSTER)                                  (ARMY)
+Éomer, son of Éomund                         Riders of Théoden                         Faramir's Rangers
+
+Recruit one Rohan unit (Regular or           Recruit one Rohan unit (Regular or        Attack a Shadow Army in Osgiliath or
+Elite) and one Rohan Leader in a free        Elite) and one Leader in Edoras or in a   South Ithilien or North Ithilien. Roll
+Rohan settlement.                            Rohan Region containing a                 three dice and score hits on results of
+                                             Companion.                                5+.
+
+                                                                                       If there is a Free Peoples Army in
+                                                                                       Osgiliath, recruit one Gondor unit
+                                                                                       (Regular or Elite) and one Gondor
+                                                                                       Leader there.
+
+BATTLE:                                      BATTLE:                                   BATTLE:
+Valour.                                      Daylight.                                 Shield-wall.
+Play if a Free Peoples Elite unit is in the  The Shadow player rolls a maximum of      Before you remove casualties, if your
+Battle.                                      three Combat dice.                        opponent scored two or more hits, cancel
+Add +1 to your Combat Roll.                                                            one hit.
+                                             (MUSTER)
+(MUSTER)                                     Celeborn's Galadhrim                      (MUSTER)
+Book of Mazarbul                                                                       Guards of the Citadel
+                                             Recruit one Elven unit (Regular or
+Move all Companions on the map.              Elite) in Lorien.                         Recruit one Gondor unit (Regular or
+                                                                                       Elite) and one Gondor Leader in Minas
+If a Companion is in Erebor or Ered          Draw one Strategy card.                   Tirith.
+Luin, move the Dwarves directly to
+the "At War" step, even if the
+Dwarves are not Active.
+
+BATTLE:                                      BATTLE:                                   BATTLE:
+                                             Daylight.                                 Charge.
+Advantageous Position                        The Shadow player rolls a maximum of      Before the Combat Roll, roll an additional
+Play if the defending Army is inside the     three Combat dice.                        attack using only the Free Peoples Elite
+borders of a Free Peoples Nation.                                                      units and apply immediately the result.
+Subtract -1 to the Combat roll of the
+enemy army (a `6' is always a hit).
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(MUSTER)                                    (MUSTER)                                    (MUSTER)
+Wisdom of Elrond                            Cirdan's Ships                              Swords in Eriador
+
+Activate one Free Peoples Nation of         Play if the Elves are at War.               Recruit one North unit (Regular or
+your choice and advance that Nation                                                     Elite) in The Shire and one Dwarven
+one step on the Political Track.            Recruit two Elven units (Regular or         unit (Regular or Elite) in Ered Luin.
+                                            Elite) in any one coastal Region
+                                            containing a Free Peoples Army.             Draw one Strategy card.
+
+BATTLE:                                     BATTLE:                                     BATTLE:
+Confusion.                                  Charge.                                     Advantageous Position.
+Every die result of `1' in the Shadow       Before the Combat Roll, roll an additional  Play if the defending Army is inside the
+Combat Roll scores one hit against the      attack using only the Free Peoples Elite    borders of a Free Peoples Nation.
+Shadow Army                                 units and apply immediately the result.     Subtract -1 to the Combat roll of the enemy
+                                                                                        army (a `6' is always a hit).
+(MUSTER)                                    (ARMY)
+The Red Arrow                               Help Unlooked For                           (MUSTER)
+                                                                                        Kindred of Glorfindel
+Play if Gondor is active.                   Attack a Shadow Army besieging a            Recruit one Elven unit (Regular or
+                                            Free Peoples Stronghold with an Army        Elite) in Rivendell.
+Advance Rohan one step on the               in an adjacent region.                      Draw one Strategy card.
+Political Track.Recruit one Rohan unit
+(Regular or Elite) and one Rohan            For the entire battle, the Shadow           BATTLE:
+Leader in Edoras.                           player rolls one Combat die less for        Advantageous Position.
+                                            each Free Peoples unit in the               Play if the defending Army is inside the
+BATTLE:                                     besieged Stronghold (to a minimum of        borders of a Free Peoples Nation.
+Scouts.                                     one).                                       Subtract -1 to the Combat roll of the
+Before the Combat Roll, retreat your                                                    enemy army (a `6' is always a hit).
+Army.                                       BATTLE:
+                                            No Quarter.                                 (ARMY)
+(ARMY)                                      If you score at least one hit during the    Through a Day and a Night
+Paths of the Woses                          current Combat round, score one             Play on a Free Peoples Army
+                                            additional hit.                             containing a Companion.
+Play if in Minas Tirith there is a                                                      Move a Free Peoples Army containing
+Free Peoples Army and Rohan is at           (CHARACTER)                                 a Companion up to two Regions.
+War.                                        The Eagles are Coming!
+                                                                                        BATTLE:
+Move an Army from any one Rohan             Play if a Free Peoples Army                 Confusion.
+Region directly to Minas Tirith.            containing a Companion is adjacent          Every die result of `1' in the Shadow
+                                            to, or is in the same Region as, a          Combat Roll scores one hit against the
+If Minas Tirith is under siege, move        Shadow Army containing Nazgûl.              Shadow Army.
+the Army to a free Region adjacent to       Roll a die for every Nazgûl present (up
+Minas Tirith.                               to a maximum of five dice): eliminate
+                                            a Nazgûl on a roll of 5+.
+BATTLE:                                     All remaining Nazgûl must be placed
+Sudden Strike.                              in a Sauron Stronghold. The Witch-
+Before the Combat Roll, roll an additional  King is not affected by this card.
+attack using a number of dice equal to
+your Leadership (up to 5) and apply the     BATTLE:
+result immediately.                         Heroic Death.
+                                            Before you remove casualties, eliminate a
+                                            Leader to cancel one hit, or eliminate a
+                                            Companion to cancel a number of hits up
+                                            to the Companion's Level.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(ARMY)                                 (ARMY)                                    (ARMY)
+The Spirit of Mordor                   A Power Too Great                         The Power of Tom Bombadil
+Attack a Shadow Army composed of       Play on the table.                        Play on the table.
+units of different Nations. Roll five  Shadow Armies cannot move or attack       Shadow Armies cannot move or attack
+dice and score hits on results of 5+.  Lórien, Rivendell or The Grey Havens.     into The Old Forest, The Shire, or
+                                                                                 Buckland.
+BATTLE:                                The Elves advance one step on the         The North advances one step on the
+Scouts.                                Political Track.                          Political Track.
+Before the Combat Roll, retreat your                                             To discard "The Power of Tom
+Army.                                  To discard "A Power too Great", the       Bombadil", the Shadow player(s)
+                                       Shadow player(s) must use any one         must use any one Action Die and
+                                       Action Die and discard one Army card      discard one Army card and one
+                                       and one Character Card from the           Character Card from the hand.
+                                       hand.
+                                                                                 BATTLE:
+                                       BATTLE:                                   Advantageous Position
+                                       No Quarter.                               Play if the defending Army is inside the
+                                       If you score at least one hit during the  borders of a Free Peoples Nation.
+                                       current Combat round, score one           Subtract -1 to the Combat roll of the
+                                       additional hit.                           enemy army (a `6' is always a hit).
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+

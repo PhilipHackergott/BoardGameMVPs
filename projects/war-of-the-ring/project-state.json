@@ -1,0 +1,44 @@
+{
+  "slug": "war-of-the-ring",
+  "title": "War of the Ring",
+  "created": "2026-05-22",
+  "updated": "2026-05-22",
+  "stage": "build",
+  "status": "awaiting-approval",
+  "version": null,
+  "source": "manual-seed",
+  "targets": ["web", "desktop", "mobile"],
+  "stack": "react-ts-pixi",
+  "ip": {
+    "status": "clear",
+    "decision": "Proceed using the real War of the Ring / Tolkien Middle-earth IP and naming directly. Justified ONLY by non-distribution: an unpublished personal prototype, never hosted, shared, or sold. Not a license; if ever published, IP reverts to blocked pending licensing from Ares Games and Middle-earth Enterprises.",
+    "decided_by": "human",
+    "date": "2026-05-22",
+    "notes": "Operator override of the default risky clean-room path. Real assets/lore/title permitted because non-distributed. Binding mitigation: do not distribute."
+  },
+  "gates": {
+    "discovery":     { "approved": true,  "date": "2026-05-22", "notes": "Operator-authorized seed; pursue. Strong digital-fit + demand; scope is the risk." },
+    "analysis":      { "approved": true,  "date": "2026-05-22", "notes": "Build verdict; IP recorded clear on non-distribution basis (operator decision)." },
+    "specification": { "approved": true,  "date": "2026-05-22", "notes": "Spec + build plan approved (operator authorized full M1–M5 build in one pass)." },
+    "build":         { "approved": false, "date": null, "notes": "MVP built M1–M6 in one pass: full engine + all 96 cards (real text) + 2.5D map UI. Awaiting human: good enough to playtest?" },
+    "test":          { "approved": false, "date": null, "notes": "" }
+  },
+  "artifacts": {
+    "candidate_brief": "01-candidate-brief.md",
+    "market_analysis": "02-market-analysis.md",
+    "mvp_spec": "03-mvp-spec.md",
+    "build_plan": "04-build-plan.md",
+    "app": "app/",
+    "build_notes": "app/README.md",
+    "playtest_report": null,
+    "retrospective": null
+  },
+  "history": [
+    { "ts": "2026-05-22", "event": "created", "by": "new-project" },
+    { "ts": "2026-05-22", "event": "discovery-brief-written + gate approved (operator-authorized)", "by": "operator" },
+    { "ts": "2026-05-22", "event": "analysis written; ip set clear (non-distribution); gate approved (operator-authorized)", "by": "operator" },
+    { "ts": "2026-05-22", "event": "spec + build plan written; rules numbers verified from public sources; awaiting build gate", "by": "operator" },
+    { "ts": "2026-05-22", "event": "spec revised at gate (operator feedback): all 96 event cards in MVP (placeholder policy for unsourceable text); render target 2.5D standees + RegionStack stacking UI (D9); confirmed 2p-only, AI-ready engine seam, online/expansions deferred", "by": "operator" },
+    { "ts": "2026-05-22", "event": "BUILD complete in one pass (operator-authorized M1–M6). Pure deterministic engine (6-phase loop, field+siege combat, political, fellowship+hunt+mordor, view firewall, military+ring victory) + ALL 96 event cards with REAL text sourced from warofthering.eu Master Events PDFs via pdftotext (13 scripted, 83 real-text-by-hand; nothing fabricated) + 2.5D PixiJS standee map with RegionStack readout, dice tray, tracks, FP-private panel, combat modal, blur handoff, end screen. Verified: tsc clean, 43 vitest pass, 2 playwright e2e pass (real-browser runtime + hidden-info), vite build OK. Awaiting build gate.", "by": "operator" }
+  ]
+}

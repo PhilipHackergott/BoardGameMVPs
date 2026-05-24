@@ -1,0 +1,48 @@
+{
+  "slug": "roomies",
+  "title": "Roomies",
+  "created": "2026-05-21",
+  "updated": "2026-05-21",
+  "stage": "build",
+  "status": "awaiting-approval",
+  "source": "manual-seed",
+  "targets": ["web", "desktop", "mobile"],
+  "stack": "react-ts-pixi",
+  "ip": {
+    "status": "clear",
+    "decision": "Original design by the user; no third-party IP, art, or trademark. Proceed freely.",
+    "decided_by": "user",
+    "date": "2026-05-21",
+    "notes": "Names and mechanics are the designer's own. No clean-room mitigations needed."
+  },
+  "gates": {
+    "discovery":     { "approved": true,  "date": "2026-05-21", "notes": "Waived — original design supplied by the user; brief records the design as given." },
+    "analysis":      { "approved": true,  "date": "2026-05-21", "notes": "Waived — IP clear (original work); no third-party market study performed (02-market-analysis not produced)." },
+    "specification": { "approved": true, "date": "2026-05-21", "notes": "Approved by user ('yes lets build'). Build against the ⚑ defaults; evaluate after." },
+    "build":         { "approved": true, "date": "2026-05-21", "notes": "Pre-authorized by user ('build first and then evaluate'). MVP verified runnable; proceeding to evaluate." },
+    "test":          { "approved": false, "date": null, "notes": "" }
+  },
+  "artifacts": {
+    "candidate_brief": "01-candidate-brief.md",
+    "market_analysis": null,
+    "mvp_spec": "03-mvp-spec.md",
+    "build_plan": "04-build-plan.md",
+    "app": "app/",
+    "playtest_report": "05-playtest-report.md",
+    "retrospective": "retrospective.md"
+  },
+  "history": [
+    { "ts": "2026-05-21", "event": "created", "by": "operator", "note": "Original design supplied by user; scaffolded directly." },
+    { "ts": "2026-05-21", "event": "discovery+analysis waived", "by": "operator", "note": "Original IP (clear); brief recorded, market study skipped per user fast-track." },
+    { "ts": "2026-05-21", "event": "specification authored", "by": "operator", "note": "03-mvp-spec.md + 04-build-plan.md written. Full hot-seat drafting game; flow & biome scoring designed and flagged. status -> awaiting-approval." },
+    { "ts": "2026-05-21", "event": "spec gate approved", "by": "user", "note": "'yes lets build first and then evaluate'. stage -> build, status -> in-progress." },
+    { "ts": "2026-05-21", "event": "build complete", "by": "operator", "note": "Vite+React+TS app in app/. Pure engine (cards/scoring/rules) + React-DOM UI (justified Pixi deviation: card game, no canvas). Verified: tsc clean, 54 Vitest tests pass (synergies, rules, full-game simulation, deterministic replay), vite build OK, Playwright happy-path plays a full game to a result. status -> awaiting-approval (build gate). Built against ⚑ defaults. Finding: Dekoration is a no-op (no animal can score <0 with given numbers)." },
+    { "ts": "2026-05-21", "event": "build gate crossed (pre-authorized)", "by": "user", "note": "'build first and then evaluate'. stage -> test." },
+    { "ts": "2026-05-21", "event": "playtest round 1 complete", "by": "operator", "note": "05-playtest-report.md. Verdict: PASS on correctness & playability (all 17 acceptance criteria met; no blocker/major defects; engine proven by 54 tests + simulation + e2e + visual playtest with 6 screenshots in playtest/round-1/). Open design confirmations: F1 Dekoration no-op, F2 deck 94 vs 96, F3 biome values placeholder. status -> awaiting-approval (test/ship gate)." },
+    { "ts": "2026-05-22", "event": "iterate round 2 started", "by": "user", "note": "Feedback: (1) restructure into a real two-phase round DRAFT (pick-and-pass, Dalai/Marty fire here) then PLACE (arrange drafted cards) — the round-1 build collapsed draft into instant placement, so there was no visible draft phase; (2) hot-seat only but add pacing/animations so turns are watchable (no AI); (3) major visual upgrade modeled on lacuna/cull-the-crown (animated backdrop, fly-layer card animations, glass panels, custom fonts), cozy animal-home theme. stage -> build, status -> in-progress (revision)." },
+    { "ts": "2026-05-22", "event": "build round 2 complete", "by": "operator", "note": "Engine re-architected to two-phase rounds (DRAFT pick-and-pass into pool + intercepts on pick; PLACE arranges pool into rooms). UI fully rebuilt: Draft/Place screens, pass-the-device, FlyLayer card-flight animations, phase banners, animated backdrop, emoji card art, confetti end screen, Fredoka/Nunito fonts, cozy warm theme. Verified: tsc clean, 54 Vitest pass (rules+simulation rewritten for two phases), vite build OK, Playwright e2e plays full two-phase game, 6 screenshots in playtest/round-2/. Scoring engine unchanged. status -> awaiting-approval (build gate). New feel item: unplaced drafted cards discarded each round (no carry-over)." },
+    { "ts": "2026-05-22", "event": "interim /learn", "by": "operator", "note": "Mid-build learning cycle (NOT shipped — still at build gate). Wrote retrospective.md and distilled lessons into knowledge/: engine.md (two-phase round + pool; defer pick-and-pass hand swaps to boundary), build-gotchas.md (CSS animations break Playwright stability → addStyleTag animation:none; DOM card-flight via WAAPI), presentation-fx.md (DOM-only juice recipe), playbooks/spec.md (card keyword-tags reveal flow; ⚑ decision table; dead-rule detection), playbooks/playtest.md (a data-named phase must be a visible phase; e2e rot under reworks), visual-first-try.md + index.md (Roomies as the DOM-only card-game reference)." },
+    { "ts": "2026-05-22", "event": "sheep colours + slight differences (⚑ D16)", "by": "operator", "note": "Designer confirmed Croco/Mungo split (kept 3+3) and that sheep colours are cosmetic but invited slight mechanical differences. Split Sheeps(6) into White/Brown/Black (2 each). White: -1 w/o Security; Brown: no Security penalty (hardy); Black: herds at >=2 not >=3 (clannish), still wants a guard. Parameterized via herdThreshold/needsSecurity on AnimalDef. 73 Vitest pass (6 new sheep-colour tests), lint clean, build OK, 2 e2e pass. Still at build gate. Confirm the twists." },
+    { "ts": "2026-05-22", "event": "build round 3 complete", "by": "operator", "note": "Modes & AI + card identities. Added: main menu, setup screen (2-4 players, per-seat Human/AI Easy·Med·Hard), settings (AI speed, reduce-motion); AI opponents (src/ai/ai.ts) as pure choosers for draft+place+Marty, driven with paced animated turns; solo-vs-AI, all-AI watch (PvP/balance testing), hot-seat now one config. Card fixes: split Croco/Mungo into 2 cards (Mungo gorilla); Hossi/Mikel/Hippo all hippos (size-differentiated); Rocky husky; sheep white/brown/black (cosmetic tint). Verified: tsc clean, 67 Vitest pass (incl. ai.test: all-AI games terminate legally across difficulties + Hard>=Easy sanity), build OK, 2 Playwright e2e pass (hot-seat full game + all-AI watch to end), 6 screenshots in playtest/round-3/. status -> awaiting-approval (build gate). Open: Croco/Mungo split qty, sheep colours cosmetic-vs-mechanical (open-questions.md)." }
+  ]
+}

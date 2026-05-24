@@ -1,0 +1,37 @@
+{
+  "name": "nightweave",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Lacuna MVP (working title Nightweave) — clean reimplementation. Unpublished prototype.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "sim": "vitest run -c vitest.sim.config.ts",
+    "train": "vitest run -c vitest.rl.config.ts rl/train.test.ts",
+    "train:long": "vitest run -c vitest.rl.config.ts rl/train_long.test.ts",
+    "arena": "vitest run -c vitest.rl.config.ts rl/arena.test.ts",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pixi.js": "^8.6.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zustand": "^5.0.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-backend-wasm": "^4.22.0",
+    "@tensorflow/tfjs-backend-webgpu": "^4.22.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.3",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "updated": "2026-05-21",
+  "policy": {
+    "autoApproveStages": ["discovery", "analysis", "specification"],
+    "hardStopStages": ["build", "test"],
+    "drainTrigger": "every ~30 min via Windows Task Scheduler (scripts/drain-queue.ps1)",
+    "notes": "IP gating intentionally not enforced by the queue. The build gate is a hard human stop, so the IP decision still lands on a human there."
+  },
+  "tasks": []
+}

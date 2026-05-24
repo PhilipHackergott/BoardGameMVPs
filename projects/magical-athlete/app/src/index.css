@@ -1,0 +1,139 @@
+/* The Magical Athlete box red — a spotlit red surface the board sits on. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(1200px 700px at 50% 6%, #e0463a 0%, #c22a22 34%, #8c1a14 70%, #5c0f0b 100%);
+  background-attachment: fixed;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* --- 3D die ----------------------------------------------------------------- */
+.die-scene {
+  perspective: 700px;
+  display: inline-block;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+.die-scene[disabled] {
+  cursor: default;
+}
+.die-toss {
+  animation: die-toss 0.8s cubic-bezier(0.3, 0.05, 0.25, 1);
+}
+@keyframes die-toss {
+  0% { transform: translateY(0) scale(1); }
+  32% { transform: translateY(-190px) scale(1.14); }
+  64% { transform: translateY(-46px) scale(1.05); }
+  82% { transform: translateY(-12px) scale(0.99); }
+  100% { transform: translateY(0) scale(1); }
+}
+.die-cube {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.18, 0.7, 0.25, 1);
+}
+.die-cube.resting {
+  transition: transform 0.25s ease-out;
+}
+.die-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 36%;
+  background: radial-gradient(circle at 38% 30%, #fffefb 0%, #f4eee1 62%, #e6dcc8 100%);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.06), inset 0 -8px 14px rgba(0, 0, 0, 0.14),
+    inset 0 6px 12px rgba(255, 255, 255, 0.85);
+  display: grid;
+  place-items: center;
+}
+.die-num {
+  font-family: "Fredoka", "Righteous", system-ui, sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  -webkit-text-stroke: 1.5px #2c2333;
+  paint-order: stroke fill;
+  text-shadow: 0 1.5px 0 rgba(0, 0, 0, 0.18);
+}
+.die-pulse {
+  animation: die-pulse 1.6s ease-in-out infinite;
+}
+@keyframes die-pulse {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(255, 206, 76, 0)); }
+  50% { filter: drop-shadow(0 0 10px rgba(255, 206, 76, 0.7)); }
+}
+
+/* --- racer cards (styled like the physical cards) --------------------------- */
+.racer-card {
+  transition: transform 0.1s ease, box-shadow 0.12s ease;
+}
+.racer-card.pick {
+  cursor: pointer;
+}
+.racer-card.pick:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 22px -10px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* --- transition flourishes (race intro / finish) ---------------------------- */
+.ma-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ma-transition::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--accent) 32%, #120a16) 0%, rgba(8, 5, 12, 0.92) 70%);
+  animation: maTBg 1.5s ease forwards;
+}
+.ma-transition.finish::before {
+  background: radial-gradient(circle at 50% 42%, rgba(120, 84, 16, 0.85), rgba(8, 5, 12, 0.94) 70%);
+  animation-duration: 1.3s;
+}
+.ma-transition-card {
+  position: relative;
+  text-align: center;
+  transform: scale(0.5);
+  opacity: 0;
+  animation: maTPop 1.4s cubic-bezier(0.2, 1.5, 0.35, 1) forwards;
+}
+.ma-transition.finish .ma-transition-card {
+  animation-duration: 1.2s;
+}
+.ma-transition-text {
+  font-size: clamp(2.4rem, 8vw, 5rem);
+  line-height: 1;
+  letter-spacing: 2px;
+}
+.ma-transition-sub {
+  margin-top: 16px;
+  font-size: clamp(0.9rem, 2.4vw, 1.3rem);
+  letter-spacing: 1px;
+}
+@keyframes maTBg {
+  0% { opacity: 0; }
+  16% { opacity: 1; }
+  72% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes maTPop {
+  0% { transform: scale(0.5) translateY(24px); opacity: 0; }
+  18% { transform: scale(1.08) translateY(0); opacity: 1; }
+  30% { transform: scale(1); }
+  72% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.06); opacity: 0; }
+}

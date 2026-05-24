@@ -1,0 +1,21 @@
+Register the factory queue drainer with Windows Task Scheduler
+==============================================================
+
+This makes drain-queue.ps1 run every ~30 minutes so the factory advances unattended and
+resumes after a usage-limit window resets. Each run consumes Claude usage quota, so register
+it only when you want the lights-out layer running.
+
+Run this once in an ELEVATED PowerShell (Run as Administrator), all on one line:
+
+  schtasks /Create /TN "BoardGameFactory-DrainQueue" /SC MINUTE /MO 30 ^
+    /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"c:\Users\phili\Documents\BoardGameMVPs\scripts\drain-queue.ps1\"" ^
+    /RL LIMITED /F
+
+Notes:
+- /SC MINUTE /MO 30  -> every 30 minutes (off the hour; adjust to taste).
+- The task runs whether or not you're logged in only if you add /RU <user> /RP <password>;
+  otherwise it runs in your interactive session. Since this PC stays on, either is fine.
+- Watch it work:    Get-Content scripts\drain-queue.log -Tail 20 -Wait
+- Run it on demand:  schtasks /Run /TN "BoardGameFactory-DrainQueue"
+- Pause it:          schtasks /Change /TN "BoardGameFactory-DrainQueue" /DISABLE
+- Remove it:         schtasks /Delete /TN "BoardGameFactory-DrainQueue" /F

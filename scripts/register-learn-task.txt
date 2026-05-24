@@ -1,0 +1,27 @@
+Register the one-shot LEARN cycle with Windows Task Scheduler
+=============================================================
+
+This arms scripts/learn-cycle.ps1 to run tonight at 05:00 (after the Claude usage window resets) and
+distill this session's "Cull the Crown" work into the knowledge base / templates / docs, so future
+games launch more finished. It ticks every 30 min FROM 05:00 (so it retries if the limit hasn't
+fully reset yet), runs /learn once, drops a scripts/.learn-done marker, and disables its own task.
+So in practice it fires a single learn cycle and then stops.
+
+Run this once (a normal PowerShell or cmd window is fine; elevation only needed if you add /RU /RP),
+all on one line:
+
+  schtasks /Create /TN "BoardGameFactory-LearnCycle" /SC MINUTE /MO 30 /ST 05:00 ^
+    /TR "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"c:\Users\phili\Documents\BoardGameMVPs\scripts\learn-cycle.ps1\"" ^
+    /F
+
+Notes:
+- /SC MINUTE /MO 30 /ST 05:00  -> first run at 05:00 today, then every 30 min until it succeeds.
+- The PC must be powered on and your session active for the schedule to fire (same as the drainer).
+- Watch it work:    Get-Content scripts\learn-cycle.log -Tail 40 -Wait
+- Run it on demand:  schtasks /Run /TN "BoardGameFactory-LearnCycle"
+- Re-arm it later:   delete scripts\.learn-done, then  schtasks /Change /TN "BoardGameFactory-LearnCycle" /ENABLE
+- Remove it:         schtasks /Delete /TN "BoardGameFactory-LearnCycle" /F
+
+Prefer it to run even when logged out? Append  /RU <user> /RP <password>  to the command above
+(this requires an elevated PowerShell). Otherwise it runs in your interactive session, which is fine
+since this PC stays on.

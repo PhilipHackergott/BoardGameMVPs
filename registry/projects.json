@@ -1,0 +1,86 @@
+{
+  "updated": "2026-05-23",
+  "projects": [
+    {
+      "slug": "war-of-the-ring",
+      "title": "War of the Ring",
+      "stage": "build",
+      "status": "awaiting-approval",
+      "ip": "clear",
+      "updated": "2026-05-22",
+      "path": "projects/war-of-the-ring"
+    },
+    {
+      "slug": "roomies",
+      "title": "Roomies",
+      "stage": "build",
+      "status": "in-progress",
+      "ip": "clear",
+      "updated": "2026-05-22",
+      "path": "projects/roomies"
+    },
+    {
+      "slug": "lacuna",
+      "title": "Lacuna",
+      "stage": "test",
+      "status": "awaiting-approval",
+      "ip": "risky",
+      "updated": "2026-05-21",
+      "path": "projects/lacuna"
+    },
+    {
+      "slug": "sprawlopolis",
+      "title": "Sprawlopolis",
+      "stage": "discovery",
+      "status": "awaiting-approval",
+      "ip": "unknown",
+      "updated": "2026-05-20",
+      "path": "projects/sprawlopolis"
+    },
+    {
+      "slug": "nmbr-9",
+      "title": "NMBR 9",
+      "stage": "discovery",
+      "status": "awaiting-approval",
+      "ip": "unknown",
+      "updated": "2026-05-20",
+      "path": "projects/nmbr-9"
+    },
+    {
+      "slug": "three-sisters",
+      "title": "Three Sisters",
+      "stage": "discovery",
+      "status": "awaiting-approval",
+      "ip": "unknown",
+      "updated": "2026-05-20",
+      "path": "projects/three-sisters"
+    },
+    {
+      "slug": "magical-athlete",
+      "title": "Magical Athlete",
+      "stage": "shipped",
+      "status": "approved",
+      "ip": "clear",
+      "updated": "2026-05-22",
+      "path": "projects/magical-athlete"
+    },
+    {
+      "slug": "cull-the-crown",
+      "title": "Cull the Crown",
+      "stage": "build",
+      "status": "awaiting-approval",
+      "ip": "risky",
+      "updated": "2026-05-23",
+      "path": "projects/cull-the-crown"
+    },
+    {
+      "slug": "compile",
+      "title": "Compile",
+      "stage": "build",
+      "status": "awaiting-approval",
+      "ip": "risky",
+      "updated": "2026-05-21",
+      "path": "projects/compile"
+    }
+  ]
+}

@@ -1,0 +1,472 @@
+{
+  "generatedAt": "2026-05-22T16:43:51.324Z",
+  "gamesPerCategory": 600,
+  "categories": {
+    "powers": {
+      "firstPlayerWinRate": 0.4040066777963272,
+      "drawRate": 0,
+      "avgColorsTotal": 6.818030050083473,
+      "nonterminating": 0,
+      "errors": 1,
+      "firstError": "powers seed=2630649056 powers=[[\"warding\"],[\"lighthouse\"]] aff=[null,null] :: Illegal placement: that spot is blocked",
+      "powers": [
+        {
+          "id": "warding",
+          "name": "Warding",
+          "games": 45,
+          "winRate": 0.8666666666666667,
+          "colorMargin": 1.8444444444444446
+        },
+        {
+          "id": "procrastinator",
+          "name": "Procrastinator",
+          "games": 37,
+          "winRate": 0.8108108108108109,
+          "colorMargin": 0.8648648648648649
+        },
+        {
+          "id": "intercept",
+          "name": "Intercept",
+          "games": 52,
+          "winRate": 0.7307692307692307,
+          "colorMargin": 0.8461538461538461
+        },
+        {
+          "id": "cartographer",
+          "name": "Cartographer",
+          "games": 66,
+          "winRate": 0.6212121212121212,
+          "colorMargin": 0.6666666666666666
+        },
+        {
+          "id": "catalyst",
+          "name": "Catalyst",
+          "games": 56,
+          "winRate": 0.6071428571428571,
+          "colorMargin": 0.375
+        },
+        {
+          "id": "gravity",
+          "name": "Gravity",
+          "games": 43,
+          "winRate": 0.6046511627906976,
+          "colorMargin": 0.3953488372093023
+        },
+        {
+          "id": "harvester",
+          "name": "Harvester",
+          "games": 38,
+          "winRate": 0.5789473684210527,
+          "colorMargin": 0.13157894736842105
+        },
+        {
+          "id": "alchemist",
+          "name": "Alchemist",
+          "games": 47,
+          "winRate": 0.574468085106383,
+          "colorMargin": 0.1276595744680851
+        },
+        {
+          "id": "flexible",
+          "name": "Flexible",
+          "games": 53,
+          "winRate": 0.5660377358490566,
+          "colorMargin": 0.2641509433962264
+        },
+        {
+          "id": "tithe",
+          "name": "Tithe",
+          "games": 47,
+          "winRate": 0.5531914893617021,
+          "colorMargin": 0.2553191489361702
+        },
+        {
+          "id": "spectral",
+          "name": "Spectral",
+          "games": 44,
+          "winRate": 0.5454545454545454,
+          "colorMargin": -0.11363636363636363
+        },
+        {
+          "id": "lighthouse",
+          "name": "Lighthouse",
+          "games": 43,
+          "winRate": 0.5116279069767442,
+          "colorMargin": 0.023255813953488372
+        },
+        {
+          "id": "patron",
+          "name": "Patron",
+          "games": 52,
+          "winRate": 0.4807692307692308,
+          "colorMargin": -0.11538461538461539
+        },
+        {
+          "id": "hoarder",
+          "name": "Hoarder",
+          "games": 59,
+          "winRate": 0.4576271186440678,
+          "colorMargin": -0.576271186440678
+        },
+        {
+          "id": "agile",
+          "name": "Agile",
+          "games": 42,
+          "winRate": 0.42857142857142855,
+          "colorMargin": -0.40476190476190477
+        },
+        {
+          "id": "flying",
+          "name": "Flying",
+          "games": 63,
+          "winRate": 0.4126984126984127,
+          "colorMargin": -0.36507936507936506
+        },
+        {
+          "id": "prism",
+          "name": "Prism",
+          "games": 51,
+          "winRate": 0.4117647058823529,
+          "colorMargin": -0.27450980392156865
+        },
+        {
+          "id": "repeller",
+          "name": "Magnet",
+          "games": 52,
+          "winRate": 0.40384615384615385,
+          "colorMargin": -0.38461538461538464
+        },
+        {
+          "id": "shadowfollow",
+          "name": "Shadow Follow",
+          "games": 41,
+          "winRate": 0.3902439024390244,
+          "colorMargin": -0.21951219512195122
+        },
+        {
+          "id": "magpie",
+          "name": "Magpie",
+          "games": 52,
+          "winRate": 0.38461538461538464,
+          "colorMargin": -0.1346153846153846
+        },
+        {
+          "id": "assassin",
+          "name": "Assassin",
+          "games": 46,
+          "winRate": 0.3695652173913043,
+          "colorMargin": -0.391304347826087
+        },
+        {
+          "id": "cheater",
+          "name": "Cheater",
+          "games": 61,
+          "winRate": 0.32786885245901637,
+          "colorMargin": -0.8032786885245902
+        },
+        {
+          "id": "nomad",
+          "name": "Nomad",
+          "games": 53,
+          "winRate": 0.3018867924528302,
+          "colorMargin": -0.6415094339622641
+        },
+        {
+          "id": "momentum",
+          "name": "Momentum",
+          "games": 55,
+          "winRate": 0.23636363636363636,
+          "colorMargin": -0.7818181818181819
+        }
+      ]
+    },
+    "affinities": {
+      "firstPlayerWinRate": 0.3238255033557047,
+      "drawRate": 0.006666666666666667,
+      "avgColorsTotal": 6.8566666666666665,
+      "nonterminating": 0,
+      "errors": 0,
+      "firstError": null,
+      "affinities": [
+        {
+          "id": "4",
+          "name": "Dusk",
+          "games": 159,
+          "winRate": 0.6540880503144654,
+          "colorMargin": 0.6415094339622641
+        },
+        {
+          "id": "3",
+          "name": "Aureate",
+          "games": 159,
+          "winRate": 0.5691823899371069,
+          "colorMargin": 0.1949685534591195
+        },
+        {
+          "id": "5",
+          "name": "Chalk",
+          "games": 163,
+          "winRate": 0.549079754601227,
+          "colorMargin": 0.0736196319018405
+        },
+        {
+          "id": "2",
+          "name": "Verdant",
+          "games": 182,
+          "winRate": 0.4945054945054945,
+          "colorMargin": -0.07142857142857142
+        },
+        {
+          "id": "1",
+          "name": "Frost",
+          "games": 187,
+          "winRate": 0.4304812834224599,
+          "colorMargin": -0.20320855614973263
+        },
+        {
+          "id": "0",
+          "name": "Ember",
+          "games": 163,
+          "winRate": 0.4171779141104294,
+          "colorMargin": -0.26993865030674846
+        },
+        {
+          "id": "6",
+          "name": "Abyss",
+          "games": 187,
+          "winRate": 0.4144385026737968,
+          "colorMargin": -0.26737967914438504
+        }
+      ]
+    },
+    "both": {
+      "firstPlayerWinRate": 0.4036850921273032,
+      "drawRate": 0.005,
+      "avgColorsTotal": 6.635,
+      "nonterminating": 0,
+      "errors": 0,
+      "firstError": null,
+      "powers": [
+        {
+          "id": "warding",
+          "name": "Warding",
+          "games": 43,
+          "winRate": 0.7906976744186046,
+          "colorMargin": 1.6046511627906976
+        },
+        {
+          "id": "cartographer",
+          "name": "Cartographer",
+          "games": 43,
+          "winRate": 0.6976744186046512,
+          "colorMargin": 0.7209302325581395
+        },
+        {
+          "id": "procrastinator",
+          "name": "Procrastinator",
+          "games": 48,
+          "winRate": 0.6666666666666666,
+          "colorMargin": 0.8541666666666666
+        },
+        {
+          "id": "alchemist",
+          "name": "Alchemist",
+          "games": 65,
+          "winRate": 0.6307692307692307,
+          "colorMargin": 0.2923076923076923
+        },
+        {
+          "id": "intercept",
+          "name": "Intercept",
+          "games": 52,
+          "winRate": 0.5961538461538461,
+          "colorMargin": 0.4807692307692308
+        },
+        {
+          "id": "flexible",
+          "name": "Flexible",
+          "games": 39,
+          "winRate": 0.5897435897435898,
+          "colorMargin": 0.3333333333333333
+        },
+        {
+          "id": "patron",
+          "name": "Patron",
+          "games": 53,
+          "winRate": 0.5849056603773585,
+          "colorMargin": 0.3018867924528302
+        },
+        {
+          "id": "catalyst",
+          "name": "Catalyst",
+          "games": 57,
+          "winRate": 0.5614035087719298,
+          "colorMargin": 0.15789473684210525
+        },
+        {
+          "id": "harvester",
+          "name": "Harvester",
+          "games": 42,
+          "winRate": 0.5476190476190477,
+          "colorMargin": 0.38095238095238093
+        },
+        {
+          "id": "hoarder",
+          "name": "Hoarder",
+          "games": 57,
+          "winRate": 0.5263157894736842,
+          "colorMargin": -0.45614035087719296
+        },
+        {
+          "id": "agile",
+          "name": "Agile",
+          "games": 54,
+          "winRate": 0.5092592592592593,
+          "colorMargin": -0.07407407407407407
+        },
+        {
+          "id": "gravity",
+          "name": "Gravity",
+          "games": 57,
+          "winRate": 0.5087719298245614,
+          "colorMargin": 0.05263157894736842
+        },
+        {
+          "id": "shadowfollow",
+          "name": "Shadow Follow",
+          "games": 50,
+          "winRate": 0.5,
+          "colorMargin": -0.02
+        },
+        {
+          "id": "lighthouse",
+          "name": "Lighthouse",
+          "games": 49,
+          "winRate": 0.46938775510204084,
+          "colorMargin": -0.02040816326530612
+        },
+        {
+          "id": "repeller",
+          "name": "Magnet",
+          "games": 55,
+          "winRate": 0.45454545454545453,
+          "colorMargin": -0.32727272727272727
+        },
+        {
+          "id": "prism",
+          "name": "Prism",
+          "games": 36,
+          "winRate": 0.4444444444444444,
+          "colorMargin": -0.19444444444444445
+        },
+        {
+          "id": "assassin",
+          "name": "Assassin",
+          "games": 53,
+          "winRate": 0.4339622641509434,
+          "colorMargin": -0.39622641509433965
+        },
+        {
+          "id": "cheater",
+          "name": "Cheater",
+          "games": 50,
+          "winRate": 0.42,
+          "colorMargin": -0.42
+        },
+        {
+          "id": "flying",
+          "name": "Flying",
+          "games": 49,
+          "winRate": 0.40816326530612246,
+          "colorMargin": -0.30612244897959184
+        },
+        {
+          "id": "spectral",
+          "name": "Spectral",
+          "games": 51,
+          "winRate": 0.39215686274509803,
+          "colorMargin": -0.3333333333333333
+        },
+        {
+          "id": "tithe",
+          "name": "Tithe",
+          "games": 45,
+          "winRate": 0.3888888888888889,
+          "colorMargin": -0.17777777777777778
+        },
+        {
+          "id": "magpie",
+          "name": "Magpie",
+          "games": 45,
+          "winRate": 0.37777777777777777,
+          "colorMargin": -0.4
+        },
+        {
+          "id": "nomad",
+          "name": "Nomad",
+          "games": 55,
+          "winRate": 0.32727272727272727,
+          "colorMargin": -0.6
+        },
+        {
+          "id": "momentum",
+          "name": "Momentum",
+          "games": 52,
+          "winRate": 0.21153846153846154,
+          "colorMargin": -1
+        }
+      ],
+      "affinities": [
+        {
+          "id": "4",
+          "name": "Dusk",
+          "games": 155,
+          "winRate": 0.6290322580645161,
+          "colorMargin": 0.3741935483870968
+        },
+        {
+          "id": "3",
+          "name": "Aureate",
+          "games": 182,
+          "winRate": 0.5521978021978022,
+          "colorMargin": -0.016483516483516484
+        },
+        {
+          "id": "5",
+          "name": "Chalk",
+          "games": 180,
+          "winRate": 0.5361111111111111,
+          "colorMargin": 0.05
+        },
+        {
+          "id": "2",
+          "name": "Verdant",
+          "games": 166,
+          "winRate": 0.5301204819277109,
+          "colorMargin": 0.30120481927710846
+        },
+        {
+          "id": "0",
+          "name": "Ember",
+          "games": 161,
+          "winRate": 0.4782608695652174,
+          "colorMargin": -0.13043478260869565
+        },
+        {
+          "id": "6",
+          "name": "Abyss",
+          "games": 186,
+          "winRate": 0.41935483870967744,
+          "colorMargin": -0.24731182795698925
+        },
+        {
+          "id": "1",
+          "name": "Frost",
+          "games": 170,
+          "winRate": 0.36764705882352944,
+          "colorMargin": -0.27647058823529413
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "concurrent": 512,
+  "sims": 24,
+  "batch": 512,
+  "steps": 50,
+  "replay": 20000,
+  "reportEvery": 3,
+  "reportGames": 40
+}

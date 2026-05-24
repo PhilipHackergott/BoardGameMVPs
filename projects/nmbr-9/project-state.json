@@ -1,0 +1,31 @@
+{
+  "slug": "nmbr-9",
+  "title": "NMBR 9",
+  "created": "2026-05-20",
+  "updated": "2026-05-20",
+  "stage": "discovery",
+  "status": "awaiting-approval",
+  "source": "scout-discovery",
+  "targets": ["web", "desktop", "mobile"],
+  "stack": "react-ts-pixi",
+  "ip": { "status": "unknown", "decision": null, "decided_by": null, "date": null, "notes": "" },
+  "gates": {
+    "discovery":     { "approved": false, "date": null, "notes": "" },
+    "analysis":      { "approved": false, "date": null, "notes": "" },
+    "specification": { "approved": false, "date": null, "notes": "" },
+    "build":         { "approved": false, "date": null, "notes": "" },
+    "test":          { "approved": false, "date": null, "notes": "" }
+  },
+  "artifacts": {
+    "candidate_brief": "01-candidate-brief.md",
+    "market_analysis": null,
+    "mvp_spec": null,
+    "build_plan": null,
+    "playtest_report": null,
+    "retrospective": null
+  },
+  "history": [
+    { "ts": "2026-05-20", "event": "created", "by": "game-scout" },
+    { "ts": "2026-05-20", "event": "candidate-brief-written", "by": "game-scout" }
+  ]
+}

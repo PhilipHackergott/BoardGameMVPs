@@ -1,0 +1,18 @@
+# Normalize line endings to LF in the repo (clean for the Linux servers the
+# multiplayer/account services will eventually run on); checkout as-is on Windows.
+* text=auto eol=lf
+
+# Binary assets — never touch these.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.webp  binary
+*.ico   binary
+*.mp3   binary
+*.wav   binary
+*.ogg   binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.pdf   binary

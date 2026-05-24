@@ -1,0 +1,361 @@
+Theses are the "Master Cards" which were provided to everybody for translations.
+If you have difficulties interpreting some of your Shadow Event Cards or Battle Effects please
+consult this document to solve the issue. If you still have questions you can post them on the
+message board on the playtester's web site, located at:
+http://www.warofthering.webb.se
+
+(CHARACTER)                                  (CHARACTER)                                  (CHARACTER)
+Shelob's Lair                                The Ring is Mine!                            On, on They Went
+
+Put "Shelob's Lair" Special Hunt Tile        Put "The Ring is Mine!" special Hunt         Put "On, On They Went" Special Hunt
+into play.                                   Tile into play.                              Tile into play.
+
+ BATTLE:                                      BATTLE:                                      BATTLE:
+
+One for the Dark Lord                        One for the Dark Lord                        One for the Dark Lord
+Play if the defending Army is in the same    Play if the defending Army is in the same    Play if the defending Army is in the same
+Region of the Fellowship.                    Region of the Fellowship.                    Region of the Fellowship.
+
+ Add +1 to your Combat and Leader Reroll.     Add +1 to your Combat and Leader Reroll.     Add +1 to your Combat and Leader Reroll.
+
+(CHARACTER)                                   (CHARACTER)                                  (CHARACTER)
+Give it to Uss!                               Cruel Weather                                Flocks of Crebain
+
+Put "Give it to Uss!" Special Hunt Tile      Play if the Fellowship is at step 1+ on      Play on the table.
+into play.                                   the Fellowship Track.
+                                                                                          Discard "Flocks of Crebain" to add +1 to
+                                              Move the Fellowship to an adjacent          a Hunt Roll.
+                                              Region.
+                                                                                          Discard "Flocks of Crebain" if the
+                                                                                          Fellowship is declared in a Free Peoples
+                                                                                          City or Stronghold.
+
+ BATTLE:                                      BATTLE:                                      BATTLE:
+
+One for the Dark Lord                         Cruel as Death                               They are Terrible
+Play if the defending Army is in the same    Play if the total Nazgûl Leadership is 2 or  Play if a Nazgûl is in the battle.
+Region of the Fellowship.                    more.
+                                                                                           Subtract 1 from your total Nazgûl
+ Add +1 to your Combat and Leader Reroll.     Subtract 2 from your total Nazgûl            Leadership to add +1 to your Leader
+                                              Leadership to add +1 to your Combat Roll.    Reroll.
+
+ (CHARACTER)                                  (CHARACTER)                                  (CHARACTER)
+ Balrog of Moria                              Foul Thing from the Deep                     Nazgûl Search
+Play on the table.                           Play if the Fellowship is not in a Free
+Discard "Balrog of Moria" to draw an         Peoples settlement.                          Play if the Fellowship is at step 1+ on
+additional Hunt tile if the Fellowship       Draw a Hunt tile.                            the Fellowship Track.
+enters or leaves Moria whilst being          If the tile shows an Eye or is a
+declared or revealed.                        Fellowship Special Tile, discard it          Move all the Nazgûl.
+If the tile shows an Eye, discard it         without effect.                               If at least one Nazgûl is in the Region
+without effect.                              If the tile is numbered (including            with the Fellowship, reveal the
+ Discard "Balrog of Moria" to use its        Shadow Special Tiles without an Eye),         Fellowship.
+ Battle effect as if playing the card        follow the rules for a successful Hunt,
+ from your hand.                             but the Free Peoples player must take a       BATTLE:
+                                             random Casualty if possible.                  Foul Stench
+ BATTLE:                                                                                  Play if a Nazgûl is in the battle.
+                                              BATTLE:                                      If the Nazgûl Leadership equals or exceeds
+ Durin's Bane                                                                              the total Free Peoples Leadership, the Free
+Play if the defending Army is within two      They are Terrible                            Peoples Leader Reroll is cancelled.
+regions from Moria.                          Play if a Nazgûl is in the battle.
+
+ Before the Combat Roll, roll an additional   Subtract 1 from your total Nazgûl
+ attack using three Combat dice; score hits   Leadership to add +1 to your Leader
+ on 4+ and apply the result immediately.      Reroll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+ (CHARACTER)                                  (CHARACTER)                                    (CHARACTER)
+ Worn with Sorrow and Toil                    The Nazgûl Strike!                             The Breaking of the Fellowship
+Play on the table.                           Play if the Fellowship is at step 1+ on        Play if the Fellowship is revealed.
+                                             the Fellowship Track.                          Draw a Hunt tile. If the tile is
+When "Worn with Sorrow and Toil" is in                                                      numbered, the Free Peoples player must
+play, if a Companion in the Fellowship is    Move all the Nazgûl.                           separate an equal number of Compan-
+taken as a Casualty you may discard one      If at least one Nazgûl is in the Region        ions, placing them in the Region with
+Character card of the Free Peoples           with the Fellowship, discard one               the Fellowship (eliminate them if the
+player from his hand (choosing it            Character Card from the table or roll for      Fellowship is in Mordor). If the tile
+randomly) or from the table.                 the Hunt.                                      shows an Eye or is a Fellowship Special
+                                                                                            Tile, discard it without effect.
+Discard "Worn with Sorrow and Toil" if        BATTLE:                                        If Gollum is the Guide, add one
+the Fellowship is declared in a Free                                                         Corruption point instead.
+People's City or Stronghold.                  Black Breath                                   BATTLE:
+                                             Play if a Nazgûl is in the battle.
+ BATTLE:                                                                                     Dread and Despair
+ Words of Power                               If you score at least one hit on your Leader  Play if a Nazgûl is in the battle.
+Play if a Nazgûl is in the battle.            Reroll, additionally eliminate one Free
+ Choose a Companion: ignore his Leadership    Peoples Leader. You can eliminate a            The Free Peoples player rolls one Combat
+ and special abilities for this round.        Companion of your choice if the number         die less (to a minimum of 1) for every
+                                              of hits equals or exceeds the Companion's      point of Nazgûl Leadership you choose to
+                                              Level.                                         forfeit.
+
+ (CHARACTER)                                  (CHARACTER)                                    (CHARACTER)
+ Orc Patrol                                   The Lidless Eye                                Wormtongue
+
+Play if the Fellowship is not in a Free      Change up to three unused Shadow               Play on the table if Saruman is in
+Peoples Settlement.                          Action dice results into "Eye" results.        play.
+Draw a Hunt tile.
+If the tile shows an Eye or is a              Put these dice in the Hunt Box                 When "Wormtongue" is in play, Rohan
+Fellowship Special Tile, discard it           immediately.                                   can be activated only by a Companion
+without effect.                                                                              or by the Fellowship.
+If the tile is numbered (including                                                           Discard "Wormtongue" as soon as Rohan
+Shadow Special Tiles without an Eye),                                                        is activated.
+follow the rules for a successful Hunt.                                                      Discard "Wormtongue" and activate
+                                                                                             Rohan if Helm's Deep or Edoras is
+ BATTLE:                                      BATTLE:                                        attacked.
+
+ Cruel as Death                               Words of Power                                 BATTLE:
+Play if the total Nazgûl Leadership is 2 or  Play if a Nazgûl is in the battle.
+more.                                                                                        Foul Stench
+                                              Choose a Companion: ignore his                Play if a Nazgûl is in the battle.
+ Subtract 2 from your total Nazgûl            Leadership and special abilities for this
+ Leadership to add +1 to your Combat Roll.    round.                                         If the Nazgûl Leadership equals or exceeds
+                                                                                             the total Free Peoples Leadership, the Free
+                                                                                             Peoples Leader Reroll is cancelled.
+
+ (CHARACTER)                                  (CHARACTER)                                    (CHARACTER)
+ The Palantír of Orthanc                      Candles of Corpses                             Isildur's Bane
+Play on the table if Saruman is in                                                          Play if the Fellowship is not in a Free
+play.                                        Play if the Fellowship is not in a Free        Peoples Settlement.
+When "The Palantir of Orthanc" is in         Peoples Settlement.                            Draw a Hunt tile.
+play, every time you use an Event                                                           If the tile shows an Eye or is a
+Action die result to play a card,            Roll three dice: add one Corruption            Fellowship Special Tile, discard it
+immediately draw another card from a         point on each result of 4+.                    without effect.
+deck of your choice.                                                                        If the tile is numbered (including
+ To discard "The Palantir of Orthanc",        If Gollum is the Guide, add one               Shadow Special Tiles without an Eye),
+ the Free Peoples player must use a           Corruption point on each result of 6.         follow the rules for a successful Hunt,
+ Will of the West Action Die result, or                                                     but the Free Peoples player must take
+ use any Action Die and one Elven             BATTLE:                                       Corruption.
+ Ring.                                        Dread and Despair
+ BATTLE:                                     Play if a Nazgûl is in the battle.              BATTLE:
+                                              The Free Peoples player rolls one Combat
+ Cruel as Death                               die less (to a minimum of 1) for every         Cruel as Death
+Play if the total Nazgûl Leadership is 2 or   point of Nazgûl Leadership you choose to      Play if the total Nazgûl Leadership is 2 or
+more.                                         forfeit.                                      more.
+
+ Subtract 2 from your total Nazgûl                                                           Subtract 2 from your total Nazgûl
+ Leadership to add +1 to your Combat Roll.                                                   Leadership to add +1 to your Combat Roll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+ (CHARACTER)                                   (CHARACTER)                                    (CHARACTER)
+ Lure of the Ring                              Morgul Wound                                   The Ringwraiths Are Abroad
+
+Play if the Fellowship is revealed.           Play if the Fellowship is revealed.             Move all the Nazgûl. Afterwards,
+                                                                                              either move two Armies containing a
+Randomly select one Companion in the           If the current Corruption is three or          Nazgûl, or attack with one Army
+Fellowship. The Free Peoples player            less, add two Corruption points,               containing a Nazgûl.
+must choose either to add Corruption           otherwise add one Corruption point.
+equal to the Companion's Level, or to                                                         BATTLE:
+eliminate him.                                 BATTLE:                                        Words of Power
+                                               Black Breath                                  Play if a Nazgûl is in the battle.
+ If Gollum is the Guide, add one              Play if a Nazgûl is in the battle.              Choose a Companion: ignore his
+ Corruption point instead.                     If you score at least one hit on your Leader   Leadership and special abilities for this
+                                               Reroll, additionally eliminate one Free        round.
+ BATTLE:                                       Peoples Leader. You can eliminate a
+ They are Terrible                             Companion of your choice if the number         (CHARACTER)
+Play if a Nazgûl is in the battle.             of hits equals or exceeds the Companion's      Dreadful Spells
+ Subtract 1 from your total Nazgûl             Level.
+ Leadership to add +1 to your Leader                                                         Play if a Shadow Army containing
+ Reroll.                                       (CHARACTER)                                   Nazgûl is adjacent to, or is in the
+                                               Grond, Hammer of the Underworld               same Region as, a Free Peoples Army.
+ (CHARACTER)
+ The Black Captain Commands                   Play if the Witch-king is in play.              Attack the Free Peoples Army rolling
+                                                                                              a number of dice equal to the number
+Play if the Witch-king is in play.            Attack a Stronghold with a besieging            of Nazgûl (up to 5). Score hits on a
+                                              Army containing the Witch-king.                 5+.
+Recruit two Nazgûl in the Region with
+the Witch-king, or move all the Nazgûl.        The battle lasts for three Combat              BATTLE:
+                                               rounds instead of one. During the first        Devilry of Orthanc
+ Move or attack with the Army                  round, the Free Peoples player cannot         Play if an Isengard unit is in the battle and
+ containing the Witch-king.                    use Combat Cards unless a Companion           the defending Army is in a Stronghold.
+                                               is in the battle.                              Add +1 to your Combat roll.
+ BATTLE:
+ Foul Stench                                   BATTLE:                                        (MUSTER)
+Play if a Nazgûl is in the battle.             Dread and Despair                              Return of the Witch-King
+ If the Nazgûl Leadership equals or exceeds   Play if a Nazgûl is in the battle.
+ the total Free Peoples Leadership, the Free   The Free Peoples player rolls one Combat      Play if the Witch-king is in play.
+ Peoples Leader Reroll is cancelled.           die less (to a minimum of 1) for every
+                                               point of Nazgûl Leadership you choose to       Move the Witch-king to Angmar and
+ (MUSTER)                                      forfeit.                                       recruit two Sauron Regular units and
+ A New Power is Rising                                                                        one Sauron Elite unit in Angmar.
+                                               (MUSTER)
+Play if Saruman is in play.                    Rage Of The Dunlendings
+
+ Recruit two Isengard Regular units in        Play if Isengard is at War.
+ each of North and South Dunland and
+ two units (Regular or Elite) in              Recruit two Isengard Regular units in a
+ Orthanc.                                     free Region adjacent to North or South
+                                              Dunland.
+
+                                               You may also move to this Region up
+                                               to four Isengard units (Regular or
+                                               Elite) from North Dunland and/or
+                                               South Dunland.
+
+BATTLE:                                       BATTLE:                                         BATTLE:
+
+Great Host                                    Relentless Assault                              Swarm of Bats
+If after removing casualties your units are   Before the Combat Roll, eliminate up to        Cancel the effects of any one Combat Card
+at least twice as many as the enemy units,    two Shadow units. Add +1 to your Combat        played by the Free Peoples player.
+score one automatic hit.                      Roll for every eliminated unit.
+                                                                                              If the Free Peoples player did not play a
+                                                                                              card, add +1 to the Leader Reroll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+(MUSTER)                                   (ARMY)                                   (MUSTER)
+Monsters Roused                            Corsairs of Umbar                        Many Kings to the Service of
+                                                                                    Mordor
+Recruit one Sauron Regular unit in        Play if the Southrons & Easterlings
+Angmar, Ettenmoors and Weather            are at War.                               Recruit two Southrons & Easterlings
+Hills, and one Sauron Elite unit in                                                 Regular units in each of three
+Trollshaws.                               Move one Army from Umbar to a Gondor      different Southrons & Easterlings
+                                          coastal Region.                           Settlements.
+
+                                           If there is a Free Peoples Army in the
+                                           Region, fight a battle. Follow the
+                                           normal rules, however the attacking
+                                           Army cannot retreat.
+
+ BATTLE:                                   BATTLE:                                  BATTLE:
+ Desperate Battle                          Deadly Strife                            Great Host
+ Both Armies add +1 to their Combat Roll   Both Armies add +2 to their Combat Roll  If after removing casualties your units are
+ and Leader Reroll.                        and Leader Reroll.                       at least twice as many as the enemy units,
+                                                                                    score one automatic hit.
+ (MUSTER)                                  (MUSTER)
+ Horde From the East                       The King is Revealed                     (MUSTER)
+                                                                                    Shadows on the Misty Mountains
+Play if Southrons & Easterlings are at    Play if Aragorn is in play.
+War.                                                                                Recruit two Sauron units (Regular or
+                                           Recruit five Sauron Regular units and    Elite) and one Nazgûl in Mount Gram
+ Recruit five Southrons & Easterlings      a Nazgûl in Minas Morgul.                or in Moria.
+ Regular units in a free Region inside
+ their Nation, adjacent to the eastern
+ border of the map.
+
+BATTLE:                                   BATTLE:                                   BATTLE:
+                                                                                    Onslaught
+Deadly Strife                             Relentless Assault                        After removing casualties, eliminate up to
+Both Armies add +2 to their Combat Roll   Before the Combat Roll, eliminate up to   four Shadow units. Roll one die for each
+and Leader Reroll.                        two Shadow units. Add +1 to your Combat   eliminated unit: score one hit on each
+                                          Roll for every eliminated unit.           result of 4+.
+
+ (MUSTER)                                  (MUSTER)                                 (MUSTER)
+ Musterings of Long-planned War            Pits of Mordor                           Orcs Multiplying Again
+
+Play if all Shadow Nations are at War.    Play if Sauron is at War.                 Recruit three Sauron Regular units in
+                                                                                    Dol Guldur and three Sauron Regular
+ Place five Southrons & Easterlings        Recruit two Sauron Regular units in      units in Mount Gundabad.
+ Regular units in Gorgoroth and five       each of three different Sauron
+ Sauron Regular units in Nurn.             Strongholds.
+
+BATTLE:                                   BATTLE:                                   BATTLE:
+
+Desperate Battle                          Desperate Battle                          Onslaught
+Both Armies add +1 to their Combat Roll   Both Armies add +1 to their Combat Roll   After removing casualties, eliminate up to
+and Leader Reroll.                        and Leader Reroll.                        four Shadow units. Roll one die for each
+                                                                                    eliminated unit: score one hit on each
+                                                                                    result of 4+.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+ (MUSTER)                                      (MUSTER)                                       (ARMY)
+ Stormcrow                                     Threats and Promises                           Half-Orcs and Goblin-Men
+                                              Play on the table.
+Play if either the Fellowship or a                                                           Play if Isengard is at War.
+Companion is inside the borders of a          When "Threats and Promises" is in play,
+Free Peoples Nation not at War.               the Free Peoples player cannot advance          Recruit one Isengard unit (Elite or
+                                              a passive Nation on the Political Track         Regular) in a Region already occupied
+ Move that Nation back one step on            using a Muster Action die.                      by a Shadow Army.
+ the Political Track and eliminate one
+ Leader or unit of that Nation (Free           Discard "Threats and Promises" if a
+ Peoples player's choice).                     Free Peoples Nation advances on the
+                                               Political Track due to an attack or a
+                                               Companion special ability.
+
+ BATTLE:                                       BATTLE:                                       BATTLE:
+ Great Host
+ If after removing casualties your units are   Devilry of Orthanc                            We Come to Kill
+ at least twice in number than the enemy      Play if an Isengard unit is in the battle and  After removing casualties, roll an
+ units, score one automatic hit.              the defending Army is in a Stronghold.         additional attack using only the Shadow
+                                                                                             Elite units: score hits with 5+.
+ (ARMY)                                        Add +1 to your Combat roll.
+ Olog-Hai
+                                               (ARMY)                                         (ARMY)
+Play if Sauron is at War.                      Hill-Trolls                                    The Shadow is Moving
+
+ Recruit one Sauron unit (Elite or            Play if Sauron is at War.                      Play if all Shadow Nations are At War.
+ Regular) in a Region already occupied
+ by a Shadow Army.                             Replace two Sauron Regular units in            Move four Shadow Armies.
+                                               play with two Sauron Elite units.
+
+BATTLE:                                       BATTLE:                                         BATTLE:
+We Come to Kill                               We Come to Kill
+After removing casualties, roll an            After removing casualties, roll an              Swarm of Bats
+additional attack using only the Shadow       additional attack using only the Shadow        Cancel the effects of any one Combat Card
+Elite units: score hits with 5+.              Elite units: score hits with 5+.               played by the Free Peoples player.
+
+(ARMY)                                        (ARMY)                                          If the Free Peoples player did not play a
+Shadows Gather                                The Shadow Lengthens                            card, add +1 to the Leader Reroll..
+
+Move one Shadow Army up to three              Move two Shadow Armies up to two                (ARMY)
+Regions. The movement must end in a           Regions. The movements must end in              Denethor's Folly
+Region already occupied by another            Regions already occupied by other              Play on the table if Minas Tirith is
+Shadow Army.                                  Shadow Armies.                                 besieged by a Shadow Army.
+                                                                                             Eliminate one Free Peoples Leader in
+ BATTLE:                                       BATTLE:                                       Minas Tirith.
+                                                                                             When "Denethor's Folly" is in play, the
+ Mûmakil                                       Mûmakil                                       Free Peoples player cannot use Combat
+Play if a Southrons & Easterlings Elite       Play if a Southrons & Easterlings Elite        Cards for battles fought in Minas Tirith.
+unit is in the battle.                        unit is in the battle.                          To discard "Denethor's Folly", the
+                                                                                              Free Peoples player must use a Will
+ Add +1 to your Combat Roll. If , after the    Add +1 to your Combat Roll. If , after the     of the West Action Die result, or any
+ Leader Reroll, you scored more hits than      Leader Reroll, you scored more hits than       Action Die if Gandalf or Aragorn are
+ your opponent, one additional hit is          your opponent, one additional hit is           in Minas Tirith.
+ scored.                                       scored.
+                                                                                              BATTLE:
+
+                                                                                              Devilry of Orthanc
+                                                                                             Play if an Isengard unit is in the battle and
+                                                                                             the defending Army is in a Stronghold.
+
+                                                                                              Add +1 to your Combat roll.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+ (ARMY)                                   (ARMY)                                      (ARMY)
+ Dawnless Day                             The Fighting Uruk-Hai                       Return to Valinor
+
+Play if all Shadow Nations are at War.   Play if Saruman is in play.                 Play if you control at least one Elven
+                                                                                     stronghold.
+ Discard all unused Free Peoples         Attack a Stronghold with a besieging
+ Action dice with a Will of the West     Army containing Isengard units.              Attack each Elven Stronghold not
+ result.                                                                              under siege. Roll a number of dice
+                                          The battle lasts for three Combat           equal to the number of Elven units in
+                                          rounds instead of one. During the first     that Region (up to 5) and score hits on
+                                          round, the Free Peoples player cannot       6.
+                                          use Combat Cards unless a Companion
+                                          is in the battle.
+
+BATTLE:                                  BATTLE:                                     BATTLE:
+
+Relentless Assault                       Onslaught                                   Deadly Strife
+Before the Combat Roll, eliminate up to  After removing casualties, eliminate up to  Both Armies add +2 to their Combat Roll
+two Shadow units. Add +1 to your Combat  four Shadow units. Roll one die for each    and Leader Reroll.
+Roll for every eliminated unit.          eliminated unit: score one hit on each
+                                         result of 4+.
+
+"The War of the Ring" boardgame is © 2004 Nexus Editrice, and © 2004 Sophisticated Games Ltd. All rights
+reserved. "The Lord of the Rings", "The War of the Ring" and the characters, events, items and places therein,
+are trademarks or registered trademarks of The Saul Zaentz Company, d/b/a Tolkien Enterprises, and are used
+under license by Sophisticated Games Ltd, and their sub licensees.
+
