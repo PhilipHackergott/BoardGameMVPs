@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-23",
+  "updated": "2026-05-24",
   "projects": [
     {
       "slug": "war-of-the-ring",
@@ -22,10 +22,12 @@
     {
       "slug": "lacuna",
       "title": "Lacuna",
-      "stage": "test",
-      "status": "awaiting-approval",
+      "stage": "build",
+      "status": "in-progress",
       "ip": "risky",
-      "updated": "2026-05-21",
+      "updated": "2026-05-24",
+      "version": "0.1.0-alpha",
+      "branch": "lacuna/alpha-0.1",
       "path": "projects/lacuna"
     },
     {
