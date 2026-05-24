@@ -20,8 +20,6 @@ import StyleSprite from "./StyleSprite";
 import { audio, music, sfx } from "../audio/chiptune";
 import {
   currentHandMax,
-  discountedPrice,
-  edictById,
   enemyIntent,
   eventById,
   heldMax,
@@ -411,80 +409,31 @@ function HeldTray({ context }: { context: "shop" | "combat" }) {
 
 function ShopScreen() {
   const { run, dispatch } = useGame();
-  const shop = run.shop!;
   const owned = run.slots;
-  const next = run.combat?.enemy ?? null; // the next royal (freshCombat set it on advance) — a blind preview
-  const removePrice = discountedPrice(shop.removeCardCost, run.edicts);
-  const edictOffers = shop.edictOffers ?? [];
 
-  const removeCard = () => {
-    const g = useGame.getState();
-    g.setPendingPick((cardId) => g.dispatch({ type: "removeCard", targetCardId: cardId }), "Remove which card from your deck?");
-    g.setPileModal("all");
-  };
   const sellJoker = (id: string) => {
     sfx.coin();
     dispatch({ type: "sellJoker", jokerId: id });
   };
 
-  // The shop is the SAME battle-screen shell: the sidebar persists (and flips to its market face —
-  // the "physical machine" metaphor), the jokers/pouch top band stays, and the Pixi market board
-  // slides its wares & packs in over the felt.
+  // The shop overlays the SAME battle screen: the felt stays exactly as it is, a tray slides up over
+  // it carrying the offerings + reroll/remove/next-fight controls (all in ShopBoard's Pixi tray), the
+  // jokers/pouch band stays up top, and the sidebar shows a big animated SHOP sign (Balatro-style).
   return (
     <div className="screen combat shop-overlay">
       <aside className="combat-sidebar" aria-label="The Black Market">
-        {next && (
-          <div className="cs-panel cs-royal cs-flip">
-            <div className="cs-royal-badge" style={{ background: SUIT_TINT[next.suit] }}>
-              <span className="cs-royal-crown">♛</span>
-              <span className="cs-royal-suit">{GLYPH[next.suit]}</span>
-            </div>
-            <div className="cs-royal-body">
-              <div className="cs-royal-name">NEXT · {next.tier.toUpperCase()}</div>
-              <div className="cs-hp" data-tip="The royal you will face next">
-                <div className="cs-hp-fill" style={{ width: "100%" }} />
-                <span className="cs-hp-text">{next.maxHealth} HP</span>
-              </div>
-              <div className="cs-royal-tags">
-                <span className="cs-disable" style={{ color: SUIT_TINT[next.suit] }} data-tip={`Disables the ${SUIT_NAME[next.suit]} power`}>
-                  ⊘ {GLYPH[next.suit]} {SUIT_NAME[next.suit]}
-                </span>
-              </div>
-              <span className="intent-strike" data-tip="What this royal strikes for">⚔ Strikes {next.attack}</span>
-            </div>
-          </div>
-        )}
-
-        <div className="cs-panel cs-turn turn-banner shop-market-banner cs-flip" role="status">⚜ THE BLACK MARKET</div>
+        <div className="shop-sign cs-flip" aria-label="Shop — open">
+          <span className="shop-sign-text">SHOP</span>
+          <span className="shop-sign-open">◆ OPEN ◆</span>
+        </div>
 
         <div className="cs-statgrid cs-flip">
           <div className="cs-panel cs-stat"><span>Gold</span><b className="gold">◆ {run.gold}</b></div>
           <div className="cs-panel cs-stat"><span>Round</span><b>{Math.min(run.enemyIndex + 1, run.castle.length)}/{run.castle.length}</b></div>
         </div>
 
-        <button type="button" className="cs-panel cs-shop-btn cs-flip" disabled={run.gold < shop.rerollCost} data-tip="Reroll the wares (the booster packs stay) — the cost rises each reroll" onClick={() => { sfx.buy(); dispatch({ type: "reroll" }); }}>
-          ⟳ Reroll ◆{shop.rerollCost}
-        </button>
-        <button type="button" className="cs-panel cs-shop-btn cs-flip" disabled={run.gold < removePrice} data-tip="Permanently thin your deck — the cost rises each time" onClick={removeCard}>
-          ✂ Remove a card ◆{removePrice}
-        </button>
-
-        {edictOffers.map((id) => {
-          const e = edictById(id);
-          if (!e) return null;
-          const price = discountedPrice(e.price, run.edicts);
-          return (
-            <button key={id} type="button" className="cs-panel cs-shop-btn cs-edict-btn cs-flip" disabled={run.gold < price} data-tip={`${e.name} — ${e.text}`} data-tip-type="edict" onClick={() => { sfx.buy(); dispatch({ type: "buyEdict", offerId: id }); }}>
-              ⚜ {e.name} ◆{price}
-            </button>
-          );
-        })}
-
         <button type="button" className="cs-runinfo cs-panel" data-tip="The Descent — every royal, decrees & run state (M)" onClick={() => useGame.getState().setMapOpen(true)}>
           ⌖ Run Info
-        </button>
-        <button type="button" className="cs-panel cs-nextfight primary" data-tip="Leave the market and face the next royal" onClick={() => dispatch({ type: "nextFight" })}>
-          Next fight →
         </button>
 
         <div className="cs-footer">

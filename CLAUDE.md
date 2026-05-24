@@ -71,6 +71,12 @@ transition or gate decision, update the project state first, then the registry e
    and is fresh (< 30 min), a drainer or another operator is active — stand down. The queue may
    auto-approve **only** `discovery → analysis → specification`; it must **never** auto-cross the
    `build` or ship gates. (See "Remote & queued operation" below.)
+8. **Everything lives in git.** The factory is one repo; every project is tracked on its own
+   branch (`<slug>/<topic>` or `<slug>/<release>`), and `main` holds the latest approved state.
+   Commit at every stage transition; a gate approval is the natural point to merge a working
+   branch into `main`. Parallel consoles use **git worktrees** — one branch per worktree — so
+   different titles advance simultaneously without clobbering each other. Full rules:
+   `docs/git-and-branching.md`. (Per the standing rule, push to a shared remote only when asked.)
 
 ## Running a command
 
