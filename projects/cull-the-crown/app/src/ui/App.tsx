@@ -11,7 +11,7 @@ import PixiCombatGate from "./PixiCombatGate";
 import DeckModal from "./DeckModal";
 import DeckPeek from "./DeckPeek";
 import PackModal from "./PackModal";
-import RunMap from "./RunMap";
+import PixiRunMap from "./PixiRunMap";
 import HelpOverlay from "./HelpOverlay";
 import PixiPauseMenu from "./PixiPauseMenu";
 import { audio, music, sfx } from "../audio/chiptune";
@@ -155,7 +155,7 @@ export default function App() {
       <PackModal />
       <DeckModal />
       <DeckPeek />
-      <RunMap />
+      <PixiRunMap />
       {paused && <PixiPauseMenu />}
       {help && <HelpOverlay onClose={() => setHelp(false)} />}
       <div className="crt" aria-hidden="true" />
