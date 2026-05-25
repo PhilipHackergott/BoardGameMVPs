@@ -17,6 +17,7 @@ interface Hit {
   h: number;
   fn: () => void;
   hover?: boolean; // true for buttons (redraw to show a hover state); false for plain hit regions (cards)
+  clip?: { x: number; y: number; w: number; h: number }; // only hittable inside this rect (scroll regions)
 }
 
 export interface ModalContent {
@@ -36,6 +37,10 @@ export class ModalStage {
   onClose?: () => void;
 
   private root = new Container();
+  private target: Container; // where content helpers draw (root, or a scroll layer inside scroll())
+  private clip: { x: number; y: number; w: number; h: number } | null = null; // active scroll-region clip for hits
+  private scrollY = 0;
+  private scrollRegion: { x: number; y: number; w: number; h: number; max: number } | null = null;
   private wig = new WiggleField();
   private wigTick = (tk: { deltaMS: number }) => this.wig.update(tk.deltaMS / 1000);
   private hits: Hit[] = [];
@@ -53,8 +58,22 @@ export class ModalStage {
 
   constructor(app: Application) {
     this.app = app;
+    this.target = this.root;
     app.ticker.add(this.wigTick);
     app.stage.addChild(this.root);
+    // mouse-wheel scrolls the active scroll region (Compendium / Past Runs)
+    app.canvas.addEventListener("wheel", (e) => {
+      if (!this.scrollRegion) return;
+      const r = this.scrollRegion;
+      // only when the pointer is over the region (canvas-relative ≈ screen for a full-window modal)
+      const rect = app.canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      if (px < r.x || px > r.x + r.w || py < r.y || py > r.y + r.h) return;
+      e.preventDefault();
+      this.scrollY = Math.max(0, Math.min(r.max, this.scrollY + e.deltaY));
+      this.draw();
+    }, { passive: false });
     app.stage.eventMode = "static";
     app.stage.hitArea = { contains: () => true } as { contains: () => boolean };
     app.stage.on("pointertap", (e) => {
@@ -103,20 +122,21 @@ export class ModalStage {
   }
 
   show(content: ModalContent): void {
+    if (content !== this.content) this.scrollY = 0; // reset scroll when the content object changes (new view/tab)
     this.content = content;
     this.draw();
   }
 
   // --- content helpers (coords relative to the content area top-left) ---
   text(s: string, x: number, y: number, size: number, color: number, opts: TextOpts = {}): void {
-    this.wig.build(this.root, s, this.cx + x, this.cy + y, size, color, opts);
+    this.wig.build(this.target, s, this.cx + x, this.cy + y, size, color, opts);
   }
   button(label: string, x: number, y: number, w: number, h: number, accent: number, enabled: boolean, fn: () => void, fontSize?: number): void {
     const sx = this.cx + x;
     const sy = this.cy + y;
     const hovered = this.hoverIdx === this.hits.length && enabled;
-    drawButton(this.root, this.wig, label, sx, sy, w, h, { accent, enabled, hovered, fontSize });
-    this.hits.push({ x: sx, y: sy, w, h, fn: enabled ? fn : () => {}, hover: true });
+    drawButton(this.target, this.wig, label, sx, sy, w, h, { accent, enabled, hovered, fontSize });
+    this.hits.push({ x: sx, y: sy, w, h, fn: enabled ? fn : () => {}, hover: true, clip: this.clip ?? undefined });
   }
   /** A pixel-art sprite from a URL, fit into (w,h) at (x,y) relative to the content area. Async-loaded + cached. */
   sprite(url: string, x: number, y: number, w: number, h: number): void {
@@ -128,7 +148,7 @@ export class ModalStage {
       s.scale.set(sc);
       s.position.set(this.cx + x + w / 2, this.cy + y + h / 2);
       s.roundPixels = true;
-      this.root.addChild(s);
+      this.target.addChild(s);
       return;
     }
     if (this.texCache.has(url)) return; // null = in-flight/failed
@@ -146,18 +166,57 @@ export class ModalStage {
     const g = new Graphics();
     g.roundRect(this.cx + x, this.cy + y, w, h, opts.radius ?? 6).fill({ color, alpha: opts.alpha ?? 1 });
     if (opts.stroke !== undefined) g.stroke({ width: 1.5, color: opts.stroke });
-    this.root.addChild(g);
+    this.target.addChild(g);
   }
   /** Drop a pre-built display object (e.g. a card face) into the content area at content-relative
    *  coords. The object's own origin/anchor is preserved — pass the centre for an anchored sprite. */
   node(obj: Container, x: number, y: number): void {
     obj.position.set(this.cx + x, this.cy + y);
-    this.root.addChild(obj);
+    this.target.addChild(obj);
   }
   /** Register a clickable region without drawing a button (e.g. a tappable card). Content-relative.
    *  No hover restyle — moving across many of these never forces a rebuild. */
   hit(x: number, y: number, w: number, h: number, fn: () => void): void {
-    this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false });
+    this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false, clip: this.clip ?? undefined });
+  }
+  /** A vertically-scrollable region: content (height `contentH`) is drawn by `build` into a masked
+   *  layer at content coords, offset by the current scroll; the wheel scrolls it. One per modal. */
+  scroll(x: number, y: number, w: number, h: number, contentH: number, build: () => void): void {
+    const ox = this.cx + x;
+    const oy = this.cy + y;
+    const max = Math.max(0, contentH - h);
+    this.scrollY = Math.min(this.scrollY, max);
+    this.scrollRegion = { x: ox, y: oy, w, h, max };
+    const layer = new Container();
+    const mask = new Graphics();
+    mask.rect(ox, oy, w, h).fill(0xffffff);
+    layer.addChild(mask);
+    layer.mask = mask;
+    this.root.addChild(layer);
+    // draw content into the layer at scroll coords (0 = top of content), offset by -scrollY
+    const pT = this.target;
+    const pCx = this.cx;
+    const pCy = this.cy;
+    const pClip = this.clip;
+    this.target = layer;
+    this.cx = ox;
+    this.cy = oy - this.scrollY;
+    this.clip = { x: ox, y: oy, w, h };
+    build();
+    this.target = pT;
+    this.cx = pCx;
+    this.cy = pCy;
+    this.clip = pClip;
+    // scrollbar
+    if (max > 0) {
+      const trackH = h;
+      const thumbH = Math.max(24, (h / contentH) * trackH);
+      const thumbY = oy + (this.scrollY / max) * (trackH - thumbH);
+      const bar = new Graphics();
+      bar.roundRect(ox + w + 4, oy, 5, trackH, 2).fill({ color: 0x140a1e });
+      bar.roundRect(ox + w + 4, thumbY, 5, thumbH, 2).fill({ color: THEME.frameDim });
+      this.root.addChild(bar);
+    }
   }
   /** A draggable 0..1 slider track (content-relative). onChange fires live while dragging or on click. */
   slider(x: number, y: number, w: number, value01: number, accent: number, onChange: (v: number) => void): void {
@@ -183,8 +242,13 @@ export class ModalStage {
     return !!c && x >= this.panelX && x <= this.panelX + c.panelW && y >= this.panelY && y <= this.panelY + c.panelH;
   }
   // Topmost-first: later-pushed hits draw on top (e.g. overlapping cards), so they win the click.
+  // A hit inside a scroll region is only live while the point is within that region (clipped rows).
   private hitIndexAt(x: number, y: number): number {
-    for (let i = this.hits.length - 1; i >= 0; i--) if (this.inside(this.hits[i], x, y)) return i;
+    for (let i = this.hits.length - 1; i >= 0; i--) {
+      const h = this.hits[i];
+      if (h.clip && (x < h.clip.x || x > h.clip.x + h.clip.w || y < h.clip.y || y > h.clip.y + h.clip.h)) continue;
+      if (this.inside(h, x, y)) return i;
+    }
     return -1;
   }
   private hitAt(x: number, y: number): Hit | undefined {
@@ -196,6 +260,9 @@ export class ModalStage {
     this.root.removeChildren();
     this.hits = [];
     this.sliders = [];
+    this.target = this.root;
+    this.clip = null;
+    this.scrollRegion = null;
     this.wig.reset();
     const c = this.content;
     if (!c) return;
