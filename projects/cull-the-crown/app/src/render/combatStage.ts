@@ -5,9 +5,8 @@
 // low logical resolution upscaled nearest-neighbour. Consumes a plain view-model + typed FX events.
 
 import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import { Particles, PlasmaBackground, Pops, Shake, Spring } from "../fx";
-import { clamp01 } from "../fx/easing";
-import { Card, FightingStyleId, ResolutionResult, Suit, SUIT_NAME } from "../engine/types";
+import { Particles, PlasmaBackground, Pops, Shake } from "../fx";
+import { Card, FightingStyleId, ResolutionResult, Suit } from "../engine/types";
 import { sfx } from "../audio/chiptune";
 import { CARD_H, CARD_W, CardNode, cardSignature } from "./cardNode";
 import { buildCardFace } from "./cardFace";
@@ -15,7 +14,7 @@ import { ShopStage, ShopItemVM, ShopVM } from "./shopStage";
 import { HudLayer, HudTip, HudVM } from "./hudLayer";
 import { FeltControls, FeltControlsVM } from "./feltControls";
 import { StyleFxLayer } from "./styleFx";
-import { KILL_FX, PIXEL_FONT, PLASMA_PALETTE, SUIT_COLOR, SUIT_GLYPH, SUIT_ROYAL, THEME, TITLE_FONT } from "./theme";
+import { KILL_FX, PIXEL_FONT, PLASMA_PALETTE, THEME } from "./theme";
 
 export interface EnemyVM {
   tier: string;
@@ -44,7 +43,6 @@ export const STAGE_H = 360; // taller 4:3 felt (Balatro-style) — fills the pla
 const ENEMY_X = STAGE_W / 2;
 const ENEMY_Y = 86;
 const HAND_Y = STAGE_H - 64; // lifted up to leave room for the felt sort bar below the hand
-const HP_W = 156;
 const DECK_X = STAGE_W - 34; // deck pile, bottom-right
 const DISCARD_X = STAGE_W - 34; // used pile shares the deck's column, stacked above it
 const PILE_Y = HAND_Y + 2; // deck pile y
@@ -91,7 +89,6 @@ export class CombatStage {
 
   private world = new Container();
   private plasma: PlasmaBackground;
-  private enemyLayer = new Container();
   private handLayer = new Container();
   private pileLayer = new Container();
   private particles = new Particles();
@@ -119,34 +116,10 @@ export class CombatStage {
   private clock = 0;
   private timers: { at: number; fn: () => void }[] = [];
 
-  private hpFrac = new Spring(1, { stiffness: 90, damping: 16 });
-  private hpFill = new Graphics();
-  private shieldBadge = new Container(); // "block" indicator on the enemy (DEF), pulses/flashes
-  private shieldG = new Graphics();
-  private shieldText!: Text;
-  private shieldPulse = 0; // gain animation
-  private shieldFlash = 0; // absorb animation
+  // the royal (portrait / HP / immunity / decrees) lives in the Pixi sidebar now; the felt keeps only
+  // the player's accumulated block (for the "BLOCK n" strike pop) and the full-screen red strike flash.
   private curShield = 0;
-  private tierText!: Text;
-  private statsText!: Text;
-  private immunityText!: Text;
-  private immunityPill = new Graphics();
-  private crownGlyph!: Text;
-  private crestGlyph!: Text; // large heraldic suit emblem behind the royal
-  private incomingText!: Text;
-  private enemyBody = new Container();
-  private auraG = new Graphics(); // suit-coloured glow behind the royal
-  private royal = new Container();
-  private headG = new Graphics();
-  private crownG = new Graphics();
-  private royalSuit: Suit | null = null;
-  private royalFlash!: Graphics;
-  private hitX = new Spring(0, { stiffness: 120, damping: 9 });
-  private hitY = new Spring(0, { stiffness: 120, damping: 9 });
-  private flashAlpha = 0;
   private redAlpha = 0;
-  private royalAlpha = 1;
-  private royalDying = false;
   private redFlash = new Graphics();
 
   private deckPile = new Graphics(); // empty-state outline / texture-not-ready fallback only
@@ -180,7 +153,6 @@ export class CombatStage {
     this.world.addChild(
       this.plasma.view,
       this.buildOverlay(),
-      this.enemyLayer,
       this.pileLayer,
       this.particles.layer,
       this.handLayer,
@@ -213,7 +185,6 @@ export class CombatStage {
     this.controls.onSetWild = (id, s) => this.onSetWild?.(id, s);
     this.controls.onCancelPick = () => this.onCancelPick?.();
     this.world.addChild(this.controls.view);
-    this.buildEnemy();
     this.buildPiles();
     this.handLayer.sortableChildren = true; // let a dragged card rise above the rest
 
@@ -313,111 +284,6 @@ export class CombatStage {
     return c;
   }
 
-  private buildEnemy(): void {
-    const v = this.enemyBody;
-    v.position.set(ENEMY_X, ENEMY_Y);
-    // The royal (portrait + HP + stats) now lives in the DOM sidebar (Balatro's "blind"). The felt
-    // keeps (ENEMY_X, ENEMY_Y) only as the anchor where played cards resolve and damage/FX pop, so
-    // the character itself is hidden here.
-    v.visible = false;
-    this.enemyLayer.addChild(v);
-
-    const dais = new Graphics();
-    dais.ellipse(0, 40, 52, 12).fill({ color: 0x000000, alpha: 0.4 });
-    dais.ellipse(0, 34, 46, 11).fill(THEME.stone).stroke({ width: 2, color: THEME.ink });
-    dais.ellipse(0, 31, 46, 11).fill(THEME.stoneLite);
-    v.addChild(this.auraG, dais); // aura sits behind everything
-
-    // large heraldic suit emblem behind the royal — set per suit in drawRoyal()
-    this.crestGlyph = new Text({ text: "", style: { fontSize: 80, fontFamily: PIXEL_FONT } });
-    this.crestGlyph.anchor.set(0.5);
-    this.crestGlyph.position.set(0, 2);
-    v.addChild(this.crestGlyph);
-
-    const royal = this.royal;
-    // headG/crownG are redrawn per suit in drawRoyal() so each opponent set reads as its suit.
-    this.crownGlyph = new Text({ text: "", style: { fontSize: 12, fontFamily: PIXEL_FONT, fontWeight: "700" } });
-    this.crownGlyph.anchor.set(0.5);
-    this.crownGlyph.position.set(0, -33);
-    this.royalFlash = new Graphics();
-    this.royalFlash.roundRect(-24, -32, 48, 58, 4).fill(0xffffff);
-    this.royalFlash.alpha = 0;
-    royal.addChild(this.headG, this.crownG, this.crownGlyph, this.royalFlash);
-    v.addChild(royal);
-
-    this.tierText = new Text({ text: "", style: { fill: THEME.gold, fontSize: 16, fontFamily: TITLE_FONT, letterSpacing: 1 } });
-    this.tierText.anchor.set(0.5);
-    this.tierText.position.set(0, 56);
-
-    const hpBg = new Graphics();
-    hpBg.roundRect(-HP_W / 2, 70, HP_W, 12, 3).fill(0x2a141c).stroke({ width: 1, color: THEME.frameDim });
-    this.hpFill.position.set(-HP_W / 2, 70);
-
-    this.statsText = new Text({ text: "", style: { fill: THEME.parchmentLite, fontSize: 9, fontFamily: PIXEL_FONT } });
-    this.statsText.anchor.set(0.5);
-    this.statsText.position.set(0, 92);
-
-    this.immunityText = new Text({ text: "", style: { fill: THEME.blood, fontSize: 9, fontFamily: PIXEL_FONT, fontWeight: "700" } });
-    this.immunityText.anchor.set(0.5);
-    this.immunityText.position.set(0, 108);
-    this.immunityPill.position.set(0, 108);
-
-    this.incomingText = new Text({
-      text: "",
-      style: { fill: THEME.blood, fontSize: 14, fontFamily: TITLE_FONT, stroke: { color: 0x000000, width: 3 } },
-    });
-    this.incomingText.anchor.set(0.5);
-    this.incomingText.position.set(0, -52);
-
-    // "block" badge (DEF) — a shield that appears, pulses on gain, flashes when it absorbs a blow
-    this.shieldText = new Text({ text: "", style: { fill: 0xe6d8ff, fontSize: 11, fontFamily: PIXEL_FONT, fontWeight: "700" } });
-    this.shieldText.anchor.set(0, 0.5);
-    this.shieldText.position.set(10, 0);
-    this.shieldBadge.addChild(this.shieldG, this.shieldText);
-    this.shieldBadge.position.set(HP_W / 2 + 18, 76);
-    this.shieldBadge.visible = false;
-
-    v.addChild(this.tierText, hpBg, this.hpFill, this.shieldBadge, this.statsText, this.immunityPill, this.immunityText, this.incomingText);
-  }
-
-  /** Re-skin the royal for its suit: a big heraldic emblem behind it, a tinted head, suit-coloured
-   *  eyes, and a suit-specific crown — so each opponent reads as its suit at a glance. */
-  private drawRoyal(suit: Suit): void {
-    const r = SUIT_ROYAL[suit];
-    const sc = SUIT_COLOR[suit];
-    // suit-coloured aura bathing the royal — the strongest at-a-glance "who am I fighting" signal
-    this.auraG.clear();
-    this.auraG.circle(0, 4, 66).fill({ color: sc, alpha: 0.16 });
-    this.auraG.circle(0, 4, 44).fill({ color: sc, alpha: 0.16 });
-    this.crestGlyph.text = SUIT_GLYPH[suit];
-    this.crestGlyph.style.fill = sc;
-    this.crestGlyph.alpha = 0.6;
-    const h = this.headG;
-    h.clear();
-    h.roundRect(-22, -18, 44, 42, 4).fill(r.skin).stroke({ width: 2, color: THEME.ink });
-    h.roundRect(-22, 14, 44, 10, 4).fill({ color: r.skinDark, alpha: 0.7 }); // jaw shading
-    h.rect(-13, -4, 8, 8).fill(r.eye); // eyes
-    h.rect(5, -4, 8, 8).fill(r.eye);
-    h.rect(-10, 12, 20, 3).fill(THEME.ink); // mouth
-
-    const c = this.crownG;
-    c.clear();
-    const cs = { width: 2, color: THEME.frameDim };
-    c.rect(-24, -30, 48, 10).fill(r.crown).stroke(cs); // band
-    if (r.merlon === "round") {
-      for (const cx of [-17, 0, 17]) c.circle(cx, -32, 6).fill(r.crown).stroke(cs);
-    } else if (r.merlon === "notch") {
-      for (const cx of [-21, -5, 11]) c.poly([cx, -30, cx + 7, -41, cx + 14, -30]).fill(r.crown).stroke(cs);
-    } else if (r.merlon === "trefoil") {
-      for (const cx of [-17, 0, 17]) {
-        c.circle(cx, -34, 4).fill(r.crown).stroke(cs);
-        c.circle(cx - 5, -30, 3.5).fill(r.crown).stroke(cs);
-        c.circle(cx + 5, -30, 3.5).fill(r.crown).stroke(cs);
-      }
-    } else {
-      for (const cx of [-22, -6, 10]) c.poly([cx, -30, cx + 6, -47, cx + 12, -30]).fill(r.crown).stroke(cs);
-    }
-  }
 
   private buildPiles(): void {
     const mk = (label: string, x: number): Text => {
@@ -563,42 +429,9 @@ export class CombatStage {
 
   sync(vm: CombatVM): void {
     this.subphase = vm.subphase;
-    const e = vm.enemy;
-    this.setText(this.tierText, e.tier.toUpperCase());
-    const hp = Math.max(0, e.maxHealth - e.damageTaken);
-    this.hpFrac.to(clamp01(hp / e.maxHealth));
-    this.setText(this.statsText, `${hp}/${e.maxHealth} HP   ATK ${e.attack}`);
-    this.setText(this.incomingText, vm.subphase === "defend" ? `STRIKES ${vm.incoming}` : "");
-
-    // block (DEF) badge — appears when shielded, pulses when gained
-    if (e.shield > this.curShield) this.shieldPulse = 1;
-    this.curShield = e.shield;
-    this.shieldBadge.visible = e.shield > 0;
-    if (e.shield > 0) {
-      this.setText(this.shieldText, `${e.shield}`);
-      this.shieldG.clear();
-      this.shieldG.poly([0, -9, 9, -5, 9, 4, 0, 10, -9, 4, -9, -5]).fill(0x4a3a6a).stroke({ width: 2, color: 0xb070e0 });
-    }
-
-    // re-skin the royal for its suit (head/crown) only when it changes
-    if (this.royalSuit !== e.immuneSuit) {
-      this.drawRoyal(e.immuneSuit);
-      this.royalSuit = e.immuneSuit;
-    }
-
-    // make the royal's immune suit unmistakable: crown jewel + a colour-coded pill
-    const sc = SUIT_COLOR[e.immuneSuit];
-    this.setText(this.crownGlyph, SUIT_GLYPH[e.immuneSuit]);
-    this.crownGlyph.style.fill = sc;
-    this.setText(this.immunityText, `DISABLES  ${SUIT_GLYPH[e.immuneSuit]} ${SUIT_NAME[e.immuneSuit].toUpperCase()}`);
-    this.immunityText.style.fill = sc;
-    const pw = this.immunityText.width + 20;
-    this.immunityPill.clear();
-    this.immunityPill.roundRect(-pw / 2, -9, pw, 18, 5).fill({ color: 0x140a12, alpha: 0.85 }).stroke({ width: 2, color: sc });
-    if (e.damageTaken === 0) {
-      this.royalAlpha = 1;
-      this.royalDying = false;
-    }
+    // The royal panel (tier / HP / immunity / decrees) lives in the Pixi sidebar now; the felt only
+    // tracks the player's accumulated block, which drives the "BLOCK n" pop when a strike is soaked.
+    this.curShield = vm.enemy.shield;
 
     // draw pile — a real stack of the deck's card-back models (no gold frame); falls back to the
     // procedural dark stack only until the back texture has loaded.
@@ -658,7 +491,7 @@ export class CombatStage {
         this.handLayer.addChild(node.view);
       }
       node.selected = vm.selectedIds.includes(card.id);
-      node.setImmune(card.suit === e.immuneSuit || card.extraSuit === e.immuneSuit);
+      node.setImmune(card.suit === vm.enemy.immuneSuit || card.extraSuit === vm.enemy.immuneSuit);
       node.defendMode = vm.subphase === "defend";
       const layout = this.handLayout(i, vm.hand.length);
       node.setLayout(layout.x, layout.y, layout.rot);
@@ -721,7 +554,6 @@ export class CombatStage {
       .stroke({ width: Math.min(8, 3 + power / 6), color: THEME.goldBright, alpha: 0.95 });
     this.strikeFx.poly([tx, ty, tx + 18, ty + 6, tx + 6, ty + 18]).fill({ color: THEME.goldBright, alpha: 0.9 });
     this.strikeFxAlpha = 1;
-    this.flashAlpha = 0.55;
     this.shake.add(Math.min(0.85, 0.18 + power / 45));
     this.particles.burst(tx + 6, ty + 6, {
       count: Math.min(38, 10 + power),
@@ -736,11 +568,10 @@ export class CombatStage {
     sfx.damage(power);
   }
 
-  // Block gained (Spades): a violet guard-up — shards sweep upward at the player + the shield pulses.
+  // Block gained (Spades): a violet guard-up — shards sweep upward at the player's block box.
   private blockFx(amount: number): void {
     const x = STAGE_W / 2;
     const y = STAGE_H - 86; // the player's block box, bottom-centre
-    this.shieldFlash = 1;
     this.particles.burst(x, y, {
       count: Math.min(26, 10 + amount),
       colors: [0xb070e0, 0xd8b8f5, 0xffffff],
@@ -801,19 +632,14 @@ export class CombatStage {
   private enemyStrike(amount: number): void {
     // wind-up: the royal rears back and pulses (with a visible "raise the blade" tell)
     this.enemyTurnTell();
-    this.hitY.kick(-16);
-    this.flashAlpha = 0.4;
     this.after(0.2, () => {
-      // impact: lunge down at the player
-      this.hitY.kick(Math.min(62, 22 + amount * 2.4));
+      // impact: red flash + slash + shake at the player
       this.redAlpha = Math.min(0.55, 0.26 + amount / 32);
-      this.flashAlpha = 0.75;
       this.shake.add(Math.min(1, 0.5 + amount / 26));
       this.spawnSlash();
       sfx.strike(amount);
-      // block absorbs part of the blow — flash the shield badge + call it out
+      // block absorbs part of the blow — call it out
       if (this.curShield > 0) {
-        this.shieldFlash = 1;
         this.pops.spawn(ENEMY_X, ENEMY_Y + 42, `🛡 BLOCK ${this.curShield}`, { color: 0xb070e0, fontSize: 14, rise: 22 });
         this.after(0.08, () => sfx.block());
       }
@@ -836,11 +662,8 @@ export class CombatStage {
   // block box, an expanding ring, and a "BLOCKED" call-out. No red flash / blood / damage (you took none).
   private enemyBlockedStrike(amount: number): void {
     this.enemyTurnTell();
-    this.hitY.kick(-14); // wind-up
-    this.flashAlpha = 0.32;
     this.after(0.22, () => {
-      this.hitY.kick(30); // the blow comes in…
-      this.spawnSlash(); //  …a blade streak…
+      this.spawnSlash(); // a blade streak…
       this.shake.add(Math.min(0.5, 0.18 + amount / 40));
       sfx.parry(); //          …turned aside with a metallic clang
       const x = STAGE_W / 2;
@@ -858,7 +681,6 @@ export class CombatStage {
       });
       this.particles.burst(x, y, { count: 14, colors: [0xffffff, 0xd8b8f5], speed: 150, spread: Math.PI * 2, gravity: 0, life: 0.45, size: 2, shape: "circle" });
       this.pops.spawn(x, y - 26, `🛡 BLOCKED ${amount}`, { color: 0xd8b8f5, fontSize: 16, rise: 22 });
-      this.after(0.06, () => this.hitY.kick(-18)); // the royal recoils — its blow bounced off
     });
   }
 
@@ -936,7 +758,6 @@ export class CombatStage {
       }
       const cascadeEnd = this.cascadePops(res, !!killed);
       if (killed) {
-        this.royalDying = true;
         this.shake.add(1);
         this.particles.burst(ENEMY_X, ENEMY_Y, { count: 56, colors: KILL_FX, speed: 220, life: 1.1, size: 4 });
         this.after(0.16, () => sfx.kill());
@@ -973,22 +794,14 @@ export class CombatStage {
     this.plasma.update(dt);
     if (this.mode === "shop") this.shop?.tickEmbedded(dt); // drive the tray slide / node bob / coin flip
 
-    // royal float + hit recoil + death
-    const floatY = Math.sin(this.time * 1.6) * 2.5;
-    this.royal.position.set(this.hitX.update(dt), floatY + this.hitY.update(dt));
-    if (this.royalDying) this.royalAlpha = Math.max(0, this.royalAlpha - dt * 1.6);
-    this.royal.alpha = this.royalAlpha;
-    this.flashAlpha = Math.max(0, this.flashAlpha - dt * 4);
-    this.royalFlash.alpha = this.flashAlpha;
+    // enemy-strike FX (the royal portrait itself lives in the Pixi sidebar now): a full-screen red
+    // flash, the blade-slash streak, and the gold damage streak to the sidebar.
     this.redAlpha = Math.max(0, this.redAlpha - dt * 1.6);
     this.redFlash.alpha = this.redAlpha;
     this.slashAlpha = Math.max(0, this.slashAlpha - dt * 3.5);
     this.slash.alpha = this.slashAlpha;
     this.strikeFxAlpha = Math.max(0, this.strikeFxAlpha - dt * 3);
     this.strikeFx.alpha = this.strikeFxAlpha;
-    this.shieldPulse = Math.max(0, this.shieldPulse - dt * 3);
-    this.shieldFlash = Math.max(0, this.shieldFlash - dt * 2.5);
-    this.shieldBadge.scale.set(1 + this.shieldPulse * 0.6 + this.shieldFlash * 0.5);
 
     for (const node of this.cards.values()) node.update(dt, this.pointer.x, this.pointer.y);
     for (let i = this.exiting.length - 1; i >= 0; i--) {
@@ -1002,11 +815,6 @@ export class CombatStage {
     this.particles.update(dt);
     this.pops.update(dt);
     this.styleFx.update(dt);
-
-    const frac = this.hpFrac.update(dt);
-    this.hpFill.clear();
-    const color = frac > 0.5 ? THEME.red : frac > 0.25 ? 0xd06030 : THEME.gold;
-    if (frac > 0.001) this.hpFill.roundRect(0, 0, HP_W * frac, 12, 3).fill(color);
 
     this.shake.update(dt, this.world, 0, 0);
   }

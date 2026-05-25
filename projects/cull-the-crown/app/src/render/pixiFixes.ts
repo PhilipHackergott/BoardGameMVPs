@@ -12,7 +12,7 @@
 // just means it's garbage-collected normally — but it's noisy and trips error assertions. Guard the
 // global pool once at startup so a missing bucket is skipped instead of throwing.
 
-import { Application, TexturePool } from "pixi.js";
+import { Application, Container, TexturePool } from "pixi.js";
 
 let patched = false;
 
@@ -23,6 +23,12 @@ let patched = false;
 // lose it so the count never creeps up.
 export function releaseApp(app: Application): void {
   const gl = (app.renderer as unknown as { gl?: WebGLRenderingContext } | undefined)?.gl;
+  try {
+    app.ticker?.stop(); // halt the render loop first so no frame renders mid-teardown (a destroyed
+    app.renderer?.render(new Container()); // Graphics → "reading 'geometry'" null throw); blank the stage
+  } catch {
+    /* renderer already gone */
+  }
   try {
     app.destroy(true, { children: true });
   } catch {
