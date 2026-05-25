@@ -39,8 +39,11 @@ _How the UI shows whose turn it is, legal moves, rejection reasons, score, game 
 plan-relevant rules state** (immunities, modifiers) on the actor + on affected pieces + at the point
 of action. Direct forced choices with motion._
 
-## Look, feel & flow  (crawl `../../knowledge/playbooks/visual-first-try.md` + `target-state.md` first)
+## Look, feel & flow  (crawl `../../knowledge/playbooks/visual-first-try.md` + `target-state.md` + `ui-architecture.md` first)
 _Original-asset direction consistent with the IP decision. Commit up front to:_
+- **The UI substrate — DOM or canvas (Pixi)?** State it now; it decides where the whole UI kit is built.
+  A unified pixel-art/arcade look ⇒ canvas; text/form-heavy ⇒ DOM. **Never plan to start DOM and port to
+  Pixi later** — that hybrid interim is the costliest path (see `ui-architecture.md`).
 - **A design / art-direction doc** (`projects/<slug>/art-direction.md`): concept, palette as named
   tokens, one display + one body face, **the ONE card/piece model**, panel/modal/button recipes, motion
   + a11y, a component audit checklist. Cohesion is decided, not discovered — exemplar `cull-the-crown/art-style.md`.

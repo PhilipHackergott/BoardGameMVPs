@@ -20,15 +20,26 @@ _The skeleton that makes a rich catalog affordable — build it in milestone 1, 
 - **Default-off contract:** _no content set ⇒ exactly the base game (base-game tests stay valid)._
 - **Shared predicates:** _one predicate per cross-cutting rule (displacement/immunity/etc.)._
 
+## UI substrate — DECIDE THIS FIRST  (crawl `../../knowledge/playbooks/ui-architecture.md`)
+_DOM or canvas (Pixi)? State it here and build **all** chrome in that ONE substrate. **The trap that
+costs the most: "start DOM to move fast, port to Pixi later" — the hybrid DOM-over-canvas interim is the
+most expensive state (two of every component, the alignment seam, e2e rerouting, then a full migration +
+~thousands of lines of dead CSS to prune). CtC paid exactly this; don't.** Default DOM for
+text/form/accessibility-heavy games; commit to a canvas UI kit when the identity is a unified pixel-art/
+arcade look (the chrome must read as part of the rendered scene)._
+
 ## Render plan (Pixi)
 _Scene structure; what's drawn; **how input maps to engine actions** — do board input at the stage
 level with explicit geometry (Pixi per-object hit-testing is unreliable); support drag-and-drop for
 the core action(s)._
 
-## UI plan (React)
-_Component tree for menus / HUD / settings. **Build the shared UI shell first**: ONE `<Modal>`/overlay
-primitive (backdrop, themed panel, Esc/backdrop close, focus trap, scroll-lock, reduce-motion) + shared
-atoms (`<CardFace>`/token, Button, Panel, tooltip), then drop each screen into it — see `target-state.md`._
+## UI plan — build the shell in the chosen substrate at **milestone 2**
+_**DOM game:** ONE `<Modal>`/overlay primitive (backdrop, themed panel, Esc/backdrop close, focus trap,
+scroll-lock, reduce-motion) + shared atoms (`<CardFace>`/token, Button, Panel, tooltip)._
+_**Canvas game:** the Pixi UI kit (`render/ui/`: a living-text typeface, `drawButton`, and a `ModalStage`
+shell with `text/button/sprite/rect/node/hit/slider/scroll/para` + dismissable/accent; **`releaseApp` to
+free each modal's WebGL context on close**) — every modal an ~80–200-line file on that one shell; copy
+CtC's `render/ui/` + `Pixi*Modal.tsx`. Either way, drop each screen into the shell — see `ui-architecture.md`._
 
 ## Design / art-direction  (crawl `../../knowledge/playbooks/target-state.md`)
 _Write `projects/<slug>/art-direction.md` before screens: concept · palette as named tokens (`:root` +
