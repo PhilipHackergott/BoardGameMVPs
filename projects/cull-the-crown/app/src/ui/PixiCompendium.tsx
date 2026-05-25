@@ -18,8 +18,11 @@ import { ModalStage } from "../render/ui/modalStage";
 import { STYLE_ART_SLUG } from "../render/sidebarStage";
 import { THEME } from "../render/theme";
 import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
+import { useTooltip } from "./tooltip";
 
 applyPixiFixes();
+
+const TIP = Symbol("compendium-hover"); // owner token for the shared tooltip surface
 
 // The Compendium, migrated onto the Pixi modal kit: a left nav (How to Play / Compendium) + a measured
 // scroll region (ModalStage.scroll + para()) that renders either long-form rules prose, a data-driven
@@ -199,6 +202,8 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
       }
       const modal = new ModalStage(app);
       modal.onClose = onClose;
+      // gallery tiles surface their full text on the ONE shared tooltip surface (see ui/tooltip)
+      modal.onHover = (tip, rect) => (tip && rect ? useTooltip.getState().show(TIP, { ...tip, anchor: rect }) : useTooltip.getState().hide(TIP));
       modalRef.current = modal;
       rebuild();
     })();
@@ -207,6 +212,7 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
     return () => {
       cancelled = true;
       window.removeEventListener("keydown", onKey);
+      useTooltip.getState().hide(TIP);
       const m = modalRef.current;
       modalRef.current = null;
       if (m) { m.destroy(); releaseApp(m.app); }
@@ -240,6 +246,8 @@ function drawGallery(mm: ModalStage, items: GItem[], w: number): void {
     mm.para(it.name, cx + 8, cy + 76, tileW - 16, 12, THEME.goldBright, { bold: true });
     if (it.tag) mm.text(it.tag.label, cx + 8, cy + 96, 8, it.tag.color);
     mm.para(it.text, cx + 8, cy + (it.tag ? 110 : 98), tileW - 16, 9, THEME.parchmentEdge);
+    // hover the tile → its full name+text on the shared tooltip surface (the tile clamps long text)
+    mm.hit(cx, cy, tileW, tileH, () => {}, { title: it.name, text: it.text });
   });
 }
 
@@ -277,5 +285,6 @@ function drawEnemies(mm: ModalStage, w: number): void {
     mm.para(it.name, cx + 8, cy + 70, tileW - 16, 12, THEME.goldBright, { bold: true });
     if (it.tag) mm.text(it.tag.label, cx + 8, cy + 92, 8, it.tag.color);
     mm.para(it.text, cx + 8, cy + 106, tileW - 16, 9, THEME.parchmentEdge);
+    mm.hit(cx, cy, tileW, tileH, () => {}, { title: it.name, text: it.text });
   });
 }

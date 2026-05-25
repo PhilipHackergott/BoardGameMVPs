@@ -88,9 +88,10 @@ DOM `CardFace`), `cardNode.ts`, `cardImage.ts`, `styleFx.ts`, `theme.ts`, `pixiF
 | `ModalStage` | `render/ui/modalStage.ts` | **live** | the unified Pixi modal shell (all migrated overlays) |
 | `drawButton` | `render/ui/pixiButton.ts` | **live** | the one Pixi button primitive |
 | `WiggleField` | `render/ui/wigglyText.ts` | **live** | animated pixel text |
-| `placeBeside` | `tipPlace.ts` | **live** | side-placement for tooltips (DOM `TooltipLayer` + Pixi `SideTip`) |
+| `useTooltip` + `Tooltip` | `tooltip.tsx` | **live** | the ONE tooltip surface (store + renderer) — DOM, felt & modals all feed it |
+| `placeBeside` | `tipPlace.ts` | **live** | side-placement used by the one `<Tooltip>` |
 | `packMeta` | `packMeta.ts` | **live** | pack/ware labels + tip-type + chips (`TYPE_CHIP`, `RARITY_CHIP`) |
-| `TooltipLayer` | `TooltipLayer.tsx` | **live** | global DOM `data-tip` tooltip (spawns beside the element) |
+| `TooltipLayer` | `TooltipLayer.tsx` | **live** | DOM `data-tip` scanner → feeds the shared `useTooltip` (renders nothing itself) |
 | `TransitionLayer` | `TransitionLayer.tsx` | **live** | intro/victory/defeat wipes |
 | `Modal` | `Modal.tsx` | **live** (Help only) | the old DOM modal shell — now backs just `HelpOverlay` |
 | `MuteButton` | `MuteButton.tsx` | **live** | corner mute toggle on the chromeless screens (title/event/end) |
@@ -146,14 +147,17 @@ accent rather than CSS `.active`/`.on`. This is the single biggest standardisati
 | Infinite-gold debug toggle | Settings (Pixi) | `drawButton` toggle |
 | Seed string | Run Setup (Pixi) | a small **DOM** text-input overlay floated over the Pixi panel |
 
-### Tooltip surfaces
+### Tooltip surface — ONE bubble, three sources
 
-- **`data-tip`** → global DOM `TooltipLayer` (spawns beside the element via `tipPlace.placeBeside`).
-- **Pixi `SideTip`** (in `PixiBoard`) → shop-ware + guild-band hover popups (same `placeBeside`).
-- Pixi modals draw their own labels/■hover popups inline via `ModalStage` (no separate tooltip layer).
+There is now a **single** tooltip (`ui/tooltip.tsx`: a `useTooltip` store + one `<Tooltip>` renderer,
+placed via `tipPlace.placeBeside`). Every source pushes into it:
+- **DOM `data-tip`** → `TooltipLayer` (now just the scanner/bridge — renders nothing itself).
+- **Pixi felt** → `PixiBoard` routes the shop-ware + guild-band `onHover` into the store.
+- **Pixi modals** → `ModalStage.onHover` (a hit-region can carry a `tip`); e.g. the Compendium gallery
+  tiles surface their full name+text. The host wires `onHover` → the store.
 
-Both real tooltip surfaces now share `placeBeside`, so they behave identically (right of the card, or left
-when there's no room, vertically centred + viewport-clamped).
+So the old `SideTip` (a second DOM bubble inside `PixiBoard`) is gone, and the modals are on the same
+surface — finding #6 closed.
 
 ---
 
@@ -181,10 +185,11 @@ One `CombatStage` owns the felt for both combat and the shop (embedded `ShopStag
 ### 5. Pack/shop label maps defined 3× — ✓ DONE
 Centralised in `packMeta.ts` (now also `TYPE_CHIP` + `RARITY_CHIP`).
 
-### 6. Tooltip mechanisms — ◑ STARTED
-Down to two: the DOM `TooltipLayer` and the Pixi `SideTip`, **both** using `tipPlace.placeBeside`. The Pixi
-modals draw inline labels instead of a shared tooltip. **Remaining:** unify the modal-internal hover popups
-onto the same surface if/when needed.
+### 6. Tooltip mechanisms — ✓ DONE
+**One** tooltip now (`ui/tooltip.tsx`: `useTooltip` store + a single `<Tooltip>` renderer, placed via
+`tipPlace.placeBeside`), fed by all three sources: DOM `data-tip` (`TooltipLayer` → bridge), the Pixi felt
+(`PixiBoard` shop/guild `onHover`), and the Pixi modals (`ModalStage.onHover` + a `tip` on a hit-region —
+e.g. Compendium gallery tiles). The separate `SideTip` bubble is gone.
 
 ### 7. `App.tsx` monolith — ✓ DONE
 Phase router + global layers only; every screen/overlay is its own file.
@@ -226,7 +231,7 @@ by `vite build` + the full e2e + eyeballing every DOM survivor.
     blanks in shop mode. Drop either guard and `13-shop` comes back empty.
   The real fix for all of this (and the teardown race) is **pooling one reused modal `Application`** across
   overlays instead of one-per-overlay.
-- **All nine design-cleanup findings are now resolved** (the modal shell, both sidebars, the card model,
-  the felt stages, label maps, `App.tsx`, dead DOM+CSS, and the single token source). The only loose end
-  is finding #6's optional extra (routing the Pixi modals' inline hover labels through one shared tooltip
-  surface) — deferred until there's a reason; today they read fine inline.
+- **All nine design-cleanup findings are resolved** (the modal shell, both sidebars, the card model, the
+  felt stages, label maps, `App.tsx`, dead DOM+CSS, the single token source, and — now — one shared
+  tooltip surface fed by DOM, the felt, and the modals). No design-cleanup loose ends remain; the only
+  open architectural item is the optional modal-`Application` pooling noted above (capture-only today).

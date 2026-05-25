@@ -1,15 +1,15 @@
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
 import { sfx } from "../audio/chiptune";
 import { CombatStage, STAGE_H, STAGE_W } from "../render/combatStage";
 import { ShopItemVM, ShopVM } from "../render/shopStage";
-import { HudHeldVM, HudJokerVM, HudTip, HudVM } from "../render/hudLayer";
+import { HudHeldVM, HudJokerVM, HudVM } from "../render/hudLayer";
 import { FeltControlsVM } from "../render/feltControls";
 import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 import { contentMeta, discountedPrice, edictById, heldMax, jokerById, makeCardFromTemplate, maxSlots, tarotById } from "../engine/index";
-import { PACK_LABEL, PACK_PICKS, SIZE_LABEL, LOOSE_TIP_TYPE, TYPE_CHIP, RARITY_CHIP } from "./packMeta";
-import { placeBeside, AnchorRect, Placed } from "./tipPlace";
+import { PACK_LABEL, PACK_PICKS, SIZE_LABEL, LOOSE_TIP_TYPE } from "./packMeta";
+import { useTooltip } from "./tooltip";
 
 applyPixiFixes(); // guard a Pixi v8.6 texture-pool bug before any rendering happens
 
@@ -30,44 +30,14 @@ async function loadFonts(): Promise<void> {
   }
 }
 
-interface HoverTip {
-  vm: ShopItemVM;
-  rect: AnchorRect;
-}
-interface HudHoverTip {
-  tip: HudTip;
-  rect: AnchorRect;
-}
-
-// A tooltip that measures itself and spawns BESIDE its anchor card (see tipPlace), shared by the shop
-// wares and the guild/pouch band so neither popup covers the card it describes. Renders hidden for one
-// frame so the measure→place happens before paint (no flash).
-function SideTip({ anchor, children }: { anchor: AnchorRect; children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<Placed | null>(null);
-  useLayoutEffect(() => {
-    if (!ref.current) return;
-    const b = ref.current.getBoundingClientRect();
-    setPos(placeBeside(anchor, b.width, b.height, window.innerWidth, window.innerHeight));
-  }, [anchor]);
-  return (
-    <div
-      ref={ref}
-      className={`tip-pop tip-${pos?.side ?? "right"} shop-tip`}
-      style={{ left: pos?.left ?? -9999, top: pos?.top ?? 0, visibility: pos ? "visible" : "hidden" }}
-      role="tooltip"
-    >
-      {children}
-    </div>
-  );
-}
+// The felt's hover tooltips (shop wares + the guild/pouch band) feed the ONE shared tooltip surface
+// (see tooltip.tsx) — same bubble the DOM `data-tip` and the Pixi modals use.
+const TIP = Symbol("felt-hover");
 
 export default function PixiBoard() {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<CombatStage | null>(null);
   const lastFx = useRef(0);
-  const [tip, setTip] = useState<HoverTip | null>(null);
-  const [hudTip, setHudTip] = useState<HudHoverTip | null>(null);
 
   function syncFromState(): void {
     const stage = stageRef.current;
@@ -265,7 +235,7 @@ export default function PixiBoard() {
           sfx.buy();
           g.dispatch({ type: "buyLoose", offerId: vm.id });
         }
-        setTip(null);
+        useTooltip.getState().hide(TIP);
       };
       stage.onShopReroll = () => {
         const g = useGame.getState();
@@ -280,7 +250,10 @@ export default function PixiBoard() {
         g.setPileModal("all");
       };
       stage.onShopNextFight = () => useGame.getState().dispatch({ type: "nextFight" });
-      stage.onShopHover = (vm, rect) => setTip(vm && rect ? { vm, rect } : null);
+      stage.onShopHover = (vm, rect) =>
+        vm && rect
+          ? useTooltip.getState().show(TIP, { title: vm.name, text: vm.text, type: vm.tipType, rarity: vm.rarity, anchor: rect })
+          : useTooltip.getState().hide(TIP);
 
       // guild/pouch HUD band intents
       stage.onHudSellJoker = (id) => {
@@ -300,7 +273,10 @@ export default function PixiBoard() {
           g.dispatch({ type: "useHeld", instanceId });
         }
       };
-      stage.onHudHover = (t, rect) => setHudTip(t && rect ? { tip: t, rect } : null);
+      stage.onHudHover = (t, rect) =>
+        t && rect
+          ? useTooltip.getState().show(TIP, { title: t.name, text: t.text, type: t.type, rarity: t.rarity, anchor: rect })
+          : useTooltip.getState().hide(TIP);
 
       // ---- combat action controls (sort / defend block / wildcard picker / pending-pick) ----
       stage.onSort = (k) => {
@@ -366,6 +342,7 @@ export default function PixiBoard() {
     return () => {
       cancelled = true;
       unsub();
+      useTooltip.getState().hide(TIP); // clear any felt tooltip when the board unmounts
       const stage = stageRef.current;
       stageRef.current = null;
       if (stage) {
@@ -375,37 +352,5 @@ export default function PixiBoard() {
     };
   }, []);
 
-  const chip = tip?.vm.tipType ? TYPE_CHIP[tip.vm.tipType] : undefined;
-  const rarityChip = tip?.vm.rarity ? RARITY_CHIP[tip.vm.rarity] : undefined;
-  const hudChip = hudTip?.tip.type ? TYPE_CHIP[hudTip.tip.type] : undefined;
-  const hudRarityChip = hudTip?.tip.rarity ? RARITY_CHIP[hudTip.tip.rarity] : undefined;
-  return (
-    <>
-      <div className="pixi-host" ref={hostRef} />
-      {tip && (
-        <SideTip anchor={tip.rect}>
-          <div className="tip-title">{tip.vm.name}</div>
-          <div className="tip-body">{tip.vm.text}</div>
-          {(chip || rarityChip) && (
-            <div className="tip-chips">
-              {chip && <span className={`tip-type ${chip.cls}`}>{chip.label}</span>}
-              {rarityChip && <span className={`tip-type ${rarityChip.cls}`}>{rarityChip.label}</span>}
-            </div>
-          )}
-        </SideTip>
-      )}
-      {hudTip && (
-        <SideTip anchor={hudTip.rect}>
-          <div className="tip-title">{hudTip.tip.name}</div>
-          <div className="tip-body">{hudTip.tip.text}</div>
-          {(hudChip || hudRarityChip) && (
-            <div className="tip-chips">
-              {hudChip && <span className={`tip-type ${hudChip.cls}`}>{hudChip.label}</span>}
-              {hudRarityChip && <span className={`tip-type ${hudRarityChip.cls}`}>{hudRarityChip.label}</span>}
-            </div>
-          )}
-        </SideTip>
-      )}
-    </>
-  );
+  return <div className="pixi-host" ref={hostRef} />;
 }

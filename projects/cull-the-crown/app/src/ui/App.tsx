@@ -7,6 +7,7 @@ import EndScreen from "./EndScreen";
 import MuteButton from "./MuteButton";
 import TransitionLayer from "./TransitionLayer";
 import TooltipLayer from "./TooltipLayer";
+import { Tooltip } from "./tooltip";
 import PixiCombatGate from "./PixiCombatGate";
 import PixiDeckModal from "./PixiDeckModal";
 import DeckPeek from "./DeckPeek";
@@ -151,6 +152,7 @@ export default function App() {
       )}
       <TransitionLayer />
       <TooltipLayer />
+      <Tooltip />
       <PixiCombatGate />
       <PixiPackModal />
       <PixiDeckModal />

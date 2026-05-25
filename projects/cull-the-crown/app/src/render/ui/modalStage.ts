@@ -18,6 +18,15 @@ interface Hit {
   fn: () => void;
   hover?: boolean; // true for buttons (redraw to show a hover state); false for plain hit regions (cards)
   clip?: { x: number; y: number; w: number; h: number }; // only hittable inside this rect (scroll regions)
+  tip?: TipContent; // hovering this region surfaces a tooltip on the shared surface (via onHover)
+}
+
+/** A tooltip payload routed out via `onHover` to the app's one shared tooltip surface (see ui/tooltip). */
+export interface TipContent {
+  title?: string;
+  text: string;
+  type?: string;
+  rarity?: string;
 }
 
 export interface ModalContent {
@@ -35,6 +44,10 @@ const HEADER_H = 50;
 export class ModalStage {
   readonly app: Application;
   onClose?: () => void;
+  /** Fires when the hovered hit-region carries a `tip` (or null on leave). The host routes it to the
+   *  one shared tooltip surface — `rect` is screen coords (the modal canvas is full-window, 1:1). */
+  onHover?: (tip: TipContent | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
+  private lastTipKey = "";
 
   private root = new Container();
   private target: Container; // where content helpers draw (root, or a scroll layer inside scroll())
@@ -105,6 +118,14 @@ export class ModalStage {
       }
       const i = this.hitIndexAt(e.global.x, e.global.y);
       app.stage.cursor = i >= 0 ? "pointer" : "default";
+      // tooltip: surface the hovered region's tip on the shared surface (keyed so we emit only on change)
+      const ht = i >= 0 ? this.hits[i].tip : undefined;
+      const key = ht ? (ht.title ?? "") + "|" + ht.text : "";
+      if (key !== this.lastTipKey) {
+        this.lastTipKey = key;
+        const h = i >= 0 ? this.hits[i] : null;
+        this.onHover?.(ht ?? null, ht && h ? { left: h.x, right: h.x + h.w, top: h.y, height: h.h } : null);
+      }
       // Only buttons restyle on hover; plain hit regions (cards) don't, so moving across a big card
       // grid never triggers a full rebuild (which would churn textures — removeChildren doesn't destroy).
       const hoverBtn = i >= 0 && this.hits[i].hover ? i : -1;
@@ -185,8 +206,8 @@ export class ModalStage {
   }
   /** Register a clickable region without drawing a button (e.g. a tappable card). Content-relative.
    *  No hover restyle — moving across many of these never forces a rebuild. */
-  hit(x: number, y: number, w: number, h: number, fn: () => void): void {
-    this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false, clip: this.clip ?? undefined });
+  hit(x: number, y: number, w: number, h: number, fn: () => void, tip?: TipContent): void {
+    this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false, clip: this.clip ?? undefined, tip });
   }
   /** A vertically-scrollable region: `build` draws the content (starting at y=0) into a masked layer;
    *  its height is MEASURED, so wrapped prose works without knowing the height up front. The wheel
