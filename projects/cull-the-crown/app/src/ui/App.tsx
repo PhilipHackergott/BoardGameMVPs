@@ -8,7 +8,7 @@ import MuteButton from "./MuteButton";
 import TransitionLayer from "./TransitionLayer";
 import TooltipLayer from "./TooltipLayer";
 import PixiCombatGate from "./PixiCombatGate";
-import DeckModal from "./DeckModal";
+import PixiDeckModal from "./PixiDeckModal";
 import DeckPeek from "./DeckPeek";
 import PackModal from "./PackModal";
 import PixiRunMap from "./PixiRunMap";
@@ -153,7 +153,7 @@ export default function App() {
       <TooltipLayer />
       <PixiCombatGate />
       <PackModal />
-      <DeckModal />
+      <PixiDeckModal />
       <DeckPeek />
       <PixiRunMap />
       {paused && <PixiPauseMenu />}

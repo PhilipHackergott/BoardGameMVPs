@@ -16,6 +16,7 @@ interface Hit {
   w: number;
   h: number;
   fn: () => void;
+  hover?: boolean; // true for buttons (redraw to show a hover state); false for plain hit regions (cards)
 }
 
 export interface ModalContent {
@@ -63,10 +64,13 @@ export class ModalStage {
       }
     });
     app.stage.on("globalpointermove", (e) => {
-      const i = this.hits.findIndex((h) => this.inside(h, e.global.x, e.global.y));
-      if (i !== this.hoverIdx) {
-        this.hoverIdx = i;
-        app.stage.cursor = i >= 0 ? "pointer" : "default";
+      const i = this.hitIndexAt(e.global.x, e.global.y);
+      app.stage.cursor = i >= 0 ? "pointer" : "default";
+      // Only buttons restyle on hover; plain hit regions (cards) don't, so moving across a big card
+      // grid never triggers a full rebuild (which would churn textures — removeChildren doesn't destroy).
+      const hoverBtn = i >= 0 && this.hits[i].hover ? i : -1;
+      if (hoverBtn !== this.hoverIdx) {
+        this.hoverIdx = hoverBtn;
         this.draw();
       }
     });
@@ -92,7 +96,7 @@ export class ModalStage {
     const sy = this.cy + y;
     const hovered = this.hoverIdx === this.hits.length && enabled;
     drawButton(this.root, this.wig, label, sx, sy, w, h, { accent, enabled, hovered, fontSize });
-    this.hits.push({ x: sx, y: sy, w, h, fn: enabled ? fn : () => {} });
+    this.hits.push({ x: sx, y: sy, w, h, fn: enabled ? fn : () => {}, hover: true });
   }
   /** A pixel-art sprite from a URL, fit into (w,h) at (x,y) relative to the content area. Async-loaded + cached. */
   sprite(url: string, x: number, y: number, w: number, h: number): void {
@@ -124,6 +128,17 @@ export class ModalStage {
     if (opts.stroke !== undefined) g.stroke({ width: 1.5, color: opts.stroke });
     this.root.addChild(g);
   }
+  /** Drop a pre-built display object (e.g. a card face) into the content area at content-relative
+   *  coords. The object's own origin/anchor is preserved — pass the centre for an anchored sprite. */
+  node(obj: Container, x: number, y: number): void {
+    obj.position.set(this.cx + x, this.cy + y);
+    this.root.addChild(obj);
+  }
+  /** Register a clickable region without drawing a button (e.g. a tappable card). Content-relative.
+   *  No hover restyle — moving across many of these never forces a rebuild. */
+  hit(x: number, y: number, w: number, h: number, fn: () => void): void {
+    this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false });
+  }
 
   private inside(h: Hit, x: number, y: number): boolean {
     return x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h;
@@ -132,8 +147,14 @@ export class ModalStage {
     const c = this.content;
     return !!c && x >= this.panelX && x <= this.panelX + c.panelW && y >= this.panelY && y <= this.panelY + c.panelH;
   }
+  // Topmost-first: later-pushed hits draw on top (e.g. overlapping cards), so they win the click.
+  private hitIndexAt(x: number, y: number): number {
+    for (let i = this.hits.length - 1; i >= 0; i--) if (this.inside(this.hits[i], x, y)) return i;
+    return -1;
+  }
   private hitAt(x: number, y: number): Hit | undefined {
-    return this.hits.find((h) => this.inside(h, x, y));
+    const i = this.hitIndexAt(x, y);
+    return i >= 0 ? this.hits[i] : undefined;
   }
 
   private draw(): void {
@@ -175,7 +196,7 @@ export class ModalStage {
       xg.roundRect(xx, xy, xw, xw, 6).fill({ color: xHover ? shade(THEME.blood, -0.4) : shade(THEME.blood, -0.62) }).stroke({ width: 2, color: THEME.blood });
       this.root.addChild(xg);
       this.wig.build(this.root, "✕", xx + xw / 2, xy + xw / 2, 14, shade(THEME.blood, 0.7), { anchor: 0.5, anchorY: 0.5, bold: true });
-      this.hits.push({ x: xx, y: xy, w: xw, h: xw, fn: () => this.onClose?.() });
+      this.hits.push({ x: xx, y: xy, w: xw, h: xw, fn: () => this.onClose?.(), hover: true });
     }
 
     // content area

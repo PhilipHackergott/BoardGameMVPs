@@ -1,9 +1,8 @@
 import { test, expect, Page } from "@playwright/test";
 
-// Card-rendering surfaces, now that cards are drawn with the Pixi model (PixiCard / PixiDeckRows)
-// presented as data-URL <img>s: (1) a card pack reveals real card faces (not procedural emblems),
-// with engraved picks carrying their sigil; (2) the full-deck view renders every card via the Pixi
-// deck-rows canvas, with the DOM stats panel summarising the deck.
+// Card-rendering surfaces: (1) a card pack reveals real card faces (not procedural emblems), with
+// engraved picks carrying their sigil; (2) the full-deck view is now a Pixi modal (PixiDeckModal on
+// ModalStage) — one full-window canvas, no DOM card/stats elements — that mounts on open and closes.
 
 declare global {
   interface Window {
@@ -57,7 +56,7 @@ test("a card pack reveals real card faces, not emblems", async ({ page }: { page
   expect(labels.filter((l) => l.includes(",")).length).toBe(2);
 });
 
-test("the full-deck view renders every card via the Pixi deck-rows canvas", async ({ page }: { page: Page }) => {
+test("the full-deck view is a Pixi modal that mounts on open and closes", async ({ page }: { page: Page }) => {
   await boot(page);
   await page.evaluate(() => {
     const g = window.__game;
@@ -65,15 +64,12 @@ test("the full-deck view renders every card via the Pixi deck-rows canvas", asyn
     g.getState().setPileModal("all");
   });
 
-  await expect(page.locator(".deck-view")).toBeVisible();
-  // the deck is now one Pixi canvas (PixiDeckRows) — no DOM card elements / DOM scroll box
-  await expect(page.locator(".deck-view .pixi-deck-rows canvas")).toBeVisible();
-  expect(await page.locator(".deck-view .card.small").count()).toBe(0);
+  // the deck view is now one full-window Pixi modal canvas — no DOM card elements / stats panel
+  await expect(page.locator(".pixi-modal-host canvas")).toBeVisible({ timeout: 15000 });
+  expect(await page.locator(".deck-view").count()).toBe(0);
+  expect(await page.locator(".card.small").count()).toBe(0);
 
-  // the DOM stats panel summarises the same deck the engine holds (∑ Total is the last base-card stat)
-  const total = await page.evaluate(() => {
-    const r = window.__game.getState().run;
-    return r.deck.length + r.hand.length + r.discard.length + r.table.length;
-  });
-  await expect(page.locator(".deck-stats .ds-bc").last().locator("b")).toHaveText(String(total));
+  // closing tears the Pixi modal down
+  await page.evaluate(() => window.__game.getState().setPileModal(null));
+  await expect(page.locator(".pixi-modal-host canvas")).toHaveCount(0, { timeout: 10000 });
 });
