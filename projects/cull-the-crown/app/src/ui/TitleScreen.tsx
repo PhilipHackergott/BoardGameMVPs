@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { hasSavedRun } from "./store";
 import RunSetup from "./RunSetup";
-import SettingsMenu from "./SettingsMenu";
+import PixiSettings from "./PixiSettings";
 import PastRunsOverlay from "./PastRunsOverlay";
 import Collection from "./Collection";
 
@@ -35,7 +35,7 @@ export default function TitleScreen() {
         by Balatro. No publisher art or branding.
       </p>
       {overlay === "setup" && <RunSetup onClose={() => setOverlay(null)} />}
-      {overlay === "settings" && <SettingsMenu onClose={() => setOverlay(null)} />}
+      {overlay === "settings" && <PixiSettings onClose={() => setOverlay(null)} />}
       {overlay === "past" && <PastRunsOverlay onClose={() => setOverlay(null)} />}
       {overlay === "collection" && <Collection onClose={() => setOverlay(null)} />}
     </div>

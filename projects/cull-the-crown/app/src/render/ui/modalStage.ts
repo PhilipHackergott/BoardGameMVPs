@@ -40,6 +40,8 @@ export class ModalStage {
   private wigTick = (tk: { deltaMS: number }) => this.wig.update(tk.deltaMS / 1000);
   private hits: Hit[] = [];
   private hoverIdx = -1;
+  private sliders: { x: number; y: number; w: number; h: number; onChange: (v: number) => void }[] = [];
+  private dragSlider: { x: number; w: number; onChange: (v: number) => void } | null = null;
   private content?: ModalContent;
   private panelX = 0;
   private panelY = 0;
@@ -63,7 +65,25 @@ export class ModalStage {
         this.onClose?.(); // click outside the panel = dismiss (Balatro)
       }
     });
+    app.stage.on("pointerdown", (e) => {
+      const s = this.sliders.find((sl) => e.global.x >= sl.x - 8 && e.global.x <= sl.x + sl.w + 8 && e.global.y >= sl.y - 10 && e.global.y <= sl.y + sl.h + 10);
+      if (s) {
+        this.dragSlider = { x: s.x, w: s.w, onChange: s.onChange };
+        s.onChange(Math.max(0, Math.min(1, (e.global.x - s.x) / s.w)));
+      }
+    });
+    const endDrag = () => {
+      this.dragSlider = null;
+    };
+    app.stage.on("pointerup", endDrag);
+    app.stage.on("pointerupoutside", endDrag);
     app.stage.on("globalpointermove", (e) => {
+      if (this.dragSlider) {
+        const d = this.dragSlider;
+        this.app.stage.cursor = "pointer";
+        d.onChange(Math.max(0, Math.min(1, (e.global.x - d.x) / d.w)));
+        return;
+      }
       const i = this.hitIndexAt(e.global.x, e.global.y);
       app.stage.cursor = i >= 0 ? "pointer" : "default";
       // Only buttons restyle on hover; plain hit regions (cards) don't, so moving across a big card
@@ -139,6 +159,21 @@ export class ModalStage {
   hit(x: number, y: number, w: number, h: number, fn: () => void): void {
     this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false });
   }
+  /** A draggable 0..1 slider track (content-relative). onChange fires live while dragging or on click. */
+  slider(x: number, y: number, w: number, value01: number, accent: number, onChange: (v: number) => void): void {
+    const sx = this.cx + x;
+    const sy = this.cy + y;
+    const h = 8;
+    const v = Math.max(0, Math.min(1, value01));
+    const track = new Graphics();
+    track.roundRect(sx, sy, w, h, 4).fill({ color: 0x140a1e }).stroke({ width: 1.5, color: THEME.frameDim });
+    if (v > 0.001) track.roundRect(sx, sy, w * v, h, 4).fill({ color: shade(accent, -0.15) });
+    this.root.addChild(track);
+    const thumb = new Graphics();
+    thumb.circle(sx + w * v, sy + h / 2, 9).fill({ color: shade(accent, 0.3) }).stroke({ width: 2, color: THEME.ink });
+    this.root.addChild(thumb);
+    this.sliders.push({ x: sx, y: sy, w, h, onChange });
+  }
 
   private inside(h: Hit, x: number, y: number): boolean {
     return x >= h.x && x <= h.x + h.w && y >= h.y && y <= h.y + h.h;
@@ -160,6 +195,7 @@ export class ModalStage {
   private draw(): void {
     this.root.removeChildren();
     this.hits = [];
+    this.sliders = [];
     this.wig.reset();
     const c = this.content;
     if (!c) return;

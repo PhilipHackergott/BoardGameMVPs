@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
 import Collection from "./Collection";
-import SettingsMenu from "./SettingsMenu";
+import PixiSettings from "./PixiSettings";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
 import { applyPixiFixes } from "../render/pixiFixes";
@@ -15,7 +15,7 @@ applyPixiFixes();
 export default function PixiPauseMenu() {
   const [view, setView] = useState<"menu" | "compendium" | "settings">("menu");
   if (view === "compendium") return <Collection onClose={() => setView("menu")} />;
-  if (view === "settings") return <SettingsMenu onClose={() => setView("menu")} />;
+  if (view === "settings") return <PixiSettings onClose={() => setView("menu")} />;
   return <PixiPauseModal onCompendium={() => setView("compendium")} onSettings={() => setView("settings")} />;
 }
 
