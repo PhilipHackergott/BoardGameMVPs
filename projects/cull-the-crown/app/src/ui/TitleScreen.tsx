@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { hasSavedRun } from "./store";
-import RunSetup from "./RunSetup";
+import PixiRunSetup from "./PixiRunSetup";
 import PixiSettings from "./PixiSettings";
 import PixiPastRuns from "./PixiPastRuns";
 import Collection from "./Collection";
@@ -34,7 +34,7 @@ export default function TitleScreen() {
         Luke Badger &amp; Andy Richdale (Badgers from Mars, CC&nbsp;BY). Roguelike structure inspired
         by Balatro. No publisher art or branding.
       </p>
-      {overlay === "setup" && <RunSetup onClose={() => setOverlay(null)} />}
+      {overlay === "setup" && <PixiRunSetup onClose={() => setOverlay(null)} />}
       {overlay === "settings" && <PixiSettings onClose={() => setOverlay(null)} />}
       {overlay === "past" && <PixiPastRuns onClose={() => setOverlay(null)} />}
       {overlay === "collection" && <Collection onClose={() => setOverlay(null)} />}

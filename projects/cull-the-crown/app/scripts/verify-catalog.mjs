@@ -28,13 +28,14 @@ await wait(300);
 // 2. Title screen
 await shot("02-title");
 
-// 3. Title overlays (each closes with its own button label: RunSetup→Back, Settings→Done, rest→Close)
+// 3. Title overlays. RunSetup & Compendium are still DOM (close via their own button); Settings & Past
+//    Runs are now Pixi modals (canvas) — open via the DOM title button, close with Esc.
 await clickBtn(/new run|play/i); await wait(400); await shot("03-runsetup");
 await clickBtn(/^back$/i); await wait(250);
 await clickBtn(/settings/i); await wait(350); await shot("04-settings");
-await clickBtn(/^done$/i); await wait(250);
+await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/past runs/i); await wait(350); await shot("05-pastruns");
-await clickBtn(/^close$/i); await wait(250);
+await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/compendium/i); await wait(400); await shot("06-compendium");
 await clickBtn(/^close$/i); await wait(250);
 
@@ -97,7 +98,9 @@ await drive(() => {
   g.getState().dispatch({ type: "openPack", packId: "catTp" });
 });
 await wait(700); await shot("17-pack-tarot-fan");
-{ const h = p.getByText("The Hierophant", { exact: true }).first(); try { await h.click({ timeout: 1500 }); } catch { /* */ } }
+// arm a targeting tarot — the content tiles are Pixi-drawn now; The Hierophant is the leftmost tile.
+// (centred 5-tile panel in a 1280×860 view → tile-0 centre ≈ 336,530; see PixiPackModal layout)
+await p.mouse.click(336, 530);
 await wait(400); await shot("18-pack-tarot-armed");
 await drive(() => { try { window.__game.getState().dispatch({ type: "closePack" }); } catch { /* */ } });
 await wait(250);
