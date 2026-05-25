@@ -28,9 +28,9 @@ async function enterCombat(page: Page) {
   await page.goto("/");
   const gotIt = page.getByRole("button", { name: "Close" });
   if (await gotIt.isVisible().catch(() => false)) await gotIt.click();
-  await page.getByRole("button", { name: /New Run|Play/ }).first().click(); // main menu → setup overlay
-  await page.getByRole("button", { name: "PLAY", exact: true }).click(); // start the run
-  await page.locator("canvas").first().waitFor();
+  // Start via the engine seam — New Run / PLAY are now Pixi canvas, not DOM buttons.
+  await page.evaluate(() => window.__game.getState().newRun("input-demo"));
+  await page.locator(".pixi-host canvas").first().waitFor();
   await page.waitForTimeout(1000);
 }
 

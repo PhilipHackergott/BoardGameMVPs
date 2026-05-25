@@ -31,8 +31,7 @@ await wait(300);
 // 2. Title screen
 await shot("02-title");
 
-// 3. Title overlays. Run Setup / Settings / Past Runs are now Pixi modals (canvas) — opened via the DOM
-//    title button, closed with Esc. Compendium is still a DOM overlay (closes via its own button).
+// 3. Title overlays — all Pixi modals now (canvas), opened via the DOM title button, closed with Esc.
 await clickBtn(/new run|play/i); await wait(400); await shot("03-runsetup");
 await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/settings/i); await wait(350); await shot("04-settings");
@@ -40,7 +39,7 @@ await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/past runs/i); await wait(350); await shot("05-pastruns");
 await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/compendium/i); await wait(400); await shot("06-compendium");
-await clickBtn(/^close$/i); await wait(250);
+await p.keyboard.press("Escape"); await wait(250);
 
 // 4. Combat — start a run via the dev seam
 await drive(() => window.__game.getState().newRun("catalog"));
@@ -81,28 +80,32 @@ await drive(() => {
 });
 await wait(1500); await shot("12-combatgate-win");
 
-// 10. Shop + packs. By now the sweep has mounted+destroyed several full-window Pixi modal apps (pause,
-//     deck, run-map, gate). Each is its own Pixi Application/WebGL context, and a same-page reload does
-//     NOT free the dead contexts — so the shared felt starves and renders blank in shop mode. A FRESH
-//     browser context is clean, so capture the shop + pack modals there. (Fresh context → first-run Help
-//     shows again; dismiss it.)
-await p.close();
-const shopCtx = await b.newContext({ viewport: VIEW });
-p = await shopCtx.newPage();
+// 10. Shop + packs. By now the sweep has mounted+destroyed several full-window Pixi modal apps (run
+//     setup, settings, past runs, compendium, run-map, pause, deck, gate). Each is its own Pixi
+//     Application/WebGL context; Chromium's per-process context pool is now exhausted, and even a fresh
+//     same-browser context renders the shared felt BLANK in shop mode. A brand-new browser PROCESS gets a
+//     clean GL pool — capture the shop + pack modals there. (Fresh browser → first-run Help shows again;
+//     dismiss it.)
+await b.close();
+const b2 = await chromium.launch();
+p = await b2.newPage({ viewport: VIEW });
 await p.goto(url, { waitUntil: "networkidle" }); await wait(500);
 await clickBtn(/close|got it|ok/i); await wait(300);
 await drive(() => window.__game.getState().newRun("catalog-shop"));
 await wait(1500);
+// Win AND advance in the SAME synchronous tick: combatPlay sets outcome="won" and `advance` reads it
+// immediately, so the run jumps straight to the shop and the Combat-Gate modal never renders. That
+// matters because each Pixi modal is its own WebGL Application, and mounting+destroying the gate
+// clobbers the persistent felt's GL context — leaving the shop blank. No gate frame ⇒ felt survives.
 await drive(() => {
   const g = window.__game;
   g.setState((s) => ({ run: { ...s.run, combat: { ...s.run.combat, enemy: { ...s.run.combat.enemy, maxHealth: 1, damageTaken: 0 } } } }));
   const id = g.getState().run.hand[0].id;
   g.getState().toggleSelect(id);
   g.getState().playCards();
+  g.getState().dispatch({ type: "advance" });
 });
-await wait(1400);
-await drive(() => window.__game.getState().dispatch({ type: "advance" }));
-await wait(1600); await shot("13-shop");
+await wait(1900); await shot("13-shop");
 
 // 11. Pack modal — crack open the first booster pack
 await drive(() => {
@@ -137,4 +140,4 @@ await drive(() => window.__game.setState((s) => ({ run: { ...s.run, phase: "lost
 await wait(800); await p.mouse.move(40, 40); await wait(150); await shot("16-endscreen");
 
 console.log("captured:", log.join(", "));
-await b.close();
+await b2.close();

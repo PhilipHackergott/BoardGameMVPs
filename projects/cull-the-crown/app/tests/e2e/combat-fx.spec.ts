@@ -8,9 +8,9 @@ async function startRun(page: Page) {
   await page.goto("/");
   const tut = page.getByRole("dialog", { name: "Rules" });
   if (await tut.isVisible().catch(() => false)) await page.getByRole("button", { name: "Close" }).click();
-  await page.getByRole("button", { name: /New Run|Play/ }).first().click();
-  await page.getByRole("button", { name: "PLAY", exact: true }).click();
-  await page.locator("canvas").first().waitFor();
+  // Start via the engine seam — New Run / PLAY now live on the Pixi setup canvas, not DOM buttons.
+  await page.evaluate(() => (window as unknown as { __game: { getState: () => { newRun: (s: string) => void } } }).__game.getState().newRun("fx-demo"));
+  await page.locator(".pixi-host canvas").first().waitFor();
   await page.waitForTimeout(900);
 }
 
