@@ -22,6 +22,13 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
   tuned) + the milestone shape that **collapses the polish/content/balance waves into the first build**.
   Also: commit a **design/art-direction doc** + **reusable UI primitives (one `<Modal>` shell)** before
   filling screens. Distilled from the days of hand-driven iteration on Cull the Crown + Lacuna.
+- ⭐ [UI architecture](playbooks/ui-architecture.md) — **decide the rendering substrate (DOM vs canvas)
+  in the build plan, then build the reusable UI kit *in that substrate* from milestone 2.** The costly
+  mistake to design out: building DOM-first then migrating to Pixi piece by piece (CTC did exactly this —
+  felt → sidebar → HUD → cards → every modal, extracting the kit only at the end). If the look is
+  canvas-native pixel-art, the **Pixi kit** (`render/ui/`: living-text typeface, button, `ModalStage`,
+  tokens; each modal mounts its own full-window app) is the milestone-2 deliverable, exactly as the DOM
+  `<Modal>` is for DOM games. Companion to Target-state §"Reusable UI primitives".
 - [Content depth](playbooks/content-depth.md) — **the catalog is the product.** Ship the full base
   content set, data-driven (a registry + fixed hook points, default-off ⇒ base game) so depth is
   additive; the categories that pay off (run-variants, tiered progression, rarity/downside/scaling
@@ -41,7 +48,11 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
   **surface plan-relevant state redundantly**, grow+blink forced choices, verify real input. Read
   with [Presentation FX](patterns/presentation-fx.md) before building any UI. The checklist now also
   covers **sound** and the **shell** (below) — a game that's silent or boots straight into play reads
-  as a demo no matter how good the board looks.
+  as a demo no matter how good the board looks. **Plus the "UI detail craft" notes** — the rework the
+  user kept asking for round after round, generalised: focal hierarchy (the central target is the most
+  present element), **one model at one size everywhere**, **size up + sharpen text (resolution 2–3) +
+  per-character "living-text" wiggle**, budget panels for wrapped text, colour-code state, controls
+  beside what they act on, 2.5D stacks.
 - [Audio & sound](playbooks/audio-and-sound.md) — **ship games that aren't silent**, IP-clean and
   zero-asset: a synthesized Web Audio engine (looping music + SFX kit), a Music/SFX **volume mixer** +
   mute, wired to game events. The hard rules: gesture-gate, double-gate mute, **pin the engine to

@@ -116,5 +116,42 @@ this proactively and treats relevant items as a pre-flight checklist.
   covers it. Cover it with a multi-fight regression test (`tests/e2e/multifight.spec.ts`). _Source:
   cull-the-crown `src/engine/combat.ts` (`startFight`/`drawToFull`)._
 
+## Confirmed (Cull the Crown — the Pixi UI kit)
+- **Symptom:** after opening/closing many Pixi modals over a session (or a parallel e2e run), the
+  persistent felt/sidebar stop rendering, or a phantom WebGL error fires. **Cause:** the "each modal
+  mounts its **own full-window Pixi app** while open" pattern means every modal holds a **WebGL
+  context**; browsers cap live contexts (~16), and `app.destroy()` does **not** free the GL context
+  promptly, so the count creeps until the oldest contexts are force-lost and the felt breaks. **Fix:** a
+  `releaseApp(app)` teardown that explicitly loses the context:
+  `gl.getExtension("WEBGL_lose_context")?.loseContext()` after `destroy()`. _Source: cull-the-crown
+  `render/pixiFixes.ts`._
+- **Symptom:** intermittent uncaught **"Cannot read properties of null (reading 'geometry')"** during a
+  Pixi app teardown (it masqueraded as an e2e `pageerror` that failed a screenshot spec for ages).
+  **Cause:** the ticker renders **one more frame while/after the app is being destroyed** — a destroyed
+  `Graphics` has null geometry. **Fix:** before `destroy()`, **stop the ticker and render a blank
+  `Container`** to clear the stage (both folded into `releaseApp` above). Lesson: order Pixi teardown
+  *stop render → blank → destroy → lose context*. _Source: cull-the-crown `render/pixiFixes.ts`._
+- **Symptom:** a Pixi UI built from **per-character "living text"** (each label split into one `Text`
+  per glyph, for the Balatro wiggle) stutters when the pointer moves. **Cause:** the stage rebuilds on
+  every `pointermove` to restyle a hover, re-rasterising *all* the glyph nodes. **Fix:** only rebuild
+  for elements that actually restyle on hover (buttons); tag plain hit-regions (cards) `hover:false` so
+  moving across a big grid never forces a rebuild; re-`show()` only on real state change. _Source:
+  cull-the-crown `render/ui/modalStage.ts` (hover/hit split) + `render/ui/wigglyText.ts`._
+- **Operational — testing a Pixi modal (no DOM selectors):** drive state via the `window.__game` seam;
+  assert the modal mounted (`.pixi-modal-host canvas` **visible**) + screenshot, and tore down on close
+  (`toHaveCount(0)`). The app's init is **async** (WebGL + fonts) so use **generous `toBeVisible`
+  timeouts** (≈15s) or it flakes under parallel workers. Migrating a DOM modal to Pixi **removes the DOM
+  buttons** e2e specs clicked — grep the suite for the labels and reroute those clicks to the seam
+  (`dispatch`/store action). _Source: cull-the-crown `tests/e2e/{descent,card-display,input}.spec.ts`._
+- **Operational — e2e config for a WebGL-heavy suite:** when many specs each spin a full-window Pixi
+  app, set Playwright **`workers: 1`** (parallel files exhaust the GL-context budget → cascading
+  lost-context failures) **+ `retries: 1`** (absorbs the residual teardown-timing flake). Even with
+  `releaseApp`, a heavy-churn capture spec (e.g. 40 seed-searched runs) can still log the benign
+  `"reading 'geometry'/'clear'"` teardown race — have that one spec **filter just that message** from its
+  no-`pageerror` assertion (keep other specs strict). Advance blocking gates via the engine action
+  (`dispatch({type:"advance"})`), not by clicking the Pixi button. To **start a run**, call the seam's
+  `newRun(...)` — never click the (now-Pixi) PLAY button. _Source: cull-the-crown `playwright.config.ts`
+  + `tests/e2e/look.spec.ts`._
+
 ## Template for a confirmed entry
 - **Symptom:** **Cause:** **Fix:** **Source project:**

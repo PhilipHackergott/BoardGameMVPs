@@ -71,9 +71,10 @@ source of truth every screen matches. It is the difference between "each screen 
 app" and "this is one game." It commits, concretely:
 
 - **Concept** — one sentence of visual identity (e.g. "an 8-bit arcade take on a medieval court").
-- **Palette as named tokens** — a small intentional set, defined once (CSS `:root` custom properties
-  for DOM **and** `render/theme.ts` for canvas, kept in sync), and a rule that **chrome never uses a
-  raw hex** — only a token. Name the **primary-action colour** and reserve info colours so CTAs are
+- **Palette as named tokens** — a small intentional set defined **once** and not duplicated: pick a
+  single source (`render/theme.ts` for a canvas game; CSS `:root` for a DOM game) and **generate** the
+  other side from it (CTC: a `gen-tokens` build-prestep rewrites the brand `:root` vars from `THEME`) so
+  they can't drift. A rule that **chrome never uses a raw hex** — only a token. Name the **primary-action colour** and reserve info colours so CTAs are
   unambiguous (CTC: "primary = red; blue is info-only, never a button").
 - **Type** — one display face + one body face, loaded before first paint, with where each is used.
 - **The one model per repeated object** — *one* card/piece/token look, built once as a shared component
@@ -88,6 +89,13 @@ Exemplar to copy the *shape* of (not the content): `projects/cull-the-crown/art-
 thin version up front and grow it; do not reverse-engineer it after ten screens have each guessed.
 
 ### 2. Reusable UI primitives, especially ONE modal shell
+
+> **First decide the substrate.** DOM or canvas (Pixi)? Build the primitives below *in that substrate*,
+> chosen up front — see [`ui-architecture.md`](ui-architecture.md). The trap is building DOM primitives
+> "to move fast" for a game whose identity is a unified pixel-art/canvas look, then migrating to Pixi
+> piece by piece later (Cull the Crown's most expensive detour). The rest of this section describes the
+> DOM case; for a canvas game the same roles are filled by the Pixi kit (`render/ui/`: `WiggleField`
+> typeface, `drawButton`, `ModalStage`, tokens).
 
 Both reference apps grew **6–10 overlays** (deck view, pack reveal, past-runs, rules, settings, pause,
 log, victory, account, …) — and each re-derived its own backdrop, centring, escape-to-close, focus

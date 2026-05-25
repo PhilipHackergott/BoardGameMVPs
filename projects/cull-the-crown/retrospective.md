@@ -114,3 +114,42 @@ The visual pass (wave 1) made it *look* finished; this wave made it *behave* fin
 bolted on after a "correct but flat/silent/shell-less" first build. The fix is the same each time:
 **move these into the spec and milestone 1.** A game with sound, a menu, pause, and save reads as a
 product before any balance work — and all of it is reusable, near-identical between games.
+
+---
+
+## Wave 3 — the all-Pixi UI migration (2026-05-25, mid-flight; project still at build)
+
+The first build shipped a **hybrid** UI: a PixiJS "felt" (board + cards) with the sidebar, HUD,
+combat controls, and **every modal** in React/DOM floating over it. Over many sessions we then
+migrated the *entire* UI to Pixi — felt controls, the guild/pouch band, the run sidebar, and all
+**nine** modals (Combat Gate, Run Info, Pause, Deck, Pack, Settings, Past Runs, Run Setup,
+Compendium) — onto a Pixi UI kit (`render/ui/`: `modalStage`, `pixiButton`, `wigglyText`, `tokens`)
+built up *during* the migration. We then stripped the orphaned DOM: ~12 components and **~2800 lines
+of dead CSS** (4306 → 1540), and unified the colour palette to a single source (`theme.ts` →
+generated `:root` vars). Final: every modal Pixi, the felt has no DOM islands, build + 23/23 e2e green.
+
+**It looked finished after wave 1; this wave made the chrome *cohesive* — but at a cost that should
+never have been paid.** The hybrid was the most expensive possible interim: two of every component
+(DOM `CardFace` + Pixi `cardNode`, DOM tooltip + Pixi tip-pop, DOM sidebar + Pixi felt), the DOM/canvas
+alignment seam, and an e2e suite whose DOM-button clicks **broke on every modal we moved to canvas**.
+We paid to build hybrid *and* to migrate off it.
+
+### Meta-lesson (the expensive one)
+**Decide the rendering substrate — DOM vs canvas — at spec/build-plan time, and build the reusable UI
+kit *in that substrate* from milestone 2.** For a game whose identity is a unified pixel-art/arcade
+look (the chrome must read as part of the rendered scene), commit to a Pixi UI kit on day one; for a
+text/form/accessibility-heavy game, commit to DOM. **Never "start DOM to move fast, port later."** Now
+generalised into `knowledge/playbooks/ui-architecture.md` (wired from `target-state.md`), with the kit
+API, the WebGL-context-budget rules, and the seam-driven test approach — so the next canvas game starts
+with the kit instead of re-deriving it.
+
+### Other reusable lessons distilled this wave
+- **WebGL context budget** — each full-window Pixi modal holds a GL context; browsers cap ~16, and
+  `app.destroy()` doesn't free them promptly → the persistent felt eventually renders blank. Always
+  `releaseApp()` on close (stop ticker → blank stage → `loseContext()`); order matters. → build-gotchas.
+- **Seam-driven e2e for canvas games** — drive `window.__game`, screenshot the canvas, advance gates via
+  `dispatch`, start runs via `newRun()`; `workers:1` + `retries:1` for the WebGL-heavy suite. → build-gotchas.
+- **Single token source** — generate the CSS brand vars from `theme.ts` (a build prestep); don't
+  hand-maintain two palettes. → target-state / ui-architecture.
+- **One typed field in a canvas modal** (seed input) — overlay a positioned DOM `<input>`; canvas can't
+  take keystrokes. → ui-architecture.
