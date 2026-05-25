@@ -11,8 +11,8 @@ _Last regenerated: 2026-05-25._
 > every screen and overlay is now drawn on a `<canvas>` (PixiJS), not in the DOM. A single Pixi modal
 > shell (`render/ui/modalStage.ts`) backs all the migrated overlays; the felt's sidebar, guild band and
 > combat controls are Pixi too. The remaining DOM survivors are the Title menu, the Event/End screens,
-> the Rules (Help) overlay, the Compendium, the Deck-Peek and a few corner buttons. Several old DOM
-> components are now **orphaned** (see "Orphaned / superseded").
+> the Rules (Help) overlay, the Deck-Peek and a few corner buttons. Several old DOM components are now
+> **orphaned** (see "Orphaned / superseded").
 
 ---
 
@@ -21,11 +21,13 @@ _Last regenerated: 2026-05-25._
 - **`App.tsx`** is the phase **router** + always-mounted global layers + app-wide effects (audio, keymap).
 - The felt is **two persistent Pixi canvases** — `PixiSidebar` (run sidebar) + `PixiBoard` (the board) —
   shared across combat ↔ shop, so nothing resets between them.
-- **Every overlay/modal is now Pixi** (one `ModalStage` shell) **except** the Rules/Help overlay and the
-  Compendium (still DOM) and the Deck-Peek hover (DOM).
+- **Every overlay/modal is now Pixi** (one `ModalStage` shell) **except** the Rules/Help overlay (DOM)
+  and the Deck-Peek hover (DOM).
 - A reusable **Pixi UI toolkit** lives in [`src/render/ui/`](../src/render/ui/): `modalStage`, `pixiButton`,
   `tokens`, `wigglyText`.
-- Each Pixi overlay mounts its **own full-window `Application`** (its own WebGL context) while open.
+- Each Pixi overlay mounts its **own full-window `Application`** (its own WebGL context) while open, and
+  `pixiFixes.releaseApp()` **frees that context on close** (stops the ticker, blanks the stage, then
+  `loseContext()`) so opening/closing modals over a long session never starves the GL-context budget.
 
 ## Top-level screens (phase-driven router in `src/ui/App.tsx`)
 
@@ -51,7 +53,7 @@ _Last regenerated: 2026-05-25._
 | **Run Setup** (deck/stake/seed) | `PixiRunSetup.tsx` | Pixi | Title → New Run | [03-runsetup.png](03-runsetup.png) |
 | **Settings** (volume sliders, per-screen soundtrack, debug) | `PixiSettings.tsx` | Pixi | Title / Pause → Settings | [04-settings.png](04-settings.png) |
 | **Past Runs** | `PixiPastRuns.tsx` | Pixi | Title → Past runs | [05-pastruns.png](05-pastruns.png) |
-| **Compendium** (rules + galleries, sidebar nav) | `Collection.tsx` | DOM | Title / Pause → Compendium | [06-compendium.png](06-compendium.png) |
+| **Compendium** (rules + galleries, sidebar nav) | `PixiCompendium.tsx` | Pixi | Title / Pause → Compendium | [06-compendium.png](06-compendium.png) |
 | **The Descent** (Styles / Opponents / Edicts / Stake tabs) | `PixiRunMap.tsx` | Pixi | ⌖ Run Info / `M` | [08-runinfo-descent.png](08-runinfo-descent.png) |
 | **Pause Menu** | `PixiPauseMenu.tsx` | Pixi | ⚙ Options / `Esc` in a run | [09-pausemenu.png](09-pausemenu.png) |
 | **Deck / pile view** | `PixiDeckModal.tsx` | Pixi | tap deck/used pile; card-picker | [10-deckmodal.png](10-deckmodal.png) |
@@ -96,12 +98,14 @@ DOM `CardFace`), `cardNode.ts`, `cardImage.ts`, `styleFx.ts`, `theme.ts`, `pixiF
 
 > `PixelArtDemo.tsx` is a dev-only art preview. `render/pixiFixes.ts` guards a Pixi v8.6 texture-pool bug.
 
-### Orphaned / superseded (0 importers — safe to delete)
+### Orphaned / superseded — ✓ DELETED
 
-The DOM combat chrome and card model were replaced by Pixi equivalents and are no longer imported:
-`RunSidebar.tsx` (→ `sidebarStage`/`PixiSidebar`), `HeldTray.tsx` (→ `hudLayer` band), `CardArt.tsx` +
-`StyleSprite.tsx` + `WaxSeal.tsx` (→ Pixi `cardFace`/`render` art), and the DOM `CardFace.tsx` is already
-**deleted**. (`CardArt` keeps one importer, the orphaned `HeldTray`, so it's effectively dead too.)
+The DOM combat chrome and card model that Pixi replaced are now **all removed**: `RunSidebar.tsx`
+(→ `sidebarStage`/`PixiSidebar`), `HeldTray.tsx` (→ `hudLayer` band), `CardArt.tsx` (→ Pixi `cardFace`),
+`PixiCard.tsx` (unused React wrapper), the DOM `CardFace.tsx`, `StyleSprite.tsx`, `WaxSeal.tsx`, and the
+superseded DOM modals (`RunSetup`, `Collection`, `SettingsMenu`, `PastRunsOverlay`, `RunMap`,
+`CombatGate`, `PauseMenu`, `PackModal`, `DeckModal`, `PixiDeckRows`). The felt's `combatStage` also
+dropped its now-invisible enemy-portrait code (the royal lives in the Pixi sidebar "blind").
 
 ---
 
@@ -117,7 +121,6 @@ CSS classes** — so the old per-class button catalogue no longer applies to the
 |----------------|--------|-----------|------|
 | ▸ Play / ⚔ New Run | Title | `primary` | primary CTA |
 | 📖 Compendium · 📜 Past runs · ⚙ Settings | Title | _(none)_ | base |
-| Close + sidebar nav items | Compendium | `primary` · `comp-nav-item` (+`active`) | close · nav/tab |
 | court-event options | Event | `event-option` | choice |
 | New run · Main menu | End | `primary` · _(none)_ | primary CTA · base |
 | Close (Rules) | Help | Modal `primary` | close |
@@ -129,9 +132,9 @@ variant. The orphaned `.danger`, `setup-*`, `cs-*`, `ca-*`, `wild-suit`, `runinf
 
 ### Pixi buttons (no CSS class — `drawButton`)
 
-Run Setup, Settings, Past Runs, The Descent, Pause, Deck modal, Pack modal, Combat Gate, **and** the felt
-sidebar (Run Info / Options / Play / Clear / Sort / defend / wildcard picker) all render their buttons via
-`drawButton`. State is conveyed by `accent` colour + hover redraw; tabs/toggles are buttons with an active
+Run Setup, Settings, Past Runs, The Descent, Pause, Deck modal, Pack modal, Combat Gate, Compendium **and**
+the felt sidebar (Run Info / Options / Play / Clear / Sort / defend / wildcard picker) all render their
+buttons via `drawButton`. State is conveyed by `accent` colour + hover redraw; tabs/toggles are buttons with an active
 accent rather than CSS `.active`/`.on`. This is the single biggest standardisation win of the migration.
 
 ### Form controls
@@ -160,17 +163,17 @@ The migration resolved most of the original findings (a unified shell + a single
 tokens replace the competing DOM idioms). Remaining work is mostly cleanup of dead DOM/CSS.
 
 ### 1. Shared modal shell — ✓ DONE (in Pixi)
-One `ModalStage` now backs Run Setup, Settings, Past Runs, The Descent, Pause, Deck, Pack and the Combat
-Gate — consistent backdrop, framed panel, ✕, click-outside + `Esc`, `dismissable` flag, accent tint.
-**Remaining:** Help & Compendium are still DOM (`Modal` / bespoke `comp-panel`); fold them in (or keep the
-two long-form rules views on DOM deliberately).
+One `ModalStage` now backs Run Setup, Settings, Past Runs, The Descent, Pause, Deck, Pack, the Combat Gate
+**and the Compendium** — consistent backdrop, framed panel, ✕, click-outside + `Esc`, `dismissable` flag,
+accent tint. **Remaining:** only the Rules/Help overlay is still DOM (`Modal`); fold it in, or keep that
+one long-form rules sheet on DOM deliberately.
 
 ### 2. Two near-identical sidebars — ✓ DONE
 The run sidebar is one Pixi `sidebarStage`/`PixiSidebar` for both combat and shop.
 
-### 3. Card model duplicated DOM vs Pixi — ✓ MOSTLY DONE
-The DOM `CardFace.tsx` is deleted; the card model is now one Pixi `render/cardFace.ts`. **Remaining:** the
-DOM art helpers (`CardArt`, `StyleSprite`, `WaxSeal`) are orphaned — delete them.
+### 3. Card model duplicated DOM vs Pixi — ✓ DONE
+The DOM `CardFace`, `StyleSprite`, `WaxSeal`, `CardArt` and `HeldTray` are all deleted; the card model is
+now one Pixi `render/cardFace.ts`.
 
 ### 4. Two Pixi stages repeat structure — ✓ DONE
 One `CombatStage` owns the felt for both combat and the shop (embedded `ShopStage` layer, `setMode`).
@@ -191,19 +194,23 @@ Colours are defined in **three** places: `render/theme.ts` (felt Pixi ints), `re
 kit), and the CSS custom properties in `styles.css` (the remaining DOM). **Fix:** a single token source
 feeding all three.
 
-### 9. Dead DOM + CSS — ○ NEW
-The migration left orphaned components (`RunSidebar`, `HeldTray`, `CardArt`, `StyleSprite`, `WaxSeal`) and a
-large amount of now-unused CSS (the `cs-*`, `ca-*`, `setup-*`, `wild-*`, `pack-pick`, `field-joker`,
-`held-item`, `runinfo-tab`, `.danger`, modal `*-panel`/`help-backdrop` rules). **Fix:** prune both.
+### 9. Dead DOM + CSS — ◑ COMPONENTS DONE, CSS OPEN
+All orphaned components (`RunSidebar`, `HeldTray`, `CardArt`, `PixiCard`, the superseded DOM modals) **and**
+`combatStage`'s invisible enemy-portrait code are deleted. **Remaining:** the now-unused CSS — `cs-*`,
+`ca-*`, `setup-*`, `wild-*`, `pack-pick`, `field-joker`, `held-item`, `runinfo-tab`, `comp-*`, `.danger`,
+the modal `*-panel`/`help-backdrop` rules — is still in `styles.css`. **Fix:** prune the dead CSS.
 
 ---
 
 ## Notes for the next pass
 
-- **Migration is in progress.** Run Setup was the most recent overlay migrated to Pixi; Help & Compendium
-  are the last DOM holdouts. Expect this catalogue to shift again as those move.
-- **Each Pixi overlay is its own `Application`/WebGL context.** The catalogue sweep had to capture the shop
-  in a **fresh browser context**: after opening several modal canvases in one session, a same-page reload
-  did not free the dead WebGL contexts and the shared felt rendered **blank** in shop mode. Worth watching
-  whether long real-play sessions (many modal opens, then shopping) hit the same starvation — if so, pool
-  one modal `Application` instead of one-per-overlay.
+- **Migration is complete.** Every modal is Pixi (Combat Gate, Run Info, Pause, Deck, Pack, Settings,
+  Past Runs, Run Setup, Compendium). The only DOM survivors are the first-run Rules/Help overlay, the
+  Deck-Peek hover, and the Title/Event/End screens — kept on DOM deliberately (long-form text / simple).
+- **Each Pixi overlay is its own `Application`/WebGL context.** `pixiFixes.releaseApp()` now frees that
+  context on close (stops the ticker, blanks the stage, `loseContext()`), so the context budget no longer
+  creeps up across a session and modal-destroy no longer clobbers the felt. A residual, harmless PixiJS v8
+  **teardown race** can still log "reading 'geometry'/'clear'" on a Graphics being destroyed mid-render
+  (same family as the texture-pool quirk `pixiFixes` swallows); `look.spec` filters just that message.
+  If it ever becomes visible, the cleaner fix is **pooling one reused modal `Application`** across overlays.
+- **Remaining cleanup:** prune the dead CSS (finding #9) and consider a single colour-token source (#8).
