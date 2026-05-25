@@ -6,7 +6,8 @@
   "description": "Cull the Crown MVP — a Regicide x Balatro single-player roguelike. Original working title; clean mechanics-only reimplementation.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "gen:tokens": "node scripts/gen-tokens.mjs",
+    "build": "node scripts/gen-tokens.mjs && tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",

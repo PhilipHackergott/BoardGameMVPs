@@ -1,12 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Press+Start+2P&display=swap");
 
 :root {
+  /* DOM-only structural colours — no Pixi counterpart, hand-maintained here. */
   --bg: #0e0814;
   --bg2: #1a1020;
   --panel: #221530;
   --panel-2: #2c1c3c;
-  --ink: #f0e6d0;
+  --ink: #f0e6d0; /* light body text (note: distinct from Pixi THEME.ink, which is the dark base) */
   --muted: #b09cc0;
+  --line: #4a3560;
+  --parch-ink: #2a1a12; /* dark text on parchment */
+  /* >>> brand tokens — generated from render/theme.ts (npm run gen:tokens); do not edit by hand >>> */
   --gold: #f2c14e;
   --gold-bright: #ffe9a0;
   --red: #c0273f;
@@ -14,13 +18,11 @@
   --good: #7ad06f;
   --blue: #5fb0e0;
   --violet: #b070e0;
-  --line: #4a3560;
   --frame: #8a6a2a;
-  /* Parchment family — card stock + light "paper" info boxes (the medieval white-box). */
   --parch: #e8d8a0;
   --parch-lite: #fff0c8;
   --parch-edge: #8a6a3a;
-  --parch-ink: #2a1a12;
+  /* <<< brand tokens <<< */
   /* Base size for all rem units — scales every rem-based font/spacing in the DOM UI (menus, HUD,
      tooltips, modals, setup) across the whole game. */
   font-size: 18px;

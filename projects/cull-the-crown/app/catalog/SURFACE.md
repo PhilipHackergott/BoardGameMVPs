@@ -58,7 +58,7 @@ _Last regenerated: 2026-05-25._
 | **Pause Menu** | `PixiPauseMenu.tsx` | Pixi | ⚙ Options / `Esc` in a run | [09-pausemenu.png](09-pausemenu.png) |
 | **Deck / pile view** | `PixiDeckModal.tsx` | Pixi | tap deck/used pile; card-picker | [10-deckmodal.png](10-deckmodal.png) |
 | **Deck Peek** (draw-pile hover preview) | `DeckPeek.tsx` | DOM | hover the draw pile | [11-deckpeek.png](11-deckpeek.png) |
-| **Combat Gate** (claim spoils / see the end) | `PixiCombatGate.tsx` | Pixi (non-dismissable) | fight won/lost | [12-combatgate-win.png](12-combatgate-win.png) |
+| **Combat Gate** (claim spoils / see the end) | `PixiCombatGate.tsx` | Pixi (non-dismissable) | fight won/lost | [12-combatgate-win.png](12-combatgate-win.png) — felt backdrop blank in capture, see Notes |
 | **Pack Modal — joker/training/card** | `PixiPackModal.tsx` | Pixi | open a booster | [14-packmodal.png](14-packmodal.png) |
 | **Pack Modal — tarot/spectral (deck-fan)** | `PixiPackModal.tsx` | Pixi | open a tarot/spectral booster | [17-pack-tarot-fan.png](17-pack-tarot-fan.png) · armed: [18-pack-tarot-armed.png](18-pack-tarot-armed.png) |
 
@@ -73,7 +73,7 @@ _Last regenerated: 2026-05-25._
 |--------|------|
 | `modalStage.ts` | the shared modal shell + content helpers: `text` (wiggly), `button`, `sprite`, `rect`, `node`, `hit`, `scroll`, `slider`. Owns backdrop/panel/header/✕, hit-testing, click-out & wheel-scroll. |
 | `pixiButton.ts` | `drawButton` — the one Pixi button primitive (accent + hover + enabled states). |
-| `tokens.ts` | `shade()` + shared colour tokens for the kit. |
+| `tokens.ts` | re-exports `THEME` (the single brand-palette source) + a type scale + the `shade()` helper. |
 | `wigglyText.ts` | `WiggleField` — the animated pixel-text renderer used for titles/labels. |
 
 Felt-side Pixi stages (not modals): `combatStage.ts` (felt + cards + embedded `ShopStage` + `setMode`),
@@ -94,7 +94,7 @@ DOM `CardFace`), `cardNode.ts`, `cardImage.ts`, `styleFx.ts`, `theme.ts`, `pixiF
 | `TransitionLayer` | `TransitionLayer.tsx` | **live** | intro/victory/defeat wipes |
 | `Modal` | `Modal.tsx` | **live** (Help only) | the old DOM modal shell — now backs just `HelpOverlay` |
 | `MuteButton` | `MuteButton.tsx` | **live** | corner mute toggle on the chromeless screens (title/event/end) |
-| `ItemArt` | `ItemArt.tsx` | **live** | procedural emblem fallback (used by `CardArt` + the dev demo) |
+| `ItemArt` | `ItemArt.tsx` | dev-only | procedural emblem fallback — now imported only by `PixelArtDemo` (its production user `CardArt` is gone) |
 
 > `PixelArtDemo.tsx` is a dev-only art preview. `render/pixiFixes.ts` guards a Pixi v8.6 texture-pool bug.
 
@@ -189,16 +189,19 @@ onto the same surface if/when needed.
 ### 7. `App.tsx` monolith — ✓ DONE
 Phase router + global layers only; every screen/overlay is its own file.
 
-### 8. One token source — ○ OPEN (and now wider)
-Colours are defined in **three** places: `render/theme.ts` (felt Pixi ints), `render/ui/tokens.ts` (modal
-kit), and the CSS custom properties in `styles.css` (the remaining DOM). **Fix:** a single token source
-feeding all three.
+### 8. One token source — ✓ DONE
+`render/theme.ts` (`THEME` ints) is now the **single source of truth** for the brand palette. `render/ui/
+tokens.ts` re-exports `THEME` (it was never a separate palette — just `shade()` + a type scale). The DOM
+mirrors `THEME`: `scripts/gen-tokens.mjs` (run by `npm run gen:tokens` **and** as a `build` prestep)
+regenerates the brand `:root` custom properties in `styles.css` from `THEME`, between BRAND-TOKENS
+markers, so Pixi/CSS can't drift. Only the DOM-only structural vars (`--bg/--panel/--muted/--line/--ink`
+— no Pixi counterpart) stay hand-edited.
 
-### 9. Dead DOM + CSS — ◑ COMPONENTS DONE, CSS OPEN
-All orphaned components (`RunSidebar`, `HeldTray`, `CardArt`, `PixiCard`, the superseded DOM modals) **and**
-`combatStage`'s invisible enemy-portrait code are deleted. **Remaining:** the now-unused CSS — `cs-*`,
-`ca-*`, `setup-*`, `wild-*`, `pack-pick`, `field-joker`, `held-item`, `runinfo-tab`, `comp-*`, `.danger`,
-the modal `*-panel`/`help-backdrop` rules — is still in `styles.css`. **Fix:** prune the dead CSS.
+### 9. Dead DOM + CSS — ✓ DONE
+All orphaned components (`RunSidebar`, `HeldTray`, `CardArt`, `PixiCard`, the superseded DOM modals) and
+`combatStage`'s invisible enemy-portrait code are deleted, **and** the dead CSS is pruned: `styles.css`
+went 4306 → ~1540 lines via `scripts/prune-css.mjs` (a conservative, live-class-aware pruner). Verified
+by `vite build` + the full e2e + eyeballing every DOM survivor.
 
 ---
 
@@ -208,9 +211,22 @@ the modal `*-panel`/`help-backdrop` rules — is still in `styles.css`. **Fix:**
   Past Runs, Run Setup, Compendium). The only DOM survivors are the first-run Rules/Help overlay, the
   Deck-Peek hover, and the Title/Event/End screens — kept on DOM deliberately (long-form text / simple).
 - **Each Pixi overlay is its own `Application`/WebGL context.** `pixiFixes.releaseApp()` now frees that
-  context on close (stops the ticker, blanks the stage, `loseContext()`), so the context budget no longer
-  creeps up across a session and modal-destroy no longer clobbers the felt. A residual, harmless PixiJS v8
-  **teardown race** can still log "reading 'geometry'/'clear'" on a Graphics being destroyed mid-render
-  (same family as the texture-pool quirk `pixiFixes` swallows); `look.spec` filters just that message.
-  If it ever becomes visible, the cleaner fix is **pooling one reused modal `Application`** across overlays.
-- **Remaining cleanup:** prune the dead CSS (finding #9) and consider a single colour-token source (#8).
+  context on close (stops the ticker, blanks the stage, `loseContext()`), so in real play the budget no
+  longer creeps up and modal-destroy no longer clobbers the felt. A residual, harmless PixiJS v8 **teardown
+  race** can still log "reading 'geometry'/'clear'" on a Graphics destroyed mid-render (same family as the
+  texture-pool quirk `pixiFixes` swallows); `look.spec` filters just that message.
+- **Headless capture still can't composite a modal over the _live_ felt** (verified). The instant a modal's
+  `Application` mounts over the live felt, the GL budget breaks and the felt — sometimes the modal too —
+  blanks; `releaseApp` only helps on _close_, too late. Two consequences for this catalogue:
+  - **`12-combatgate-win` is shot on a black backdrop.** The gate reads fine on its own (it's the subject),
+    but the felt behind it can't render in capture. It renders only when the felt is _already_ dead — so a
+    "fix" would need the architectural change below, not a capture tweak.
+  - **The shop sweep** reaches the market in a **fresh browser** and **without ever mounting the Combat
+    Gate** (it wins + `advance`s in one synchronous tick, so the gate never renders) — otherwise the felt
+    blanks in shop mode. Drop either guard and `13-shop` comes back empty.
+  The real fix for all of this (and the teardown race) is **pooling one reused modal `Application`** across
+  overlays instead of one-per-overlay.
+- **All nine design-cleanup findings are now resolved** (the modal shell, both sidebars, the card model,
+  the felt stages, label maps, `App.tsx`, dead DOM+CSS, and the single token source). The only loose end
+  is finding #6's optional extra (routing the Pixi modals' inline hover labels through one shared tooltip
+  surface) — deferred until there's a reason; today they read fine inline.

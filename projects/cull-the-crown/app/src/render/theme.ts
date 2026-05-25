@@ -5,6 +5,10 @@
 import { Rgb } from "../fx";
 import { Suit } from "../engine/types";
 
+// THEME is the single source of truth for the brand palette. The DOM mirrors it: `npm run gen:tokens`
+// (also a prebuild step) regenerates the brand `:root` custom properties in styles.css from these ints,
+// so Pixi and CSS never drift — change a colour HERE, not in the CSS. (DOM-only structural colours —
+// --bg/--panel/--muted/--line/--ink — have no Pixi counterpart and stay hand-edited in styles.css.)
 export const THEME = {
   // flat medieval palette (no gradients in the foreground)
   ink: 0x1a1020,
