@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
-import Collection from "./Collection";
+import PixiCompendium from "./PixiCompendium";
 import PixiSettings from "./PixiSettings";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
@@ -14,7 +14,7 @@ applyPixiFixes();
 // Compendium/Settings still open the DOM overlays for now (those migrate in a later pass).
 export default function PixiPauseMenu() {
   const [view, setView] = useState<"menu" | "compendium" | "settings">("menu");
-  if (view === "compendium") return <Collection onClose={() => setView("menu")} />;
+  if (view === "compendium") return <PixiCompendium onClose={() => setView("menu")} />;
   if (view === "settings") return <PixiSettings onClose={() => setView("menu")} />;
   return <PixiPauseModal onCompendium={() => setView("compendium")} onSettings={() => setView("settings")} />;
 }

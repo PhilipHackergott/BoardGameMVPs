@@ -3,7 +3,7 @@ import { hasSavedRun } from "./store";
 import PixiRunSetup from "./PixiRunSetup";
 import PixiSettings from "./PixiSettings";
 import PixiPastRuns from "./PixiPastRuns";
-import Collection from "./Collection";
+import PixiCompendium from "./PixiCompendium";
 
 export default function TitleScreen() {
   const [overlay, setOverlay] = useState<null | "setup" | "settings" | "past" | "collection">(null);
@@ -37,7 +37,7 @@ export default function TitleScreen() {
       {overlay === "setup" && <PixiRunSetup onClose={() => setOverlay(null)} />}
       {overlay === "settings" && <PixiSettings onClose={() => setOverlay(null)} />}
       {overlay === "past" && <PixiPastRuns onClose={() => setOverlay(null)} />}
-      {overlay === "collection" && <Collection onClose={() => setOverlay(null)} />}
+      {overlay === "collection" && <PixiCompendium onClose={() => setOverlay(null)} />}
     </div>
   );
 }

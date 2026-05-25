@@ -1,61 +1,35 @@
 import { test, expect, Page } from "@playwright/test";
 
-// Verifies the Compendium panel is a fixed size across tabs AND that galleries are PAGINATED
-// (a fixed page of tiles + a pager) rather than scrolled. Pure DOM, so element screenshots are reliable.
-
-async function openCompendium(page: Page) {
-  await page.goto("/");
-  const tut = page.getByRole("dialog", { name: "Rules" });
-  if (await tut.isVisible().catch(() => false)) {
-    await page.getByRole("button", { name: "Close" }).click();
-  }
-  await page.getByRole("button", { name: /Compendium/ }).click();
-  await page.locator(".comp-panel").waitFor();
-}
-
-test("compendium paginates long tabs at a fixed panel size", async ({ page }) => {
+test("PixiCompendium: rules, gallery, and enemies pages render", async ({ page }: { page: Page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(`PAGEERROR: ${e.message}`));
+  await page.goto("/");
+  const close = page.getByRole("button", { name: "Close" });
+  if (await close.isVisible().catch(() => false)) await close.click();
 
-  await openCompendium(page);
-  const panel = page.locator(".comp-panel");
+  await page.getByRole("button", { name: /compendium/i }).click();
+  await expect(page.locator(".pixi-modal-host canvas")).toBeVisible({ timeout: 15000 });
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: "screenshots/zz-compendium-overview.png" });
 
-  // Short tab (Overview): same panel size, no pager.
-  await page.locator(".comp-nav-item", { hasText: "Overview" }).click();
-  await page.waitForTimeout(150);
-  const shortBox = await panel.boundingBox();
-  await panel.screenshot({ path: "screenshots/compendium-short-overview.png" });
-
-  // Long tab (Jokers): paginated — a pager appears, and the grid does NOT overflow (no scroll).
-  await page.locator(".comp-nav-item", { hasText: "Jokers" }).click();
+  // nav: content origin (PAD 20, HEADER 50); buttons in the left column (centre x ≈ +95).
+  const geo = await page.evaluate(() => ({ cx: (window.innerWidth - 860) / 2 + 20, cy: (window.innerHeight - 580) / 2 + 50 }));
+  // Jokers nav item: group2 label at y192, items from y210; Jokers is the first → y≈210 (+14 centre)
+  await page.mouse.click(geo.cx + 95, geo.cy + 224);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: "screenshots/zz-compendium-jokers.png" });
+  // scroll the gallery
+  await page.mouse.move(geo.cx + 500, geo.cy + 300);
+  await page.mouse.wheel(0, 300);
   await page.waitForTimeout(200);
-  const longBox = await panel.boundingBox();
-  await panel.screenshot({ path: "screenshots/compendium-jokers-p1.png" });
+  await page.screenshot({ path: "screenshots/zz-compendium-jokers2.png" });
 
-  const pager = page.locator(".comp-pager");
-  await expect(pager).toBeVisible();
-  const info1 = (await page.locator(".comp-pager-info").textContent())?.trim() ?? "";
-  console.log("PANEL HEIGHTS  overview:", shortBox?.height, " jokers:", longBox?.height);
-  console.log("JOKERS PAGER:", info1);
+  // Royals & Decrees: last item in group2 → y ≈ 210 + 6*32 = 402 (+14)
+  await page.mouse.click(geo.cx + 95, geo.cy + 416);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: "screenshots/zz-compendium-enemies.png" });
 
-  // the grid fits its box (paginated, not scrolled)
-  const overflow = await page.locator(".coll-grid").evaluate((el) => el.scrollHeight - el.clientHeight);
-  console.log("JOKERS GRID OVERFLOW px:", overflow);
-
-  // Next page advances the indicator.
-  await page.getByRole("button", { name: /Next/ }).click();
-  await page.waitForTimeout(150);
-  const info2 = (await page.locator(".comp-pager-info").textContent())?.trim() ?? "";
-  console.log("JOKERS PAGER after Next:", info2);
-  await panel.screenshot({ path: "screenshots/compendium-jokers-p2.png" });
-
-  // assertions
-  expect(shortBox).not.toBeNull();
-  expect(longBox).not.toBeNull();
-  expect(Math.abs(shortBox!.height - longBox!.height)).toBeLessThanOrEqual(1); // same size across tabs
-  expect(Math.abs(shortBox!.width - longBox!.width)).toBeLessThanOrEqual(1);
-  expect(info1).toMatch(/Page 1 \/ \d+/);
-  expect(overflow).toBeLessThanOrEqual(2); // the page fits — no scroll
-  expect(info2).toMatch(/Page 2 \/ \d+/); // Next advanced
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".pixi-modal-host canvas")).toHaveCount(0, { timeout: 10000 });
   expect(errors, errors.join("\n")).toEqual([]);
 });

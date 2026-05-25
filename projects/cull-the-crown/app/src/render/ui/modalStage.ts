@@ -4,8 +4,8 @@
 // the backdrop (outside the panel) or the ✕ closes; the host also wires Esc. Stage-level geometry
 // hit-testing (the felt/sidebar pattern). Content coords are RELATIVE to the panel's content area.
 
-import { Application, Assets, Graphics, Container, Sprite, Texture } from "pixi.js";
-import { THEME, TITLE_FONT } from "../theme";
+import { Application, Assets, Graphics, Container, Sprite, Text, Texture } from "pixi.js";
+import { PIXEL_FONT, THEME, TITLE_FONT } from "../theme";
 import { shade } from "./tokens";
 import { drawButton } from "./pixiButton";
 import { TextOpts, WiggleField } from "./wigglyText";
@@ -131,6 +131,15 @@ export class ModalStage {
   text(s: string, x: number, y: number, size: number, color: number, opts: TextOpts = {}): void {
     this.wig.build(this.target, s, this.cx + x, this.cy + y, size, color, opts);
   }
+  /** A word-wrapped paragraph (plain Text, not per-char wiggle). Returns its rendered height so callers
+   *  can flow the next block beneath it — used for the Compendium's long-form rules prose. */
+  para(s: string, x: number, y: number, w: number, size: number, color: number, opts: { bold?: boolean } = {}): number {
+    const t = new Text({ text: s, style: { fill: color, fontSize: size, fontFamily: PIXEL_FONT, fontWeight: opts.bold ? "700" : "400", wordWrap: true, wordWrapWidth: w, lineHeight: size + 7, letterSpacing: 0.3 } });
+    t.position.set(this.cx + x, this.cy + y);
+    t.roundPixels = true;
+    this.target.addChild(t);
+    return t.height;
+  }
   button(label: string, x: number, y: number, w: number, h: number, accent: number, enabled: boolean, fn: () => void, fontSize?: number): void {
     const sx = this.cx + x;
     const sy = this.cy + y;
@@ -179,41 +188,48 @@ export class ModalStage {
   hit(x: number, y: number, w: number, h: number, fn: () => void): void {
     this.hits.push({ x: this.cx + x, y: this.cy + y, w, h, fn, hover: false, clip: this.clip ?? undefined });
   }
-  /** A vertically-scrollable region: content (height `contentH`) is drawn by `build` into a masked
-   *  layer at content coords, offset by the current scroll; the wheel scrolls it. One per modal. */
-  scroll(x: number, y: number, w: number, h: number, contentH: number, build: () => void): void {
+  /** A vertically-scrollable region: `build` draws the content (starting at y=0) into a masked layer;
+   *  its height is MEASURED, so wrapped prose works without knowing the height up front. The wheel
+   *  scrolls it. One scroll region per modal. */
+  scroll(x: number, y: number, w: number, h: number, build: () => void): void {
     const ox = this.cx + x;
     const oy = this.cy + y;
-    const max = Math.max(0, contentH - h);
-    this.scrollY = Math.min(this.scrollY, max);
-    this.scrollRegion = { x: ox, y: oy, w, h, max };
     const layer = new Container();
     const mask = new Graphics();
     mask.rect(ox, oy, w, h).fill(0xffffff);
     layer.addChild(mask);
     layer.mask = mask;
+    const inner = new Container(); // content lives here; inner.y applies the scroll offset
+    layer.addChild(inner);
     this.root.addChild(layer);
-    // draw content into the layer at scroll coords (0 = top of content), offset by -scrollY
+    // draw content into `inner` at region-local coords (cy = oy); hits land at oy+y and are shifted by
+    // the scroll offset once it's known/clamped below.
     const pT = this.target;
     const pCx = this.cx;
     const pCy = this.cy;
     const pClip = this.clip;
-    this.target = layer;
+    const hitStart = this.hits.length;
+    this.target = inner;
     this.cx = ox;
-    this.cy = oy - this.scrollY;
+    this.cy = oy;
     this.clip = { x: ox, y: oy, w, h };
     build();
     this.target = pT;
     this.cx = pCx;
     this.cy = pCy;
     this.clip = pClip;
-    // scrollbar
+    // measure the rendered content, clamp the scroll, apply the offset, fix up the hit y's
+    const contentH = inner.height;
+    const max = Math.max(0, Math.ceil(contentH - h));
+    this.scrollY = Math.min(this.scrollY, max);
+    inner.y = -this.scrollY;
+    for (let i = hitStart; i < this.hits.length; i++) this.hits[i].y -= this.scrollY;
+    this.scrollRegion = { x: ox, y: oy, w, h, max };
     if (max > 0) {
-      const trackH = h;
-      const thumbH = Math.max(24, (h / contentH) * trackH);
-      const thumbY = oy + (this.scrollY / max) * (trackH - thumbH);
+      const thumbH = Math.max(24, (h / contentH) * h);
+      const thumbY = oy + (this.scrollY / max) * (h - thumbH);
       const bar = new Graphics();
-      bar.roundRect(ox + w + 4, oy, 5, trackH, 2).fill({ color: 0x140a1e });
+      bar.roundRect(ox + w + 4, oy, 5, h, 2).fill({ color: 0x140a1e });
       bar.roundRect(ox + w + 4, thumbY, 5, thumbH, 2).fill({ color: THEME.frameDim });
       this.root.addChild(bar);
     }

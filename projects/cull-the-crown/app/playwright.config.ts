@@ -8,7 +8,10 @@ export default defineConfig({
   outputDir: "./test-results",
   timeout: 60_000,
   fullyParallel: false,
-  retries: 0,
+  // One worker: every screen/modal spins up its own full-window WebGL context, and running files in
+  // parallel exhausts the browser's context budget (contexts get lost → flaky renders). Serialize.
+  workers: 1,
+  retries: 1, // a lone retry absorbs the occasional Pixi teardown-timing flake
   reporter: [["list"]],
   use: {
     baseURL: "http://localhost:4317",

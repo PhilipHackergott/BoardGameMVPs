@@ -39,8 +39,7 @@ export default function PixiPastRuns({ onClose }: { onClose: () => void }) {
           mm.text("No runs yet — begin your first descent.", w / 2, viewH / 2, 12, THEME.parchmentEdge, { anchor: 0.5 });
           return;
         }
-        const contentH = runs.length * rowH;
-        mm.scroll(0, 8, w, viewH, contentH, () => {
+        mm.scroll(0, 8, w, viewH, () => {
           runs.forEach((r, i) => {
             const ry = i * rowH;
             const res = RESULT[r.result];

@@ -5,7 +5,10 @@ const OUT = "catalog";
 mkdirSync(OUT, { recursive: true });
 
 const b = await chromium.launch();
-const p = await b.newPage({ viewport: { width: 1280, height: 860 } });
+const VIEW = { width: 1280, height: 860 };
+// `p` is reassigned to a fresh context before the shop segment (see below); the helpers below close over
+// it, so reassigning the `let` swaps every helper onto the new page.
+let p = await b.newPage({ viewport: VIEW });
 const log = [];
 const shot = async (name) => { await p.screenshot({ path: `${OUT}/${name}.png` }); log.push(name); };
 const wait = (ms) => p.waitForTimeout(ms);
@@ -28,10 +31,10 @@ await wait(300);
 // 2. Title screen
 await shot("02-title");
 
-// 3. Title overlays. RunSetup & Compendium are still DOM (close via their own button); Settings & Past
-//    Runs are now Pixi modals (canvas) — open via the DOM title button, close with Esc.
+// 3. Title overlays. Run Setup / Settings / Past Runs are now Pixi modals (canvas) — opened via the DOM
+//    title button, closed with Esc. Compendium is still a DOM overlay (closes via its own button).
 await clickBtn(/new run|play/i); await wait(400); await shot("03-runsetup");
-await clickBtn(/^back$/i); await wait(250);
+await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/settings/i); await wait(350); await shot("04-settings");
 await p.keyboard.press("Escape"); await wait(250);
 await clickBtn(/past runs/i); await wait(350); await shot("05-pastruns");
@@ -78,9 +81,28 @@ await drive(() => {
 });
 await wait(1500); await shot("12-combatgate-win");
 
-// 10. Shop — claim the spoils to advance
+// 10. Shop + packs. By now the sweep has mounted+destroyed several full-window Pixi modal apps (pause,
+//     deck, run-map, gate). Each is its own Pixi Application/WebGL context, and a same-page reload does
+//     NOT free the dead contexts — so the shared felt starves and renders blank in shop mode. A FRESH
+//     browser context is clean, so capture the shop + pack modals there. (Fresh context → first-run Help
+//     shows again; dismiss it.)
+await p.close();
+const shopCtx = await b.newContext({ viewport: VIEW });
+p = await shopCtx.newPage();
+await p.goto(url, { waitUntil: "networkidle" }); await wait(500);
+await clickBtn(/close|got it|ok/i); await wait(300);
+await drive(() => window.__game.getState().newRun("catalog-shop"));
+await wait(1500);
+await drive(() => {
+  const g = window.__game;
+  g.setState((s) => ({ run: { ...s.run, combat: { ...s.run.combat, enemy: { ...s.run.combat.enemy, maxHealth: 1, damageTaken: 0 } } } }));
+  const id = g.getState().run.hand[0].id;
+  g.getState().toggleSelect(id);
+  g.getState().playCards();
+});
+await wait(1400);
 await drive(() => window.__game.getState().dispatch({ type: "advance" }));
-await wait(1100); await shot("13-shop");
+await wait(1600); await shot("13-shop");
 
 // 11. Pack modal — crack open the first booster pack
 await drive(() => {
