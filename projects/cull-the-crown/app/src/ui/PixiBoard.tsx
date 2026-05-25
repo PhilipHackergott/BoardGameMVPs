@@ -1,13 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
 import { sfx } from "../audio/chiptune";
 import { CombatStage, STAGE_H, STAGE_W } from "../render/combatStage";
 import { ShopItemVM, ShopVM } from "../render/shopStage";
 import { HudHeldVM, HudJokerVM, HudTip, HudVM } from "../render/hudLayer";
+import { FeltControlsVM } from "../render/feltControls";
 import { applyPixiFixes } from "../render/pixiFixes";
 import { contentMeta, discountedPrice, edictById, heldMax, jokerById, makeCardFromTemplate, maxSlots, tarotById } from "../engine/index";
 import { PACK_LABEL, PACK_PICKS, SIZE_LABEL, LOOSE_TIP_TYPE, TYPE_CHIP, RARITY_CHIP } from "./packMeta";
+import { placeBeside, AnchorRect, Placed } from "./tipPlace";
 
 applyPixiFixes(); // guard a Pixi v8.6 texture-pool bug before any rendering happens
 
@@ -30,13 +32,34 @@ async function loadFonts(): Promise<void> {
 
 interface HoverTip {
   vm: ShopItemVM;
-  x: number;
-  y: number;
+  rect: AnchorRect;
 }
 interface HudHoverTip {
   tip: HudTip;
-  x: number;
-  y: number;
+  rect: AnchorRect;
+}
+
+// A tooltip that measures itself and spawns BESIDE its anchor card (see tipPlace), shared by the shop
+// wares and the guild/pouch band so neither popup covers the card it describes. Renders hidden for one
+// frame so the measure→place happens before paint (no flash).
+function SideTip({ anchor, children }: { anchor: AnchorRect; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<Placed | null>(null);
+  useLayoutEffect(() => {
+    if (!ref.current) return;
+    const b = ref.current.getBoundingClientRect();
+    setPos(placeBeside(anchor, b.width, b.height, window.innerWidth, window.innerHeight));
+  }, [anchor]);
+  return (
+    <div
+      ref={ref}
+      className={`tip-pop tip-${pos?.side ?? "right"} shop-tip`}
+      style={{ left: pos?.left ?? -9999, top: pos?.top ?? 0, visibility: pos ? "visible" : "hidden" }}
+      role="tooltip"
+    >
+      {children}
+    </div>
+  );
 }
 
 export default function PixiBoard() {
@@ -116,6 +139,36 @@ export default function PixiBoard() {
       return [{ id: h.id, tarotId: h.tarotId, name: t.name, text: t.text }];
     });
     return { jokers, jokerMax: maxSlots(run), showPouch: inShop || !run.combat?.outcome, held, heldMax: heldMax(run) };
+  }
+
+  // The combat action controls: Sort, the defend block prompt, the wildcard suit-picker, the pending-
+  // pick banner and the block pill. (Felt-only; the shop hides them via setMode.)
+  function buildControlsVM(): FeltControlsVM {
+    const g = useGame.getState();
+    const run = g.run;
+    const combat = run.combat;
+    if (!combat) return { show: false, defend: false, incoming: 0, thrown: 0, blockEnough: false, block: 0, hasSelection: false, hasHover: false, pendingLabel: null, wildcards: [] };
+    const selected = g.selected;
+    const defend = combat.subphase === "defend";
+    const thrown = run.hand.filter((c) => selected.includes(c.id)).reduce((a, c) => a + c.value, 0);
+    const hasHover = !!g.hoverId && run.hand.some((c) => c.id === g.hoverId);
+    const wildcards = defend
+      ? []
+      : run.hand
+          .filter((c) => selected.includes(c.id) && (c.sigils ?? []).includes("wildcard"))
+          .map((c) => ({ id: c.id, label: `Wild ${c.value > 1 ? c.value : "A"}`, suit: g.wildSuits[c.id] ?? c.suit ?? "H" }));
+    return {
+      show: !combat.outcome,
+      defend,
+      incoming: combat.incoming,
+      thrown,
+      blockEnough: thrown >= combat.incoming,
+      block: combat.enemy.shield, // the player's accumulated block (soaks the royal's next strike)
+      hasSelection: selected.length > 0,
+      hasHover,
+      pendingLabel: g.pendingPick ? g.pickLabel ?? "Tap a card" : null,
+      wildcards,
+    };
   }
 
   useEffect(() => {
@@ -227,7 +280,7 @@ export default function PixiBoard() {
         g.setPileModal("all");
       };
       stage.onShopNextFight = () => useGame.getState().dispatch({ type: "nextFight" });
-      stage.onShopHover = (vm, screen) => setTip(vm && screen ? { vm, x: screen.x, y: screen.y } : null);
+      stage.onShopHover = (vm, rect) => setTip(vm && rect ? { vm, rect } : null);
 
       // guild/pouch HUD band intents
       stage.onHudSellJoker = (id) => {
@@ -247,7 +300,23 @@ export default function PixiBoard() {
           g.dispatch({ type: "useHeld", instanceId });
         }
       };
-      stage.onHudHover = (t, screen) => setHudTip(t && screen ? { tip: t, x: screen.x, y: screen.y } : null);
+      stage.onHudHover = (t, rect) => setHudTip(t && rect ? { tip: t, rect } : null);
+
+      // ---- combat action controls (sort / defend block / wildcard picker / pending-pick) ----
+      stage.onSort = (k) => {
+        sfx.click();
+        useGame.getState().sortHand(k);
+      };
+      stage.onAuto = () => useGame.getState().autoBlock();
+      stage.onBlock = () => useGame.getState().discardSelected();
+      stage.onSetWild = (cardId, suit) => {
+        sfx.select();
+        useGame.getState().setWildSuit(cardId, suit);
+      };
+      stage.onCancelPick = () => {
+        sfx.click();
+        useGame.getState().setPendingPick(null);
+      };
 
       stageRef.current = stage;
       // Treat any pre-existing FX event as already handled (avoid re-firing a stale kill cascade).
@@ -261,6 +330,7 @@ export default function PixiBoard() {
       }
       syncFromState();
       stage.syncHud(buildHudVM());
+      stage.syncControls(buildControlsVM());
     })();
 
     const unsub = useGame.subscribe((s) => {
@@ -279,6 +349,7 @@ export default function PixiBoard() {
         return;
       }
       stage.setMode("combat");
+      stage.syncControls(buildControlsVM());
       const ev = s.fxEvent;
       if (ev && ev.id !== lastFx.current) {
         lastFx.current = ev.id;
@@ -312,7 +383,7 @@ export default function PixiBoard() {
     <>
       <div className="pixi-host" ref={hostRef} />
       {tip && (
-        <div className="tip-pop tip-top shop-tip" style={{ left: Math.min(Math.max(tip.x, 138), window.innerWidth - 138), top: tip.y - 14 }} role="tooltip">
+        <SideTip anchor={tip.rect}>
           <div className="tip-title">{tip.vm.name}</div>
           <div className="tip-body">{tip.vm.text}</div>
           {(chip || rarityChip) && (
@@ -321,10 +392,10 @@ export default function PixiBoard() {
               {rarityChip && <span className={`tip-type ${rarityChip.cls}`}>{rarityChip.label}</span>}
             </div>
           )}
-        </div>
+        </SideTip>
       )}
       {hudTip && (
-        <div className="tip-pop tip-bottom shop-tip" style={{ left: Math.min(Math.max(hudTip.x, 138), window.innerWidth - 138), top: hudTip.y + 10 }} role="tooltip">
+        <SideTip anchor={hudTip.rect}>
           <div className="tip-title">{hudTip.tip.name}</div>
           <div className="tip-body">{hudTip.tip.text}</div>
           {(hudChip || hudRarityChip) && (
@@ -333,7 +404,7 @@ export default function PixiBoard() {
               {hudRarityChip && <span className={`tip-type ${hudRarityChip.cls}`}>{hudRarityChip.label}</span>}
             </div>
           )}
-        </div>
+        </SideTip>
       )}
     </>
   );

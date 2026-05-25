@@ -175,6 +175,8 @@ interface UIState {
   playCards: () => void;
   yieldTurn: () => void;
   discardSelected: () => void;
+  /** Defend helper: auto-select the smallest card subset whose values cover the incoming strike. */
+  autoBlock: () => void;
   toggleSelect: (id: string) => void;
   clearSelect: () => void;
   setPendingPick: (fn: ((cardId: string) => void) | null, label?: string) => void;
@@ -278,6 +280,35 @@ export const useGame = create<UIState>((set) => ({
       if (before.phase !== "combat" || before.combat?.subphase !== "defend") return {};
       const after = applyAction(before, { type: "discard", cardIds: s.selected });
       return { run: after, selected: [], fxEvent: { id: (s.fxEvent?.id ?? 0) + 1, kind: "discard" } };
+    }),
+  autoBlock: () =>
+    set((s) => {
+      const combat = s.run.combat;
+      if (!combat || combat.subphase !== "defend") return {};
+      const cards = s.run.hand;
+      const target = combat.incoming;
+      const n = cards.length;
+      // smallest-sum, then fewest-cards subset that meets the strike (n ≤ 8 → a cheap bitmask sweep)
+      let bestMask = (1 << n) - 1;
+      let bestSum = Infinity;
+      let bestCount = n + 1;
+      for (let mask = 1; mask < 1 << n; mask++) {
+        let sum = 0;
+        let count = 0;
+        for (let i = 0; i < n; i++) {
+          if (mask & (1 << i)) {
+            sum += cards[i].value;
+            count++;
+          }
+        }
+        if (sum >= target && (sum < bestSum || (sum === bestSum && count < bestCount))) {
+          bestSum = sum;
+          bestCount = count;
+          bestMask = mask;
+        }
+      }
+      const selected = cards.filter((_, i) => (bestMask & (1 << i)) !== 0).map((c) => c.id);
+      return { selected, wildSuits: {} };
     }),
   toggleSelect: (id) =>
     set((s) => {

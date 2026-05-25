@@ -1450,15 +1450,15 @@ button:focus-visible {
 .tt-sigil { background: #a83f7a; }
 .tt-seal { background: #b0902a; }
 .tt-royal { background: #8a2a3a; }
-/* tip-top / tip-bottom: centred above/below an anchor POINT — used by the Pixi shop hover popup. */
+/* tip-top / tip-bottom: legacy point-centred placement (kept for reference; no longer emitted). */
 .tip-pop.tip-top {
   transform: translate(-50%, -100%);
 }
 .tip-pop.tip-bottom {
   transform: translateX(-50%);
 }
-/* tip-right / tip-left: the global DOM tooltip computes its exact top-left corner beside the card,
-   so it carries no transform (see TooltipLayer). */
+/* tip-right / tip-left: every tooltip now computes its exact top-left corner BESIDE the card (see
+   tipPlace.placeBeside, used by both TooltipLayer and the Pixi SideTip), so it carries no transform. */
 .tip-pop.tip-right,
 .tip-pop.tip-left {
   transform: none;

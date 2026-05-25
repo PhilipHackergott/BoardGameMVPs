@@ -61,7 +61,7 @@ export class HudLayer {
   readonly view = new Container();
   onSellJoker?: (id: string) => void;
   onUseHeld?: (instanceId: string, tarotId: string) => void;
-  onHover?: (tip: HudTip | null, screen: { x: number; y: number } | null) => void;
+  onHover?: (tip: HudTip | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
 
   private app: Application;
   private stageW: number;
@@ -91,7 +91,10 @@ export class HudLayer {
     this.hoverIdx = i;
     if (i >= 0) {
       const h = this.hits[i];
-      this.onHover?.(h.tip, this.toScreen(h.x + h.w / 2, h.y + h.h)); // below the tile (band hugs the top edge)
+      // report the tile's screen rect so the tooltip spawns beside it (not over the band)
+      const tl = this.toScreen(h.x, h.y);
+      const br = this.toScreen(h.x + h.w, h.y + h.h);
+      this.onHover?.(h.tip, { left: tl.x, right: br.x, top: tl.y, height: br.y - tl.y });
     } else {
       this.onHover?.(null, null);
     }

@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { RARITY_CHIP, TYPE_CHIP } from "./packMeta";
+import { placeBeside, Placed } from "./tipPlace";
 
 // One global tooltip, mounted once. Reads `data-tip` off whatever the pointer/focus is on and renders
 // a single `position: fixed` bubble clamped to the viewport. Fixes the two failure modes of pure-CSS
@@ -31,18 +32,9 @@ interface Tip {
   rarity?: string;
   anchor: Anchor;
 }
-interface Pos {
-  left: number;
-  top: number;
-  side: "right" | "left";
-}
-
-const GAP = 12; // space between the hovered element and the tooltip
-const EDGE = 8; // keep this far from the viewport edges
-
 export default function TooltipLayer() {
   const [tip, setTip] = useState<Tip | null>(null);
-  const [pos, setPos] = useState<Pos | null>(null);
+  const [pos, setPos] = useState<Placed | null>(null);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -111,17 +103,7 @@ export default function TooltipLayer() {
   useLayoutEffect(() => {
     if (!tip || !ref.current) return;
     const b = ref.current.getBoundingClientRect();
-    const a = tip.anchor;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    // prefer the right of the card; fall back to the left when the bubble wouldn't fit
-    const fitsRight = a.right + GAP + b.width <= vw - EDGE;
-    const side: "right" | "left" = fitsRight ? "right" : "left";
-    let left = side === "right" ? a.right + GAP : a.left - GAP - b.width;
-    left = Math.min(Math.max(left, EDGE), vw - b.width - EDGE);
-    let top = a.top + a.height / 2 - b.height / 2; // vertically centred on the card
-    top = Math.min(Math.max(top, EDGE), vh - b.height - EDGE);
-    setPos({ left, top, side });
+    setPos(placeBeside(tip.anchor, b.width, b.height, window.innerWidth, window.innerHeight));
   }, [tip]);
 
   if (!tip) return null;

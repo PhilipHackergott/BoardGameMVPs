@@ -34,14 +34,19 @@ src/
 │   ├── spring.ts       critically-damped numeric spring (drives all motion)
 │   ├── easing.ts · particles.ts · shake.ts · pops.ts   easings, bursts, trauma-shake, text pops
 │   └── index.ts
-├── render/          PixiJS combat board (Cull the Crown's distinct look; uses fx/)
+├── render/          PixiJS felt — the WHOLE combat surface is drawn here (uses fx/)
 │   ├── theme.ts        the per-game visual identity (palette/type/iconography)
-│   ├── cardNode.ts     a spring-driven card (hover/tilt/select/deal/exit)
-│   └── combatStage.ts  enemy + fanned hand + the resolution cascade
-├── ui/              React + Zustand: title/shop/end + combat controls/HUD overlaid on the board.
+│   ├── cardNode.ts · cardFace.ts   a spring-driven card + its face model (rank/suit/sigils)
+│   ├── combatStage.ts  the felt: fanned hand, resolution cascade, deck/used piles; owns the layers below
+│   ├── shopStage.ts    the market tray that rides up over the SAME felt (single canvas)
+│   ├── sidebarStage.ts the run sidebar (royal "blind" + Fighting-Style read-out) — its own felt-side canvas
+│   ├── hudLayer.ts     the joker/pouch HUD band on the felt
+│   └── feltControls.ts the combat action controls on the felt (sort, defend block, wildcard picker, …)
+├── ui/              React + Zustand: title/setup/end screens, modals, and the thin Pixi mount wrappers.
 │   ├── store.ts        the only mutable session state (+ fxEvent for the cascade)
-│   ├── PixiBoard.tsx   mounts Pixi (v8 async-init + StrictMode guard), syncs from the store
-│   └── App.tsx         screens + keyboard support
+│   ├── PixiBoard.tsx · PixiSidebar.tsx   mount Pixi (v8 async-init + StrictMode guard), sync from the store
+│   ├── FeltScreen.tsx  combat + shop: <PixiSidebar/> + <PixiBoard/> (no DOM overlays float over the felt)
+│   └── App.tsx         the phase router + global layers + keyboard support
 ├── styles.css
 └── main.tsx
 ```
@@ -50,13 +55,17 @@ The engine never imports from `ui/`/`render/`/`fx/`. Every reducer is pure (`app
 then mutates a draft), so a run is fully reproducible from `{ seed, action-log }` — `RunState` is
 JSON-serializable (jokers are stored by id, resolved against the library).
 
-## Rendering: hybrid Pixi board + React HUD
+## Rendering: one Pixi felt, React for the surrounding shell
 
-The board (enemy, fanned hand, and the resolution cascade — floating damage/heal/draw pops, screen
-shake, particle bursts, animated HP) is **PixiJS v8**; menus, shop, action bar and HUD are React
-(DOM is better for those — accessible, fast). This matches the factory's "Pixi for the board, React
-for the HUD" convention. The motion toolkit in `fx/` is deliberately game-agnostic and is published
-as a reusable factory pattern; only `render/theme.ts` is Cull-the-Crown-specific.
+The whole combat surface is **PixiJS v8** on a single persistent felt: the fanned hand and resolution
+cascade (floating damage/heal/draw pops, screen shake, particle bursts), the run sidebar (the royal
+"blind" + the live Fighting-Style read-out), the joker/pouch HUD band, the market tray, **and** the
+combat action controls (Sort, the defend block prompt, the wildcard suit-picker, the pending-pick
+banner, the block pill). Combat and the shop share one mounted board, so the felt never resets across
+them. Only the surrounding shell is React/DOM — the title/setup/end screens, the modals (Compendium,
+The Descent, Deck/Pack, Settings…), the global tooltip layer, and a couple of transient combat hints —
+because DOM is better for scrollable, text-heavy, accessible chrome. The motion toolkit in `fx/` stays
+game-agnostic and is published as a reusable factory pattern; only `render/theme.ts` is Cull-the-Crown-specific.
 
 ## How to play
 

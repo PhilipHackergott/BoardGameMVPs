@@ -13,6 +13,7 @@ import { CARD_H, CARD_W, CardNode, cardSignature } from "./cardNode";
 import { buildCardFace } from "./cardFace";
 import { ShopStage, ShopItemVM, ShopVM } from "./shopStage";
 import { HudLayer, HudTip, HudVM } from "./hudLayer";
+import { FeltControls, FeltControlsVM } from "./feltControls";
 import { StyleFxLayer } from "./styleFx";
 import { KILL_FX, PIXEL_FONT, PLASMA_PALETTE, SUIT_COLOR, SUIT_GLYPH, SUIT_ROYAL, THEME, TITLE_FONT } from "./theme";
 
@@ -69,16 +70,23 @@ export class CombatStage {
   onShopReroll?: () => void;
   onShopRemove?: () => void;
   onShopNextFight?: () => void;
-  onShopHover?: (vm: ShopItemVM | null, screen: { x: number; y: number } | null) => void;
+  onShopHover?: (vm: ShopItemVM | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
   // guild/pouch HUD intents (the band rides on this same felt — see HudLayer)
   onHudSellJoker?: (id: string) => void;
   onHudUseHeld?: (instanceId: string, tarotId: string) => void;
-  onHudHover?: (tip: HudTip | null, screen: { x: number; y: number } | null) => void;
+  onHudHover?: (tip: HudTip | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
+  // combat action controls (sort / defend block / wildcard picker / pending-pick / block pill — see FeltControls)
+  onSort?: (k: "rank" | "suit") => void;
+  onAuto?: () => void;
+  onBlock?: () => void;
+  onSetWild?: (cardId: string, suit: Suit) => void;
+  onCancelPick?: () => void;
   private deckHovered = false;
 
   private shopLayer = new Container();
   private shop?: ShopStage;
   private hud!: HudLayer; // guild/pouch band on top of the felt
+  private controls!: FeltControls; // combat action controls on top of the felt
   private mode: "combat" | "shop" = "combat";
 
   private world = new Container();
@@ -197,6 +205,14 @@ export class CombatStage {
     this.hud.onUseHeld = (iid, tid) => this.onHudUseHeld?.(iid, tid);
     this.hud.onHover = (tip, screen) => this.onHudHover?.(tip, screen);
     this.world.addChild(this.hud.view);
+    // the combat action controls ride ABOVE everything (sort, defend block, wildcard picker, etc.)
+    this.controls = new FeltControls(app, STAGE_W, STAGE_H);
+    this.controls.onSort = (k) => this.onSort?.(k);
+    this.controls.onAuto = () => this.onAuto?.();
+    this.controls.onBlock = () => this.onBlock?.();
+    this.controls.onSetWild = (id, s) => this.onSetWild?.(id, s);
+    this.controls.onCancelPick = () => this.onCancelPick?.();
+    this.world.addChild(this.controls.view);
     this.buildEnemy();
     this.buildPiles();
     this.handLayer.sortableChildren = true; // let a dragged card rise above the rest
@@ -526,6 +542,7 @@ export class CombatStage {
     if (this.mode === mode) return;
     this.mode = mode;
     this.shopLayer.visible = mode === "shop";
+    this.controls.view.visible = mode === "combat"; // action controls belong to the fight, not the market
     if (mode === "shop") this.shop?.reset(); // replay the tray's slide-up each time the market opens
   }
 
@@ -537,6 +554,11 @@ export class CombatStage {
   /** Re-paint the guild/pouch HUD band (cheap — skips internally when nothing visible changed). */
   syncHud(vm: HudVM): void {
     this.hud.syncHud(vm);
+  }
+
+  /** Re-paint the combat action controls (cheap — skips internally when nothing visible changed). */
+  syncControls(vm: FeltControlsVM): void {
+    this.controls.sync(vm);
   }
 
   sync(vm: CombatVM): void {
@@ -1001,6 +1023,7 @@ export class CombatStage {
     this.pops.clear();
     this.styleFx.destroy();
     this.hud.destroy();
+    this.controls.destroy();
     this.plasma.destroy();
     this.world.destroy({ children: true });
   }

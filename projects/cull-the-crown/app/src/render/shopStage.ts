@@ -101,8 +101,8 @@ class ShopNode {
   baseX = 0;
   baseY = 0;
   readonly vm: ShopItemVM;
-  private readonly w: number;
-  private readonly h: number;
+  readonly w: number; // card/pack width in stage units (used to report the hover rect)
+  readonly h: number;
 
   constructor(vm: ShopItemVM, onTextureNeeded: (n: ShopNode, url: string) => void) {
     this.vm = vm;
@@ -411,7 +411,7 @@ export class ShopStage {
   onReroll?: () => void;
   onRemove?: () => void;
   onNextFight?: () => void;
-  onHover?: (vm: ShopItemVM | null, screen: { x: number; y: number } | null) => void;
+  onHover?: (vm: ShopItemVM | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
 
   private world = new Container();
   private plasma?: PlasmaBackground; // own felt — standalone mode only (embedded shares the host felt)
@@ -543,7 +543,7 @@ export class ShopStage {
       n.view.on("pointertap", () => this.onBuy?.(item));
       n.view.on("pointerover", () => {
         n.setHover(true);
-        this.reportHover(n.view, item);
+        this.reportHover(n, item);
       });
       n.view.on("pointerout", () => {
         n.setHover(false);
@@ -590,12 +590,16 @@ export class ShopStage {
     }
   }
 
-  private reportHover(view: Container, item: ShopItemVM): void {
-    const g = view.getGlobalPosition();
+  // Report the hovered ware's on-screen rectangle (centre + card size), so the tooltip can spawn beside
+  // it rather than on top of it. The node's origin is its centre; w/h are stage units.
+  private reportHover(node: ShopNode, item: ShopItemVM): void {
+    const g = node.view.getGlobalPosition();
     const rect = this.app.canvas.getBoundingClientRect();
-    const sx = rect.left + (g.x / SHOP_W) * rect.width;
-    const sy = rect.top + (g.y / SHOP_H) * rect.height;
-    this.onHover?.(item, { x: sx, y: sy });
+    const cx = rect.left + (g.x / SHOP_W) * rect.width;
+    const cy = rect.top + (g.y / SHOP_H) * rect.height;
+    const hw = (node.w / 2 / SHOP_W) * rect.width;
+    const hh = (node.h / 2 / SHOP_H) * rect.height;
+    this.onHover?.(item, { left: cx - hw, right: cx + hw, top: cy - hh, height: hh * 2 });
   }
 
   // the tray panel plus the section frames, labels and the control-column divider

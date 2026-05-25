@@ -4,7 +4,7 @@
 // the backdrop (outside the panel) or the ✕ closes; the host also wires Esc. Stage-level geometry
 // hit-testing (the felt/sidebar pattern). Content coords are RELATIVE to the panel's content area.
 
-import { Application, Graphics, Container } from "pixi.js";
+import { Application, Assets, Graphics, Container, Sprite, Texture } from "pixi.js";
 import { THEME, TITLE_FONT } from "../theme";
 import { shade } from "./tokens";
 import { drawButton } from "./pixiButton";
@@ -45,6 +45,7 @@ export class ModalStage {
   private cx = 0; // content-area origin (screen coords)
   private cy = 0;
   private innerW = 0;
+  private texCache = new Map<string, Texture | null>(); // url → art texture (null = in-flight/failed)
   private onResize = () => this.draw();
 
   constructor(app: Application) {
@@ -92,6 +93,36 @@ export class ModalStage {
     const hovered = this.hoverIdx === this.hits.length && enabled;
     drawButton(this.root, this.wig, label, sx, sy, w, h, { accent, enabled, hovered, fontSize });
     this.hits.push({ x: sx, y: sy, w, h, fn: enabled ? fn : () => {} });
+  }
+  /** A pixel-art sprite from a URL, fit into (w,h) at (x,y) relative to the content area. Async-loaded + cached. */
+  sprite(url: string, x: number, y: number, w: number, h: number): void {
+    const tex = this.texCache.get(url);
+    if (tex) {
+      const s = new Sprite(tex);
+      s.anchor.set(0.5);
+      const sc = Math.min(w / tex.width, h / tex.height);
+      s.scale.set(sc);
+      s.position.set(this.cx + x + w / 2, this.cy + y + h / 2);
+      s.roundPixels = true;
+      this.root.addChild(s);
+      return;
+    }
+    if (this.texCache.has(url)) return; // null = in-flight/failed
+    this.texCache.set(url, null);
+    void Assets.load(url)
+      .then((t: Texture) => {
+        if (t.source) t.source.scaleMode = "nearest";
+        this.texCache.set(url, t);
+        this.draw();
+      })
+      .catch(() => {});
+  }
+  /** A filled rounded rect (panel/chip/divider) at content-relative coords. */
+  rect(x: number, y: number, w: number, h: number, color: number, opts: { alpha?: number; radius?: number; stroke?: number } = {}): void {
+    const g = new Graphics();
+    g.roundRect(this.cx + x, this.cy + y, w, h, opts.radius ?? 6).fill({ color, alpha: opts.alpha ?? 1 });
+    if (opts.stroke !== undefined) g.stroke({ width: 1.5, color: opts.stroke });
+    this.root.addChild(g);
   }
 
   private inside(h: Hit, x: number, y: number): boolean {

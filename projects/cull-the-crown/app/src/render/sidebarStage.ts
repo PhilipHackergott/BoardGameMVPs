@@ -18,7 +18,7 @@ const PAD = 14;
 const INNER = SIDEBAR_W - PAD * 2;
 
 // FightingStyleId (camelCase) → the kebab-case art file in /public/art/styles/.
-const STYLE_ART_SLUG: Record<FightingStyleId, string> = {
+export const STYLE_ART_SLUG: Record<FightingStyleId, string> = {
   twoHanded: "two-handed",
   swordShield: "sword-and-shield",
   spear: "spear",

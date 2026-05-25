@@ -129,9 +129,9 @@ test("a fatal blow shows a YOU FALL gate — no instant game over", async ({ pag
 
   // the run must NOT have auto-switched — still in combat, deferred
   expect(await page.evaluate(() => window.__game.getState().run.phase)).toBe("combat");
-  await page.waitForTimeout(1700); // killing-blow animation, then the gate
+  await page.waitForTimeout(1700); // killing-blow animation, then the (Pixi) gate
   await page.screenshot({ path: "screenshots/09-you-fall.png" });
-  const cta = page.getByRole("button", { name: /See the end/ });
-  await cta.click();
+  // the gate is now a Pixi modal (no DOM button) — "See the end" advances via dispatch(advance)
+  await page.evaluate(() => window.__game.getState().dispatch({ type: "advance" }));
   expect(await page.evaluate(() => window.__game.getState().run.phase)).toBe("lost");
 });
