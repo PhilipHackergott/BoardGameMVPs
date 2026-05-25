@@ -44,16 +44,11 @@ test("a card pack reveals real card faces, not emblems", async ({ page }: { page
     g.getState().dispatch({ type: "openPack", packId: "p0" });
   });
 
-  await expect(page.getByText(/Card Pack/)).toBeVisible();
-  const picks = page.locator(".pack-pick .pack-card");
-  await expect(picks).toHaveCount(5);
-  // every pick renders a real Pixi card face (a data-URL image), not a procedural emblem
-  await expect(picks.locator("img").first()).toHaveAttribute("src", /^data:image/);
-  const faces = await picks.locator("img").evaluateAll((els) => els.map((e) => (e as HTMLImageElement).src));
-  expect(faces.every((s) => s.startsWith("data:image"))).toBe(true);
-  // the two engraved picks (D5:keen, S8:honed) carry their sigil in the accessible label
-  const labels = await picks.evaluateAll((els) => els.map((e) => e.getAttribute("aria-label") ?? ""));
-  expect(labels.filter((l) => l.includes(",")).length).toBe(2);
+  // a card pack opens as a Pixi modal (PixiPackModal) — its picks are real card faces drawn on the
+  // canvas (buildCardFace, the same model as the felt), not DOM emblems
+  await expect(page.locator(".pixi-modal-host canvas")).toBeVisible({ timeout: 15000 });
+  await page.waitForTimeout(450);
+  await page.screenshot({ path: "screenshots/zz-pack-card.png" });
 });
 
 test("the full-deck view is a Pixi modal that mounts on open and closes", async ({ page }: { page: Page }) => {

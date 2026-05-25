@@ -10,7 +10,7 @@ import TooltipLayer from "./TooltipLayer";
 import PixiCombatGate from "./PixiCombatGate";
 import PixiDeckModal from "./PixiDeckModal";
 import DeckPeek from "./DeckPeek";
-import PackModal from "./PackModal";
+import PixiPackModal from "./PixiPackModal";
 import PixiRunMap from "./PixiRunMap";
 import HelpOverlay from "./HelpOverlay";
 import PixiPauseMenu from "./PixiPauseMenu";
@@ -152,7 +152,7 @@ export default function App() {
       <TransitionLayer />
       <TooltipLayer />
       <PixiCombatGate />
-      <PackModal />
+      <PixiPackModal />
       <PixiDeckModal />
       <DeckPeek />
       <PixiRunMap />
