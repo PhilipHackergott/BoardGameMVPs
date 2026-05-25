@@ -172,28 +172,6 @@ button:focus-visible {
   text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #00000088;
   margin-bottom: 0.6em;
 }
-.tagline {
-  max-width: 540px;
-  color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.7;
-}
-.title-form {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin: 14px 0;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.title-form input {
-  font-family: "Silkscreen", monospace;
-  padding: 9px;
-  border-radius: 0;
-  border: 2px solid var(--line);
-  background: var(--bg2);
-  color: var(--ink);
-}
 .fineprint {
   max-width: 560px;
   color: var(--muted);
@@ -234,24 +212,6 @@ button:focus-visible {
     radial-gradient(120% 130% at 50% 45%, transparent 52%, rgba(0, 0, 0, 0.55) 100%);
   box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.6);
 }
-
-/* Staging / preview */
-.staging {
-  min-height: 70px;
-  background: var(--panel);
-  border: 2px solid var(--line);
-  padding: 10px 12px;
-  font-size: 0.78rem;
-}
-.preview-nums {
-  display: flex;
-  gap: 16px;
-  font-size: 1rem;
-  color: var(--gold);
-}
-.preview-nums .dmg {
-  color: var(--gold-bright);
-}
 .preview-nums .heal {
   color: var(--good);
 }
@@ -261,54 +221,8 @@ button:focus-visible {
 .preview-nums .shield {
   color: var(--violet);
 }
-.trace {
-  margin: 8px 0 0;
-  padding-left: 16px;
-  color: var(--muted);
-  font-size: 0.68rem;
-  line-height: 1.7;
-}
-.hint {
-  color: var(--muted);
-  font-size: 0.74rem;
-}
-.error {
-  color: var(--blood);
-}
-.immune-warn {
-  margin-bottom: 8px;
-  padding: 6px 8px;
-  border-left: 3px solid var(--blood);
-  background: rgba(224, 64, 96, 0.12);
-  color: var(--blood);
-  font-size: 0.72rem;
-  line-height: 1.5;
-}
-
-/* Defend */
-.defend-bar {
-  background: #2a0f18;
-  border: 2px solid var(--blood);
-  padding: 10px 12px;
-  font-size: 0.78rem;
-}
 .defend-bar .actions {
   margin-top: 8px;
-}
-
-/* HUD */
-.hud {
-  margin-top: 4px;
-  border-top: 2px solid var(--line);
-  padding-top: 8px;
-}
-.hud-row {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  align-items: center;
-  color: var(--muted);
-  font-size: 0.72rem;
 }
 .gold {
   color: var(--gold);
@@ -347,15 +261,6 @@ button:focus-visible {
   gap: 12px;
   flex-wrap: wrap;
 }
-.offer {
-  width: 200px;
-  background: var(--panel);
-  border: 2px solid var(--line);
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
 .offer.joker {
   border-color: var(--gold);
 }
@@ -364,16 +269,6 @@ button:focus-visible {
 }
 .offer.joker.rarity-rare {
   border-color: var(--violet);
-}
-.rarity-tag {
-  margin-left: auto;
-  font-size: 0.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 2px 5px;
-  border-radius: 4px;
-  border: 1px solid var(--line);
-  color: var(--muted);
 }
 .rarity-tag.uncommon {
   color: var(--blue);
@@ -386,38 +281,6 @@ button:focus-visible {
 .offer.edict {
   border-color: var(--gold-bright);
   background: linear-gradient(var(--panel-2), var(--panel));
-}
-.edict-owned {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
-}
-.edict-chip {
-  font-size: 0.62rem;
-  color: var(--gold-bright);
-  background: rgba(20, 12, 28, 0.7);
-  border: 1px solid var(--frame);
-  border-radius: 5px;
-  padding: 3px 8px;
-}
-/* Sigils are wax-seal stamps pressed onto the card — the glossy molten blob itself is the SVG
-   <WaxSeal>; this wrapper just positions it, tilts it like a hand-pressed stamp, and casts a shadow. */
-.card-sigil {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  width: 27px;
-  height: 27px;
-  display: block;
-  transform: rotate(-7deg);
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.55));
-  z-index: 5;
-}
-.card-sigil .wax-seal {
-  display: block;
-  width: 100%;
-  height: 100%;
 }
 
 /* Court Event screen (P5) */
@@ -479,58 +342,10 @@ button:focus-visible {
   color: var(--blood);
   font-size: 0.62rem;
 }
-.dr-event {
-  color: var(--blue);
-}
-.offer-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 .item-art {
   flex: none;
   image-rendering: auto;
   filter: drop-shadow(2px 2px 0 #00000066);
-}
-.offer-name {
-  color: var(--gold-bright);
-  font-size: 0.82rem;
-}
-.offer-text {
-  color: var(--muted);
-  font-size: 0.68rem;
-  line-height: 1.6;
-  flex: 1;
-}
-.pending-banner {
-  background: var(--panel-2);
-  border: 2px solid var(--gold);
-  padding: 8px 12px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 0.74rem;
-}
-.slots-tray {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.owned-joker {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  background: var(--panel);
-  border: 2px solid var(--gold);
-  padding: 6px 10px;
-  font-size: 0.72rem;
-}
-
-/* DOM cards (shop deck list only) */
-.deck-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
 }
 /* The DOM card face — the same parchment "model" as the in-combat Pixi card: a corner rank index +
    a big centred suit glyph, on a parchment panel with a top highlight strip and a worn inner edge. */
@@ -561,14 +376,6 @@ button:focus-visible {
   height: 100%;
   display: block;
   image-rendering: pixelated;
-}
-.card-corner {
-  position: absolute;
-  top: 3px;
-  left: 4px;
-  font-weight: 700;
-  line-height: 1;
-  font-size: 0.62rem;
 }
 .card.small .card-glyph {
   font-size: 1.3rem;
@@ -803,53 +610,6 @@ button:focus-visible {
   background: rgba(8, 5, 12, 0.7);
   animation: gateIn 0.3s ease;
 }
-.gate-card {
-  text-align: center;
-  background: var(--bg2);
-  border: 3px solid var(--gold);
-  border-radius: 10px;
-  padding: 26px 30px;
-  box-shadow: 0 0 0 3px #000, 0 16px 50px rgba(0, 0, 0, 0.7);
-}
-.gate-title {
-  font-family: "Press Start 2P", monospace;
-  font-size: 1.5rem;
-  line-height: 1.5;
-  color: var(--gold);
-  text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #000;
-}
-.gate-sub {
-  color: var(--muted);
-  margin: 16px 0 20px;
-  font-size: 0.8rem;
-}
-.gate-continue {
-  font-size: 1rem;
-  padding: 12px 24px;
-}
-.gate-rewards {
-  margin: 16px auto 18px;
-  min-width: 240px;
-  max-width: 320px;
-  font-size: 0.78rem;
-  color: var(--ink);
-}
-.reward-exact {
-  color: var(--gold-bright);
-  text-align: center;
-  margin-bottom: 8px;
-  letter-spacing: 2px;
-}
-.reward-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 4px 2px;
-  color: var(--muted);
-}
-.reward-row span:last-child {
-  color: var(--gold);
-}
 .reward-row.total {
   margin-top: 6px;
   padding-top: 8px;
@@ -906,16 +666,6 @@ button:focus-visible {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
-
-/* Turn indicator */
-.turn-banner {
-  text-align: center;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.78rem;
-  letter-spacing: 1px;
-  padding: 9px;
-  border-radius: 6px;
-}
 .turn-banner.play {
   color: var(--gold);
   background: rgba(242, 193, 78, 0.08);
@@ -966,27 +716,6 @@ button:focus-visible {
 .pc-cell svg {
   image-rendering: pixelated;
 }
-
-/* Pile composition modal */
-.pile-modal {
-  width: min(760px, 96vw);
-  max-height: 88vh;
-  overflow: auto;
-  background: var(--bg2);
-  border: 3px solid var(--gold);
-  border-radius: 10px;
-  box-shadow: 0 0 0 3px #000, 0 16px 50px rgba(0, 0, 0, 0.7);
-}
-.pile-sub {
-  padding: 4px 18px 0;
-  color: var(--muted);
-  font-size: 0.72rem;
-  line-height: 1.6;
-}
-.pile-grid {
-  gap: 9px;
-  padding: 16px 18px 20px;
-}
 /* The pile modals show cards a lot bigger for legibility. */
 .pile-grid .card.small {
   width: 60px;
@@ -1000,287 +729,40 @@ button:focus-visible {
 .pile-grid .card.small .card-val {
   font-size: 1.05rem;
 }
-.pile-count {
-  color: var(--muted);
-}
-
-/* The Descent — run-overview modal (P2): the three Courts with every royal + decree, and a side
-   rail of the current run state. */
-.descent-modal {
-  width: min(1000px, 97vw);
-  max-height: 90vh;
-  overflow: auto;
-  background: var(--bg2);
-  border: 3px solid var(--gold);
-  border-radius: 10px;
-  box-shadow: 0 0 0 3px #000, 0 16px 50px rgba(0, 0, 0, 0.7);
-}
-.descent-body {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 14px 18px 20px;
-  flex-wrap: wrap;
-}
-.descent-acts {
-  flex: 1 1 560px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.descent-act {
-  border: 2px solid var(--line);
-  border-radius: 8px;
-  padding: 10px 12px;
-  background: rgba(14, 8, 20, 0.45);
-}
 .descent-act.jack { border-left: 5px solid var(--blue); }
 .descent-act.queen { border-left: 5px solid var(--violet); }
 .descent-act.king { border-left: 5px solid var(--blood); }
-.da-head {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 10px;
-}
-.da-head h3 { color: var(--gold); }
-.da-blurb { color: var(--muted); font-size: 0.66rem; line-height: 1.5; }
-.da-royals {
-  display: flex;
-  gap: 9px;
-  flex-wrap: wrap;
-}
-.descent-royal {
-  width: 124px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-  border: 2px solid var(--line);
-  border-radius: 7px;
-  background: var(--panel);
-  font-size: 0.62rem;
-}
 .descent-royal.cleared { opacity: 0.42; filter: grayscale(0.6); }
 .descent-royal.current {
   border-color: var(--gold);
   box-shadow: 0 0 14px rgba(242, 193, 78, 0.5);
   background: var(--panel-2);
 }
-.dr-top { display: flex; justify-content: space-between; align-items: center; }
-.dr-pos { color: var(--muted); }
 .dr-flag.cleared { color: var(--good); }
 .dr-flag.current { color: var(--gold-bright); }
-.dr-face {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 4px;
-  padding: 4px 0;
-  background: var(--ink);
-  border-radius: 5px;
-  color: #222;
-}
 .dr-face.red { color: var(--red); }
 .dr-face.black { color: #1a1a1a; }
-.dr-rank { font-size: 1.5rem; font-family: "Press Start 2P", monospace; }
-.dr-suit { font-size: 1.2rem; }
-.dr-stats { display: flex; justify-content: space-between; color: var(--ink); }
-.dr-stats .dr-hp { color: var(--good); }
-.dr-stats .dr-atk { color: var(--blood); }
-.dr-immune { color: var(--muted); text-transform: uppercase; letter-spacing: 0.3px; }
-.dr-decree { line-height: 1.4; }
 .dr-decree.has { color: var(--gold-bright); }
 .dr-decree.none { color: var(--muted); opacity: 0.7; }
-.descent-rail {
-  flex: 0 0 220px;
-  border: 2px solid var(--frame);
-  border-radius: 8px;
-  padding: 12px;
-  background: rgba(20, 12, 28, 0.7);
-}
-.descent-rail h3 { color: var(--gold); margin-bottom: 6px; }
-.descent-rail h3:not(:first-child) { margin-top: 14px; }
-.dr-rail-stats { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.72rem; color: var(--ink); }
-.dr-rail-relics { display: flex; flex-direction: column; gap: 7px; }
-.dr-relic { display: flex; align-items: center; gap: 8px; font-size: 0.68rem; color: var(--ink); }
-.dr-flag.upcoming { color: var(--muted); }
-
-/* ----- Run-info tabs (Balatro-style: Fighting Styles / Opponents / Edicts / Stake) ----- */
-.runinfo-tabs {
-  display: flex;
-  gap: 6px;
-  padding: 10px 18px 0;
-  flex-wrap: wrap;
-}
-.runinfo-tab {
-  flex: 1 1 0;
-  min-width: 110px;
-  padding: 9px 10px;
-  font-size: 0.74rem;
-  font-weight: bold;
-  background: var(--panel);
-  border: 2px solid var(--line);
-  border-bottom: none;
-  border-radius: 8px 8px 0 0;
-  color: var(--muted);
-  cursor: pointer;
-}
-.runinfo-tab:hover { color: var(--ink); }
 .runinfo-tab.active {
   background: var(--panel-2);
   border-color: var(--gold);
   color: var(--gold-bright);
 }
-.runinfo-pane {
-  margin: 0 18px 18px;
-  padding: 14px;
-  min-height: 300px;
-  border: 2px solid var(--gold);
-  border-radius: 0 8px 8px 8px;
-  background: rgba(14, 8, 20, 0.45);
-}
-.ri-pane-note { color: var(--muted); font-size: 0.68rem; line-height: 1.6; margin-bottom: 12px; }
-.ri-pane-note b { color: var(--parch); }
-.ri-empty { color: var(--muted); text-align: center; padding: 60px 10px; font-size: 0.82rem; }
-
-/* fighting styles list */
-.ri-style-list { display: flex; flex-direction: column; gap: 6px; }
-.ri-style-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 10px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  outline: none;
-}
-.ri-style-row:hover,
-.ri-style-row:focus-visible { border-color: var(--gold); background: var(--panel-2); }
-.ri-style-lvl {
-  flex: 0 0 auto;
-  min-width: 42px;
-  text-align: center;
-  font-size: 0.66rem;
-  font-weight: bold;
-  padding: 3px 6px;
-  border-radius: 6px;
-  background: #160f1e;
-  border: 1px solid var(--line);
-  color: var(--muted);
-}
 .ri-style-lvl.on { color: #1a1020; background: var(--gold); border-color: var(--gold); }
-.ri-style-icon { flex: 0 0 auto; display: grid; place-items: center; width: 30px; }
-.ri-style-name { flex: 0 0 132px; font-weight: bold; color: var(--gold); font-size: 0.78rem; }
-.ri-style-trigger { flex: 1 1 auto; color: var(--muted); font-size: 0.66rem; }
-.ri-style-mod {
-  flex: 0 0 auto;
-  min-width: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  line-height: 1.15;
-}
-.ri-mod-cur { font-weight: bold; font-size: 0.86rem; color: var(--muted); }
 .ri-mod-cur.on { color: var(--good); }
-.ri-mod-per { font-size: 0.54rem; color: var(--muted); letter-spacing: 0.2px; }
-
-/* Hover popup: the example play, real card faces + the gentle idle wiggle (cardIdleFloat). */
-.ri-style-demo {
-  position: absolute;
-  bottom: calc(100% + 9px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 30;
-  pointer-events: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 11px 13px;
-  background: var(--bg2);
-  border: 2px solid var(--gold);
-  border-radius: 9px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-  animation: riDemoIn 0.12s ease-out;
-}
-.ri-style-demo::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  border: 7px solid transparent;
-  border-top-color: var(--gold);
-}
 @keyframes riDemoIn {
   from { opacity: 0; transform: translateX(-50%) translateY(5px); }
   to { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
-.ri-style-demo-cards { display: flex; gap: 7px; }
 .ri-style-demo-cards .card.small { animation: cardIdleFloat 3.4s ease-in-out infinite; }
 .ri-style-demo-cards .card.small:nth-child(2n) { animation-duration: 3.9s; animation-delay: -1.2s; }
 .ri-style-demo-cards .card.small:nth-child(3n) { animation-duration: 3.6s; animation-delay: -0.6s; }
 .ri-style-demo-cards .card.small:nth-child(4n) { animation-delay: -2s; }
 .ri-style-demo-cards .card.small:nth-child(5n) { animation-duration: 4.1s; animation-delay: -1.6s; }
-.ri-style-demo-cap { font-size: 0.6rem; color: var(--muted); max-width: 250px; text-align: center; line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) {
   .ri-style-demo-cards .card.small { animation: none; }
 }
-
-/* opponents (reuses .da-head / .da-royals / .descent-royal) */
-.ri-opponents .da-royals { gap: 10px; }
-
-/* edicts */
-.ri-edicts { display: flex; flex-direction: column; gap: 8px; }
-.ri-edict-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 9px 11px;
-  background: var(--panel);
-  border: 1px solid var(--frame);
-  border-radius: 7px;
-}
-.ri-edict-crest { color: var(--gold); font-size: 1.1rem; line-height: 1.2; }
-.ri-edict-name { color: var(--gold-bright); font-weight: bold; font-size: 0.8rem; }
-.ri-edict-text { color: var(--ink); font-size: 0.7rem; line-height: 1.5; margin-top: 2px; }
-
-/* stake */
-.ri-stake-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.ri-stake-chip {
-  width: 38px; height: 38px; border-radius: 50%;
-  border: 3px solid rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.15), inset 0 0 6px rgba(0, 0, 0, 0.4);
-}
-.ri-stake-name { font-size: 1rem; font-weight: bold; }
-.ri-stake-sub { color: var(--muted); font-size: 0.68rem; }
-.ri-stake-rules { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.ri-stake-rules li {
-  display: flex; align-items: center; gap: 9px;
-  font-size: 0.76rem; color: var(--ink);
-  padding: 8px 11px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-}
-.ri-stake-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5); }
-.stat-btn {
-  font-family: "Silkscreen", monospace;
-  font-size: 0.84rem;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  color: #fff;
-  text-transform: none;
-  box-shadow: none;
-  cursor: pointer;
-  text-align: left;
-}
-.stat-btn:hover:not(:disabled) { color: var(--gold-bright); transform: none; box-shadow: none; }
 
 /* Outcome transitions */
 .transition {
@@ -1468,24 +950,6 @@ button:focus-visible {
 .hud-row span[data-tip] {
   cursor: help;
 }
-
-/* Help button + tutorial overlay */
-.help-btn {
-  position: fixed;
-  top: 14px;
-  right: 14px;
-  z-index: 45;
-  width: 42px;
-  height: 42px;
-  padding: 0;
-  border-radius: 50%;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.95rem;
-  background: radial-gradient(circle at 50% 35%, #d4324a, #8d1b2c);
-  border: 2px solid var(--gold);
-  color: var(--gold-bright);
-  box-shadow: 0 0 0 2px #000, 0 0 0 4px #3a2a18, 0 4px 10px rgba(0, 0, 0, 0.5);
-}
 .help-btn:hover::after,
 .help-btn:focus-visible::after,
 .mute-btn:hover::after,
@@ -1591,78 +1055,15 @@ button:focus-visible {
 .suit.black {
   color: var(--ink);
 }
-
-/* Suit legend (always on, in combat) */
-.legend {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding: 6px 0 2px;
-  font-size: 0.66rem;
-  color: var(--muted);
-}
-.legend i {
-  font-style: normal;
-  font-size: 0.95rem;
-  vertical-align: -1px;
-}
 .s-red {
   color: var(--blood);
 }
 .s-dark {
   color: var(--ink);
 }
-
-/* Shop backdrop — same cabinet, a torchlit market */
-.shop-stage {
-  position: relative;
-  border: 12px solid #16101c;
-  border-radius: 18px;
-  overflow: hidden;
-  background:
-    repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.16) 0 12px, transparent 12px 24px),
-    radial-gradient(120% 95% at 50% 0%, #3a1f2e, #140c18 72%);
-  box-shadow: 0 0 0 3px #000, 0 0 0 7px #3a2a18, 0 0 0 9px #1a120c, inset 0 0 40px rgba(0, 0, 0, 0.72);
-  padding: 14px 18px 20px;
-}
-.shop-stage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(60% 50% at 50% 38%, rgba(242, 193, 78, 0.12), transparent 70%);
-  animation: shopPulse 5s ease-in-out infinite;
-}
-.shop-stage::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.13) 0 2px, transparent 2px 4px);
-}
 @keyframes shopPulse {
   0%, 100% { opacity: 0.45; }
   50% { opacity: 1; }
-}
-.shop-stage > * {
-  position: relative;
-  z-index: 1;
-}
-.shop-banner {
-  text-align: center;
-  font-family: "Press Start 2P", monospace;
-  color: var(--gold);
-  font-size: 1.05rem;
-  text-shadow: 3px 3px 0 var(--red), 6px 6px 0 #000;
-  margin: 4px 0 14px;
-}
-.shop-bar {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
 }
 
 /* Soft rounding across panels (the user asked for some corner radius) */
@@ -1703,138 +1104,12 @@ button:focus-visible {
 .pixi-sidebar-host canvas {
   display: block;
 }
-/* Balatro-style left chrome column. The moved HUD islands flow as stacked panels here (their old
-   floating-corner geometry is dropped by the reset below). */
-.combat-sidebar {
-  flex: none;
-  width: clamp(280px, 24vw, 360px);
-  height: 100%;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 14px;
-  background: linear-gradient(var(--bg2), var(--bg));
-  border-right: 3px solid var(--frame);
-  box-shadow: inset -2px 0 0 #000, 4px 0 18px rgba(0, 0, 0, 0.5);
-  z-index: 7;
-}
-.combat-sidebar > * {
-  position: static;
-  inset: auto;
-  width: 100%;
-  max-width: none;
-  height: auto;
-  min-height: 0;
-  transform: none;
-  margin: 0;
-}
-/* Sidebar panels — purpose-built, clean. The inner content classes (turn-banner, intent pills,
-   jester-name, side-slot, action-pop preview) keep their own styling; these are just the wrappers. */
-.cs-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 11px 13px;
-  background: rgba(11, 6, 16, 0.6);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-}
-.cs-run {
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 14px;
-  font-size: 0.82rem;
-  color: #fff;
-}
 .cs-run .gold {
   color: var(--gold);
 }
 .cs-run .upg {
   color: var(--good);
 }
-.cs-run .stat-btn {
-  padding: 5px 10px;
-  font-size: 0.74rem;
-}
-.cs-turn {
-  align-items: stretch;
-}
-.cs-turn .turn-banner {
-  text-align: center;
-}
-.cs-jester-head {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.cs-jester-head .jester-name {
-  flex: 1;
-}
-.cs-jester-use {
-  padding: 6px 12px;
-  font-size: 0.7rem;
-}
-.cs-guild {
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-.cs-preview {
-  align-self: stretch;
-}
-
-/* The opponent "blind" panel (royal), Fighting-Style read-out, and run stats — the left chrome. */
-.cs-royal {
-  flex-direction: row;
-  align-items: center;
-  gap: 12px;
-}
-.cs-royal-badge {
-  flex: none;
-  position: relative;
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
-  border: 2px solid #000;
-  display: grid;
-  place-items: center;
-  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18), 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-.cs-royal-crown {
-  position: absolute;
-  top: -11px;
-  font-size: 1.05rem;
-}
-.cs-royal-suit {
-  font-size: 1.5rem;
-  color: #1a1020;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
-}
-.cs-royal-body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.cs-royal-name {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.8rem;
-  color: var(--gold);
-}
-.cs-hp {
-  position: relative;
-  height: 17px;
-  border-radius: 4px;
-  background: #2a141c;
-  border: 1px solid var(--frame);
-  overflow: hidden;
-}
-/* the bar flashes + shakes when an attack streak lands on it (combat strike feedback) */
-.cs-hp.hp-hit { animation: csHpHit 0.55s ease-out; }
 @keyframes csHpHit {
   0% { transform: translateX(0); }
   12% { transform: translateX(-4px); box-shadow: 0 0 16px 3px var(--gold-bright); filter: brightness(1.7); }
@@ -1846,206 +1121,12 @@ button:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .cs-hp.hp-hit { animation: none; }
 }
-.cs-hp-fill {
-  position: absolute;
-  inset: 0 auto 0 0;
-  background: linear-gradient(var(--blood), var(--red));
-  transition: width 0.3s ease;
-}
-.cs-hp-text {
-  position: relative;
-  display: block;
-  text-align: center;
-  font-size: 0.66rem;
-  line-height: 17px;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-}
-.cs-royal-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px 10px;
-  font-size: 0.72rem;
-}
-.cs-atk {
-  color: var(--blood);
-}
-/* Fighting-Style header (the play's "hand type") + a Balatro-style box per suit effect. */
-.cs-style {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-.cs-style-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.64rem;
-  line-height: 1.4;
-  color: var(--gold-bright);
-  padding: 8px 10px;
-  background: rgba(11, 6, 16, 0.6);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-}
-.cs-style-name .style-sprite {
-  flex: none;
-}
-/* Illegal-hand state: the Fighting Style stops reading a (misleading) style and surfaces the same
-   reason the on-card hover tooltip gives. */
-.cs-style-name.illegal {
-  border-color: var(--red);
-  color: #ff8a98;
-}
-.cs-style-warn-icon {
-  flex: none;
-  width: 30px;
-  text-align: center;
-  font-size: 1.3rem;
-  line-height: 1;
-  color: var(--red);
-}
-.cs-style-warn {
-  color: #ff8a98 !important;
-  font-family: "Silkscreen", monospace;
-  text-transform: none;
-}
-.cs-style-text {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-.cs-style-text strong {
-  font-weight: 400;
-}
-.cs-style-name em {
-  font-style: normal;
-  font-size: 0.54rem;
-  color: var(--muted);
-}
-/* Play / Clear — spread across the sidebar like the suit boxes (same 2-col grid + gap), but taller.
-   Play turns red once a legal selection exists; Clear keeps the neutral button look. */
-.cs-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
-}
-.cs-actions:not(:has(.ca-clear)) {
-  grid-template-columns: 1fr;
-}
-.cs-actions button {
-  padding: 15px 0;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.74rem;
-  border-radius: 8px;
-}
-.cs-actions .ca-play:not(:disabled) {
-  background: linear-gradient(#d8324a, #9a1c30);
-  border-color: var(--gold);
-  color: var(--gold-bright);
-}
-.cs-actions .ca-play:not(:disabled):hover {
-  background: linear-gradient(#e84a62, #b02238);
-}
-.cs-effects {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
-}
-/* Each suit-effect: a label over a dark number-box, the same style Balatro uses for Hands/Discards. */
-.cs-fx {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 3px;
-}
-.cs-fx span {
-  text-align: center;
-  font-size: 0.54rem;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--muted);
-}
-.cs-fx b {
-  text-align: center;
-  font-family: "Press Start 2P", monospace;
-  font-size: 1.05rem;
-  line-height: 1;
-  padding: 9px 0;
-  border-radius: 8px;
-  background: #0d0712;
-  border: 2px solid var(--line);
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.6);
-  color: #fff;
-}
-/* Each effect box is coloured after what it does (not the suit): Damage=red, Block=blue,
-   Draw=yellow, Heal=green. */
-.cs-fx.s-C b {
-  border-color: var(--red); /* Damage → red */
-  color: #ff8a98;
-}
-.cs-fx.s-C span {
-  color: #ff8a98;
-}
-.cs-fx.s-S b {
-  border-color: var(--blue); /* Block → blue */
-  color: #ade2f7;
-}
-.cs-fx.s-S span {
-  color: var(--blue);
-}
-.cs-fx.s-D b {
-  border-color: var(--gold); /* Draw → yellow */
-  color: #f7dc8a;
-}
-.cs-fx.s-D span {
-  color: var(--gold);
-}
-.cs-fx.s-H b {
-  border-color: var(--good); /* Heal → green */
-  color: #b6e8ac;
-}
-.cs-fx.s-H span {
-  color: var(--good);
-}
 .cs-fx.zero {
   opacity: 0.4;
 }
 .cs-fx.zero b {
   border-color: var(--line);
   color: var(--muted);
-}
-.cs-style-err {
-  text-align: center;
-}
-.cs-style-name strong {
-  display: block;
-  font-weight: 400;
-}
-
-/* Run-state read-outs — each its own box. */
-.cs-statgrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px;
-}
-.cs-stat {
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 8px 6px;
-}
-.cs-stat span {
-  color: var(--muted);
-  text-transform: uppercase;
-  font-size: 0.56rem;
-  letter-spacing: 0.5px;
-}
-.cs-stat b {
-  color: var(--ink);
-  font-size: 0.86rem;
 }
 .cs-stat .gold {
   color: var(--gold);
@@ -2054,65 +1135,10 @@ button:focus-visible {
   color: var(--good);
   font-size: 0.74rem;
 }
-.cs-runinfo {
-  width: 100%;
-  text-align: center;
-  font-size: 0.78rem;
-}
-/* Options + mute, pinned to the bottom-left of the sidebar. The mute button is normally fixed to the
-   screen corner; in combat it lives here, so de-fix it. */
-.cs-footer {
-  margin-top: auto;
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-}
-.cs-options {
-  flex: 1;
-  text-align: center;
-  font-size: 0.78rem;
-}
 .cs-footer .mute-btn {
   position: static;
   flex: none;
   z-index: auto;
-}
-.cs-sort {
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.cs-sort-label {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.5px;
-  color: #fff;
-}
-.cs-sort-btns {
-  display: flex;
-  gap: 6px;
-}
-.cs-sort-btns button {
-  padding: 6px 12px;
-  font-size: 0.72rem;
-}
-/* The first sort button (Rank) is the primary one → red, like Balatro's accent control. */
-.cs-sort-btns button:first-child {
-  background: var(--red);
-  border-color: #7a1626;
-  color: #fff;
-}
-.cs-sort-btns button:first-child:hover {
-  background: #d83651;
-}
-.combat-sidebar .ov-right {
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-.combat-sidebar .cs-preview {
-  align-self: stretch;
 }
 /* The felt fills the rest; the Pixi board and the overlay both pin to this column. */
 .combat-field {
@@ -2139,278 +1165,16 @@ button:focus-visible {
 .combat .pixi-host::after {
   border-radius: 0;
 }
-
-.combat-ui {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  pointer-events: none;
-}
-/* interactive bits re-enable pointer events; empty areas fall through to the canvas (card drags).
-   The action box stays click-through (so it can appear over the hand on hover without blocking a
-   grab); only its buttons re-enable events — handled by the `.combat-ui button` rule above. */
-.combat-ui button,
-.ov-stats,
-.side-slot,
-.jester-card,
-.ov-prompt,
-.felt-sort {
-  pointer-events: auto;
-}
-
-/* Sort controls, just below the hand on the felt (moved off the sidebar). */
-.felt-sort {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  z-index: 7;
-}
-.felt-sort-label {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.5rem;
-  color: var(--parchment-edge, #8a6a3a);
-  letter-spacing: 1px;
-}
-.felt-sort button {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.56rem;
-  padding: 7px 12px;
-  color: #ffe9a0;
-  background: linear-gradient(#241733, #161021);
-  border: 2px solid var(--frame, #f2c14e);
-  border-radius: 7px;
-  cursor: pointer;
-}
-.felt-sort button:hover {
-  background: linear-gradient(#3a2a18, #241733);
-}
-
-/* Run stats are engraved on a gilded corner plaque mounted into the top-left of the screen frame —
-   the same bronze-rack family as the Jester/guild racks, so it reads as part of the cabinet rather
-   than text floating over the border. Text is white with a hard black outline for legibility. */
-.ov-stats {
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 14px 22px 12px 16px;
-  font-size: 0.84rem;
-  line-height: 1.15;
-  color: #fff;
-  letter-spacing: 0.5px;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  background: linear-gradient(150deg, #2a1d12, #150d0a);
-  border: 2px solid var(--frame);
-  border-top: none;
-  border-left: none;
-  border-radius: 0 0 14px 0;
-  box-shadow: 4px 4px 14px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(0, 0, 0, 0.55);
-}
 .ov-stats .gold {
   color: var(--gold-bright);
 }
 .ov-stats .upg {
   color: var(--good);
 }
-
-.ov-turn {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  max-width: 92vw;
-}
-.ov-turn .turn-banner {
-  font-size: 0.7rem;
-  padding: 7px 12px;
-}
-.ov-turn .legend {
-  background: rgba(14, 8, 20, 0.6);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 4px 10px;
-}
-
-/* The royal's intent telegraph + its Royal Decree (special rule), shown under the turn banner so
-   the player can read what they're up against and plan their deck around it. */
-.enemy-intent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  pointer-events: auto;
-  max-width: 92vw;
-}
-.intent-strike {
-  font-size: 0.66rem;
-  letter-spacing: 0.5px;
-  color: #ffd9d9;
-  background: rgba(224, 64, 96, 0.16);
-  border: 1px solid var(--blood);
-  border-radius: 5px;
-  padding: 3px 9px;
-}
 .intent-strike.enraged {
   color: #fff;
   background: rgba(224, 64, 96, 0.4);
   animation: pulseDanger 0.85s ease-in-out infinite;
-}
-.decree-pill {
-  font-size: 0.62rem;
-  letter-spacing: 0.4px;
-  color: var(--gold-bright, #f2c14e);
-  background: rgba(20, 12, 28, 0.78);
-  border: 1px solid var(--frame, #6b4f2a);
-  border-radius: 5px;
-  padding: 3px 9px;
-  text-align: center;
-  line-height: 1.35;
-}
-
-/* The Jester (left) and the guild-slot rack (right) are mounted INTO the gilded screen frame: each is
-   a bronze-railed rack flush to its edge, the same family as the help/mute badges on the frame. */
-.ov-left,
-.ov-right {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 7px;
-  background: linear-gradient(#241810, #160e0a);
-  border: 2px solid var(--frame);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55), inset 0 0 14px rgba(0, 0, 0, 0.6);
-}
-.ov-left {
-  left: 0;
-  border-left: none;
-  border-radius: 0 12px 12px 0;
-}
-.ov-right {
-  right: 0;
-  border-right: none;
-  border-radius: 12px 0 0 12px;
-}
-.side-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  width: 56px;
-  padding: 8px 5px;
-  font-size: 0.54rem;
-  border-radius: 8px;
-}
-.side-btn .side-glyph {
-  font-size: 1.35rem;
-  color: var(--violet);
-  line-height: 1;
-}
-.side-slot {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border: 2px solid #5a4326;
-  border-radius: 7px;
-  background: radial-gradient(circle at 50% 32%, #1e1420, #0b0710);
-  box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.85);
-}
-.side-slot.filled {
-  border-color: var(--gold);
-  box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.7), 0 0 8px rgba(242, 193, 78, 0.35);
-}
-.side-slot .slot-dash {
-  color: #5a4326;
-  font-size: 1.4rem;
-}
-
-/* The Jester: a proper sprite with its name and remaining charges shown separately. A "Use" button
-   slides in on hover (so it can't be triggered by accident), and a tooltip explains it after 1s. */
-.jester-card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-}
-.jester-name {
-  font-size: 0.74rem;
-  letter-spacing: 1px;
-  color: var(--gold-bright);
-  text-shadow: 1px 1px 0 #000;
-}
-.jester-count {
-  font-size: 0.95rem;
-  color: #fff;
-  text-shadow: 1px 1px 0 #000;
-}
-.jester-use {
-  margin-top: 3px;
-  padding: 5px 12px;
-  font-size: 0.62rem;
-  opacity: 0;
-  transform: translateY(-3px);
-  pointer-events: none;
-  transition: opacity 0.14s ease, transform 0.14s ease;
-}
-.jester-card:hover .jester-use,
-.jester-card:focus-within .jester-use {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.jester-tip {
-  position: absolute;
-  left: calc(100% + 12px);
-  top: 50%;
-  transform: translateY(-50%);
-  width: max-content;
-  max-width: 190px;
-  white-space: normal;
-  text-transform: none;
-  letter-spacing: 0.3px;
-  background: #0d0712;
-  color: var(--ink);
-  border: 2px solid var(--gold);
-  border-radius: 6px;
-  padding: 7px 9px;
-  font-size: 0.62rem;
-  line-height: 1.6;
-  opacity: 0;
-  pointer-events: none;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-  z-index: 60;
-  transition: opacity 0.12s ease; /* hides quickly */
-}
-.jester-card:hover .jester-tip {
-  opacity: 1;
-  transition: opacity 0.12s ease 1s; /* but only appears after a 1s dwell */
-}
-
-.ov-bottom {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  width: min(560px, 92vw);
-  pointer-events: none;
 }
 /* The card-power preview floats as a box ABOVE the hand row (not down among the action buttons). */
 .ov-bottom .action-pop.info {
@@ -2421,132 +1185,11 @@ button:focus-visible {
   margin: 0;
   max-width: 360px;
 }
-/* Action bar — Play (left) / Sort (centre) / Discard·Jester (right), spread like Balatro. */
-.combat-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  width: min(620px, 78vw);
-  pointer-events: auto;
-}
-.combat-actions .ca-play {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.86rem;
-  padding: 13px 20px;
-  background: linear-gradient(#d8324a, #9a1c30);
-  border: 2px solid var(--gold);
-  color: var(--gold-bright);
-}
-.sort-hand {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 9px;
-  border: 2px solid var(--frame);
-  border-radius: 9px;
-  background: rgba(11, 6, 16, 0.92);
-}
-.sort-label {
-  font-size: 0.6rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.sort-hand button {
-  padding: 6px 10px;
-  font-size: 0.72rem;
-}
-.combat-actions .ca-jester,
-.combat-actions .ca-clear {
-  font-size: 0.78rem;
-  padding: 10px 14px;
-}
-
-/* Jokers (guild) along the top-left, pouch top-right — Balatro layout. The top is a defined grey
-   rack so the area reads as reserved even before anything is bought; each zone carries a Balatro-style
-   "x / max" count. Kept clear of the corner mute/gear. */
-.field-top {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: 12px 20px 16px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
-  /* just a SLIGHT dark overlay for the joker row (like Balatro) that fades into the felt — no hard
-     band, border, or slot boxes; the jokers/pouch simply sit on the felt with a count beneath. */
-  background: linear-gradient(rgba(18, 14, 24, 0.5), rgba(18, 14, 24, 0.2) 58%, rgba(18, 14, 24, 0));
-  pointer-events: none;
-}
-/* Each zone is a column: the card row, then its count beneath (jokers count to the left, pouch to
-   the right). A faint inset rack makes the empty area visible without per-slot placeholders. */
-.field-zone {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  pointer-events: auto;
-}
-.field-jokers-zone {
-  align-items: flex-start;
-}
-.field-pouch-zone {
-  align-items: flex-end;
-}
-.zone-count {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.56rem;
-  color: #fff;
-  letter-spacing: 0.5px;
-  text-shadow: 1px 1px 0 #000, -1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
-}
-.field-jokers {
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 10px;
-  min-height: clamp(78px, 15vh, 156px); /* holds full-size joker cards; no visible box (Balatro) */
-  pointer-events: auto;
-}
-/* A joker card model (no slot/placeholder) — just the joker art with a drop shadow. */
-.field-joker {
-  position: relative;
-  display: block;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.55));
-}
-.field-joker .joker-art {
-  display: block;
-  /* match the on-screen size of the Pixi hand cards (~58/360 of the felt height ≈ 15vh). The
-     !important beats JokerArt's inline px height/maxWidth. */
-  height: clamp(78px, 15vh, 156px) !important;
-  width: auto;
-  max-width: none !important;
-  border-radius: 6px;
-}
 /* Jokers & held items bob and tilt gently, like Balatro's jokers (idle, staggered). */
 @keyframes jokerBob {
   0% { transform: translateY(0) rotate(-1.2deg); }
   50% { transform: translateY(-5px) rotate(1.2deg); }
   100% { transform: translateY(0) rotate(-1.2deg); }
-}
-.field-joker,
-.field-consumables .held-item {
-  animation: jokerBob 2.7s ease-in-out infinite;
-}
-.field-joker:nth-child(2n),
-.field-consumables .held-item:nth-child(2n) {
-  animation-duration: 3.1s;
-  animation-delay: -0.9s;
-}
-.field-joker:nth-child(3n) {
-  animation-duration: 2.9s;
-  animation-delay: -1.5s;
-}
-.field-joker:hover,
-.field-consumables .held-item:hover {
-  animation-play-state: paused;
 }
 @media (prefers-reduced-motion: reduce) {
   .field-joker,
@@ -2554,148 +1197,15 @@ button:focus-visible {
     animation: none;
   }
 }
-/* The pouch is treated exactly like the joker zone: no panel/slot/placeholder, just the held card
-   models (bobbing), sitting on the same grey top band. */
-.field-consumables {
-  flex: none;
-  pointer-events: auto;
-}
-.field-consumables .held-tray {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  min-height: clamp(78px, 15vh, 156px); /* holds full-size consumable cards; no visible box */
-  border: none;
-}
-.field-consumables .held-label,
-.field-consumables .hint {
-  display: none;
-}
-.field-consumables .held-item {
-  position: relative;
-  padding: 0;
-  background: none;
-  border: none;
-  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.55));
-}
-.field-consumables .held-item .joker-art {
-  display: block;
-  height: clamp(78px, 15vh, 156px) !important; /* same size as the hand playing cards */
-  width: auto;
-  max-width: none !important;
-  border-radius: 6px;
-}
-.field-consumables .held-item .held-name {
-  display: none;
-}
-
-/* Your block — a purple shield box in front of the player: centred on the felt, just above the hand
-   row. Reads as the player's raised guard (not part of the enemy's box). */
-.player-block {
-  position: absolute;
-  left: 50%;
-  bottom: 20%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 16px 7px 12px;
-  font-family: "Silkscreen", monospace;
-  font-size: 0.86rem;
-  letter-spacing: 0.5px;
-  color: #e6d8ff;
-  background: rgba(74, 58, 106, 0.62);
-  border: 2px solid var(--violet);
-  border-radius: 11px;
-  box-shadow: 0 0 16px rgba(176, 112, 224, 0.45), inset 0 0 12px rgba(0, 0, 0, 0.45);
-  pointer-events: none;
-  animation: blockRaise 0.3s ease-out;
-}
 @keyframes blockRaise {
   from { transform: translateX(-50%) translateY(12px) scale(0.8); opacity: 0; }
   to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
 }
-.player-block-icon {
-  width: 22px;
-  height: 26px;
-  flex: none;
-}
-.player-block-icon path {
-  fill: #4a3a6a;
-  stroke: var(--violet);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-.player-block b {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.86rem;
-  color: #fff;
-}
-
-/* ─── Shop overlay (the market tray slides up over the unchanged battle felt) ─── */
-.shop-board {
-  position: absolute;
-  inset: 0;
-}
-.shop-host {
-  position: absolute;
-  inset: 0;
-}
 .shop-tip {
   z-index: 9000;
 }
-
-/* A big animated neon SHOP sign in the sidebar (replaces the blind when the market is open). A
-   classic marquee: chasing light bulbs frame the top & bottom edges, over a glowing red plate. */
-.shop-sign {
-  position: relative;
-  text-align: center;
-  padding: 24px 14px 22px;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 30%, #d4324a, #8d1b2c);
-  border: 3px solid var(--gold);
-  box-shadow: 0 0 0 2px #000, 0 0 16px rgba(242, 193, 78, 0.45), inset 0 0 18px rgba(0, 0, 0, 0.4);
-  animation: shopSignGlow 1.8s ease-in-out infinite;
-}
-/* marquee bulb rows along the top and bottom: a full dim row + a sparse lit row that chases */
-.shop-sign::before,
-.shop-sign::after {
-  content: "";
-  position: absolute;
-  left: 9px;
-  right: 9px;
-  height: 7px;
-  background-image:
-    radial-gradient(circle, #fff2c0 42%, transparent 48%),
-    radial-gradient(circle, #7a5a1e 42%, transparent 48%);
-  background-size: 26px 7px, 13px 7px;
-  background-repeat: repeat-x, repeat-x;
-  background-position: 0 0, 0 0;
-  filter: drop-shadow(0 0 3px rgba(255, 233, 160, 0.8));
-  animation: shopMarquee 0.7s linear infinite;
-}
-.shop-sign::before { top: 7px; }
-.shop-sign::after { bottom: 7px; }
 @keyframes shopMarquee {
   to { background-position: 26px 0, 0 0; }
-}
-.shop-sign-text {
-  display: block;
-  font-family: "Press Start 2P", monospace;
-  font-size: 1.7rem;
-  letter-spacing: 3px;
-  color: var(--gold-bright);
-  text-shadow: 2px 2px 0 #000, 0 0 10px rgba(242, 193, 78, 0.6);
-}
-.shop-sign-open {
-  display: block;
-  margin-top: 7px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.56rem;
-  letter-spacing: 1px;
-  color: #fff;
-  animation: shopSignBlink 1.1s steps(1) infinite;
 }
 @keyframes shopSignGlow {
   0%, 100% { box-shadow: 0 0 0 2px #000, 0 0 12px rgba(242, 193, 78, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.45); }
@@ -2723,120 +1233,7 @@ button:focus-visible {
   .shop-sign, .shop-sign-open { animation: none; }
   .shop-sign::before, .shop-sign::after { animation: none; }
 }
-
-/* Used pile stacked ABOVE the deck card-back, bottom-right (Balatro). */
-.field-piles {
-  position: absolute;
-  right: 20px;
-  bottom: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  pointer-events: none;
-}
-.field-deck,
-.field-used {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 4px;
-  background: none;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  pointer-events: auto;
-}
-.field-deck:hover:not(:disabled),
-.field-used:hover:not(:disabled) {
-  background: none;
-  border: none;
-  box-shadow: none;
-  transform: translateY(-2px);
-}
-.field-deck .deck-art {
-  width: 62px;
-  height: 86px;
-  box-shadow: 2px 3px 0 #00000088;
-}
-.field-used::before {
-  content: "";
-  width: 50px;
-  height: 70px;
-  border: 2px dashed var(--line);
-  border-radius: 7px;
-  background: rgba(0, 0, 0, 0.35);
-}
-.field-pile-count {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.62rem;
-  color: var(--gold-bright);
-  text-shadow: 1px 1px 0 #000;
-}
-.field-pile-label {
-  font-size: 0.52rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.ov-bottom .bottom-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  pointer-events: none;
-}
 .ov-bottom .bottom-row .yield {
-  pointer-events: auto;
-}
-.ov-hint {
-  color: var(--muted);
-  font-size: 0.72rem;
-  text-shadow: 1px 1px 0 #000;
-}
-.action-pop,
-.ov-prompt {
-  width: max-content;
-  max-width: 92vw;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  background: rgba(11, 6, 16, 0.98);
-  border: 2px solid var(--gold);
-  border-radius: 10px;
-  padding: 10px 16px;
-  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.8), inset 0 0 0 1px rgba(0, 0, 0, 0.6);
-  animation: gateIn 0.18s ease;
-}
-.ov-prompt {
-  position: absolute;
-  bottom: 92px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-/* The combo controls sit just above the hand: the hover-only info box (.action-pop.info) stacks on
-   top of the persistent compact Play/Clear bar (.action-bar). Empty space passes pointer events
-   through to the canvas; only the boxes themselves are interactive. */
-.combo-stack {
-  position: absolute;
-  bottom: 92px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  pointer-events: none;
-}
-.action-pop {
-  pointer-events: auto;
-}
-.action-bar {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
   pointer-events: auto;
 }
 .action-bar .actions {
@@ -2850,45 +1247,6 @@ button:focus-visible {
   gap: 10px;
   border: 2px solid var(--blood);
   box-shadow: 0 0 0 3px var(--gold), 0 0 0 5px #1a120c, 0 12px 32px rgba(0, 0, 0, 0.78);
-}
-.prompt-title {
-  font-family: "Silkscreen", monospace;
-  font-size: 0.98rem;
-  color: var(--blood);
-}
-.prompt-title .dim {
-  color: var(--muted);
-}
-.action-pop .preview-nums {
-  font-size: 1.05rem;
-}
-/* the suit key, now living inside the action box, with a divider under it */
-.action-pop .legend {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 3px;
-  padding: 0 0 6px;
-  margin: 0;
-  max-width: 280px;
-  border-bottom: 1px solid var(--line);
-  font-size: 0.64rem;
-  line-height: 1.4;
-  text-align: left;
-}
-.action-pop .legend i {
-  display: inline-block;
-  width: 1.1em;
-}
-/* the resolution breakdown — base lines dim, buff lines (relics/guild + class training) in gold */
-.action-pop .trace {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  text-align: center;
-  max-width: 280px;
-  font-size: 0.58rem;
-  line-height: 1.65;
-  color: var(--muted);
 }
 .action-pop .trace .buff {
   color: var(--gold-bright);
@@ -2936,9 +1294,6 @@ button:focus-visible {
   background: var(--bg2);
   border-radius: 10px;
 }
-.pause-backdrop {
-  background: rgba(6, 4, 10, 0.9);
-}
 .menu-list {
   display: flex;
   flex-direction: column;
@@ -2960,157 +1315,11 @@ button:focus-visible {
   color: #fff;
   border-color: var(--gold);
 }
-.confirm-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 12px 14px;
-  border: 2px solid var(--blood);
-  border-radius: 8px;
-  background: rgba(224, 64, 96, 0.12);
-  font-size: 0.82rem;
-  color: var(--ink);
-}
-.confirm-actions {
-  display: flex;
-  gap: 10px;
-}
-
-/* Settings */
-.settings-body {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 20px 18px;
-}
-.setting-row {
-  display: grid;
-  grid-template-columns: 92px 1fr 34px;
-  align-items: center;
-  gap: 12px;
-  font-size: 0.9rem;
-  color: var(--ink);
-}
-.setting-name {
-  color: var(--gold-bright);
-}
-.setting-val {
-  text-align: right;
-  color: var(--muted);
-  font-size: 0.82rem;
-}
-.settings-body input[type="range"] {
-  width: 100%;
-  height: 8px;
-  accent-color: var(--gold);
-  cursor: pointer;
-}
-.setting-mute {
-  width: 100%;
-  font-size: 0.84rem;
-}
-.setting-mute.is-muted {
-  border-color: var(--blood);
-  color: var(--blood);
-}
-/* Soundtrack picker — one dropdown per main screen (Menu / Combat / Shop) */
-.setting-tracks {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.setting-tracks .setting-name {
-  color: var(--muted);
-  font-size: 0.82rem;
-  margin-bottom: 2px;
-}
-.track-row {
-  display: grid;
-  grid-template-columns: 96px 1fr;
-  align-items: center;
-  gap: 10px;
-}
-.track-screen {
-  font-size: 0.78rem;
-  color: var(--parch);
-}
-.track-select {
-  width: 100%;
-  font-family: inherit;
-  font-size: 0.74rem;
-  color: var(--ink);
-  background: #160f1e;
-  border: 1px solid var(--frame);
-  border-radius: 7px;
-  padding: 6px 8px;
-  cursor: pointer;
-}
-.track-select:focus-visible {
-  outline: none;
-  border-color: var(--gold);
-  color: var(--gold-bright);
-}
-.track-select option {
-  background: #160f1e;
-  color: var(--ink);
-}
-
-/* Past runs */
-.past-runs {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 14px 18px 18px;
-}
-.past-run {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 9px 13px;
-  border: 2px solid var(--line);
-  border-radius: 6px;
-  background: var(--panel);
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-.run-result {
-  font-weight: 700;
-  color: var(--ink);
-  min-width: 120px;
-}
 .run-result.won {
   color: var(--gold-bright);
 }
 .run-result.lost {
   color: var(--blood);
-}
-.run-seed,
-.run-date {
-  font-size: 0.68rem;
-  opacity: 0.85;
-}
-.run-date {
-  margin-left: auto;
-}
-
-/* Main-menu seed field sits under the menu list */
-.menu-seed {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  padding: 0 18px 16px;
-  font-size: 0.78rem;
-  color: var(--muted);
-}
-.menu-seed input {
-  flex: 1;
-  font-family: "Silkscreen", monospace;
-  padding: 8px;
-  border-radius: 6px;
-  border: 2px solid var(--line);
-  background: var(--bg);
-  color: var(--ink);
 }
 
 /* Gear (pause) button — same corner-badge family as help/mute */
@@ -3137,33 +1346,8 @@ button:focus-visible {
   text-align: center;
 }
 .offer.pack { border-color: var(--gold); }
-.offer.pack-tarot { border-color: var(--violet); }
-.offer.pack-relic { border-color: var(--blue); }
-.offer.pack-sigil { border-color: var(--good); }
 .offer.pack.big { box-shadow: 0 0 14px rgba(242, 193, 78, 0.4); }
 .offer.pack .offer-head { flex-direction: column; gap: 4px; }
-
-.held-tray {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 6px 10px;
-  margin: 2px 0 6px;
-  border: 2px solid var(--frame);
-  border-radius: 8px;
-  background: rgba(20, 12, 28, 0.7);
-}
-.held-label { font-size: 0.72rem; color: var(--gold-bright); }
-.held-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
-  font-size: 0.66rem;
-  text-transform: none;
-}
-.held-name { color: var(--ink); }
 /* combat: the pouch sits in the top-right field zone — full-size cards laid out horizontally,
    right-aligned (no panel, no vertical stacking). */
 .held-tray.combat {
@@ -3183,85 +1367,15 @@ button:focus-visible {
   width: auto;
   justify-content: center;
 }
-
-.pack-modal {
-  position: relative;
-  width: min(820px, 96vw);
-  max-height: 88vh;
-  overflow: auto;
-  background: var(--bg2);
-  border: 3px solid var(--gold);
-  border-radius: 12px;
-  box-shadow: 0 0 0 3px #000, 0 0 0 6px #3a2a18, 0 16px 50px rgba(0, 0, 0, 0.75);
-}
-.pack-burst {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: 12px;
-  background: radial-gradient(circle at 50% 38%, rgba(255, 233, 160, 0.55), transparent 60%);
-  animation: packBurst 0.6s ease-out forwards;
-}
 @keyframes packBurst {
   0% { opacity: 0; transform: scale(0.4); }
   35% { opacity: 1; }
   100% { opacity: 0; transform: scale(1.4); }
 }
-.pack-contents {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  padding: 16px 18px 22px;
-  justify-content: center;
-}
-.pack-pick {
-  width: 150px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 12px 10px;
-  text-transform: none;
-  text-align: center;
-  opacity: 0;
-  transform: translateY(14px) scale(0.9);
-  animation: packReveal 0.4s cubic-bezier(0.2, 1.4, 0.5, 1) forwards;
-}
-.pack-pick.rarity-uncommon { border-color: var(--blue); }
-.pack-pick.rarity-rare { border-color: var(--violet); }
 @keyframes packReveal {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
-.pp-name { color: var(--gold-bright); font-size: 0.78rem; }
-.pp-text { color: var(--muted); font-size: 0.64rem; line-height: 1.5; }
-.pp-hint { font-size: 0.56rem; color: var(--gold); letter-spacing: 0.5px; }
-
-/* Tarot/Spectral pack: a fan of cards drawn from the deck, sitting above the pack's contents. You
-   arm a consumable, then tap a fan card to apply it (or hand-wide cards apply to the whole fan). */
-.pack-fan-wrap {
-  padding: 16px 18px 4px;
-  text-align: center;
-  border-bottom: 1px solid var(--line);
-}
-.pack-fan-label {
-  font-size: 0.66rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
 .pack-fan-label.armed { color: var(--gold-bright); }
-.pack-fan {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 86px;
-  padding-top: 6px;
-}
-.pack-fan-card {
-  margin: 0 -5px;
-  transform-origin: bottom center;
-}
 .pack-fan-card .card.small {
   width: 50px;
   height: 70px;
@@ -3275,7 +1389,6 @@ button:focus-visible {
   box-shadow: 0 0 0 3px var(--gold-bright), 0 0 16px rgba(255, 233, 160, 0.9);
   filter: brightness(1.08);
 }
-.pack-fan-empty { color: var(--muted); font-size: 0.8rem; padding: 28px 0; }
 .pack-pick.armed {
   border-color: var(--gold-bright);
   box-shadow: 0 0 14px rgba(242, 193, 78, 0.7);
@@ -3295,203 +1408,17 @@ button:focus-visible {
 .pack-pick .card.small.pack-card .card-corner {
   font-size: 0.8rem;
 }
-
-.ov-pick {
-  position: absolute;
-  top: 70px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
-  background: rgba(20, 12, 28, 0.92);
-  border: 2px solid var(--gold);
-  border-radius: 7px;
-  font-size: 0.74rem;
-  color: var(--gold-bright);
-  pointer-events: auto;
-  z-index: 8;
-}
-
-.wild-pick { display: flex; flex-direction: column; gap: 5px; margin: 6px 0; }
-.wild-row { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
-.wild-label { font-size: 0.64rem; color: var(--gold-bright); }
-.wild-suit { width: 30px; height: 30px; padding: 0; font-size: 1rem; opacity: 0.55; }
 .wild-suit.red { color: var(--blood); }
 .wild-suit.dark { color: var(--ink); }
 .wild-suit.on { opacity: 1; border-color: var(--gold); background: var(--panel-2); }
-
-/* on-card modification badges (DOM cards): wax-seal sigils are coloured inside <WaxSeal> (SVG); the
-   twin-suit corner mark is the small glyph below. */
-.card-extra {
-  position: absolute;
-  bottom: 1px;
-  left: 3px;
-  font-size: 0.7rem;
-  line-height: 1;
-  text-shadow: 0 0 2px #000;
-}
-/* ===== Compendium (rules + the COLLECT galleries, with a sidebar) ===== */
-.comp-panel {
-  width: min(1080px, 96vw);
-  /* Fixed height so the panel is the SAME SIZE on every tab; content scrolls in .comp-main
-     rather than the whole panel growing/shrinking per tab. */
-  height: 92vh;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: var(--panel);
-  border: 2px solid var(--frame);
-  border-radius: 12px;
-  padding: 16px;
-}
-.comp-layout {
-  flex: 1;
-  display: flex;
-  gap: 16px;
-  min-height: 0;
-}
-.comp-side {
-  width: 208px;
-  flex-shrink: 0;
-  overflow-y: auto;
-  padding-right: 8px;
-  border-right: 1px solid var(--line);
-}
-.comp-side-group { margin-bottom: 14px; }
-.comp-side-label {
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin: 0 0 6px 6px;
-}
-.comp-nav-item {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  margin-bottom: 3px;
-  font-size: 0.78rem;
-  text-align: left;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  color: var(--parch);
-  cursor: pointer;
-}
-.comp-nav-item:hover { background: #241733; }
 .comp-nav-item.active {
   background: #2c1c3c;
   border-color: var(--gold);
   color: var(--gold-bright);
 }
-.comp-nav-count {
-  font-size: 0.62rem;
-  color: var(--muted);
-  background: #160f1e;
-  border-radius: 9px;
-  padding: 1px 7px;
-}
 .comp-nav-item.active .comp-nav-count { color: var(--gold); }
-.comp-main {
-  flex: 1;
-  min-width: 0;
-  /* A fixed-height column: title + a paged body. Galleries paginate to fit (no scroll); a prose
-     page scrolls only if a single page runs long. */
-  display: flex;
-  flex-direction: column;
-  padding-right: 6px;
-}
-.comp-main-title {
-  color: var(--gold);
-  font-size: 1.15rem;
-  margin: 0 0 12px;
-  flex-shrink: 0;
-}
-/* prose rules pages: fill the body, scroll only if a single page overflows */
-.comp-main > .comp-rules { flex: 1; min-height: 0; overflow-y: auto; }
-/* paginated gallery / enemies: a fixed grid that fits the body, with a pager beneath */
-.comp-main > .comp-enemies { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-.coll-paged { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
-.comp-pager {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding-top: 10px;
-  margin-top: auto;
-}
-.comp-pager button:disabled { opacity: 0.35; cursor: default; }
-.comp-pager-info {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  min-width: 92px;
-  text-align: center;
-}
-/* rules prose */
-.comp-rules { max-width: 620px; color: var(--ink); }
-.comp-rules-tight { margin-bottom: 14px; }
-.comp-rules p { font-size: 0.82rem; line-height: 1.55; color: #d8cce4; margin: 0 0 10px; }
-.comp-rules h3 { color: var(--gold-bright); font-size: 0.92rem; margin: 16px 0 6px; }
-.comp-rules ol,
-.comp-rules ul { margin: 0 0 10px; padding-left: 20px; }
-.comp-rules li { font-size: 0.8rem; line-height: 1.5; color: #d8cce4; margin-bottom: 5px; }
-.comp-rules b { color: var(--parch-lite); }
-.comp-lead { font-size: 0.9rem !important; color: var(--parch) !important; }
-.comp-tip { font-style: italic; color: var(--muted) !important; font-size: 0.76rem !important; }
-.comp-dim { color: var(--muted); }
-/* suits */
-.comp-suits { list-style: none !important; padding-left: 0 !important; }
-.comp-suits li { display: flex; gap: 10px; align-items: baseline; }
-.comp-suit-glyph { font-size: 1.3rem; width: 22px; text-align: center; flex-shrink: 0; }
 .comp-suit-glyph.red { color: #e0635f; }
 .comp-suit-glyph.black { color: #cdbfe0; }
-/* fighting-style list */
-.comp-style-list { list-style: none !important; padding-left: 0 !important; }
-.comp-style-list li { display: flex; gap: 10px; align-items: center; }
-.comp-style-list .style-sprite { flex-shrink: 0; }
-/* pack-size chips + seal dots */
-.comp-pack-sizes { list-style: none !important; padding-left: 0 !important; display: flex; flex-wrap: wrap; gap: 8px; }
-.comp-pack-sizes li {
-  background: #160f1e; border: 1px solid var(--line); border-radius: 7px;
-  padding: 5px 10px; font-size: 0.74rem;
-}
-.comp-seal-dot {
-  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
-  vertical-align: middle; margin-right: 3px; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
-}
-/* royals & decrees */
-.comp-tiers {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 12px; margin-bottom: 8px;
-}
-.comp-tier {
-  background: #160f1e; border: 1px solid #3a2c46; border-radius: 10px;
-  padding: 12px; text-align: center;
-}
-.comp-tier-badge { font-size: 1.9rem; color: var(--gold); line-height: 1; margin-bottom: 4px; }
-.comp-tier-name { font-weight: bold; color: var(--gold-bright); font-size: 0.92rem; }
-.comp-tier-stats {
-  display: flex; justify-content: center; gap: 12px;
-  font-size: 0.74rem; color: var(--parch); margin: 5px 0 7px;
-}
-.comp-tier-note { font-size: 0.68rem; color: var(--muted); line-height: 1.45; }
-.comp-sub { color: var(--gold-bright); font-size: 0.95rem; margin: 18px 0 4px; }
-.comp-decree-intro { font-size: 0.78rem; color: var(--muted); margin: 0 0 12px; }
-.comp-decree-crest {
-  width: 60px; height: 60px; display: grid; place-items: center;
-  font-size: 1.9rem; border: 2px solid; border-radius: 10px; background: #120b1a;
-}
-.comp-sev-tag {
-  font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.06em;
-  border: 1px solid; border-radius: 6px; padding: 1px 5px;
-}
 @media (max-width: 720px) {
   .comp-layout { flex-direction: column; }
   .comp-side {
@@ -3499,207 +1426,14 @@ button:focus-visible {
     border-bottom: 1px solid var(--line); padding-bottom: 8px;
   }
 }
-.coll-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
-  grid-auto-rows: 158px; /* uniform tile height so a measured page always fits */
-  align-content: start;
-  gap: 12px;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden; /* the page is sized to fit; pagination (not scroll) reveals the rest */
-}
-.coll-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 6px;
-  background: #160f1e;
-  border: 1px solid #3a2c46;
-  border-radius: 8px;
-  text-align: center;
-  height: 158px;
-  overflow: hidden;
-}
-.coll-art { height: 86px; display: grid; place-items: center; }
-.coll-art img { image-rendering: pixelated; height: 86px; width: auto; }
-.coll-style { display: grid; place-items: center; height: 86px; }
-.coll-name { font-size: 0.66rem; font-weight: bold; color: var(--gold); line-height: 1.15; }
-/* clamp the blurb so tiles stay uniform; the full text is on the card's hover tooltip (data-tip) */
-.coll-text {
-  font-size: 0.56rem; color: #b8aec8; line-height: 1.2;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
-}
-/* Edition badge: a small gem at a guild slot's top-right (Spectral-applied joker Edition). */
-.ed-badge {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  width: 9px;
-  height: 9px;
-  border-radius: 2px;
-  border: 1px solid rgba(0, 0, 0, 0.55);
-  box-shadow: 0 0 4px currentColor;
-  z-index: 6;
-}
-.ed-badge.ed-burnished { background: #f2c14e; color: #f2c14e; }
-.ed-badge.ed-haloed { background: #7fd6ff; color: #7fd6ff; }
-.ed-badge.ed-prismatic { background: linear-gradient(135deg, #e0405f, #f2c14e, #57b56a, #5fb0e0, #b070e0); color: #b070e0; }
-.ed-badge.ed-shadow { background: #2a2436; color: #b070e0; }
-/* Seal: a small wax dot at the card's bottom-right (Spectral-applied). */
-.card-seal {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(0, 0, 0, 0.5);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.5), 0 1px 2px rgba(0, 0, 0, 0.6);
-  z-index: 6;
-}
-
-/* ===== Deck overview / card-upgrade screen (Balatro-style: per-suit rows + stats + tabs) ===== */
-.deck-view {
-  width: min(1480px, 97vw);
-  max-height: 95vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg2);
-  border: 3px solid var(--gold);
-  border-radius: 10px;
-  box-shadow: 0 0 0 3px #000, 0 0 0 6px #3a2a18, 0 0 0 8px #1a120c, 0 18px 50px rgba(0, 0, 0, 0.72);
-}
 .deck-view.picking {
   border-color: var(--gold-bright);
   box-shadow: 0 0 0 3px #000, 0 0 0 6px #3a2a18, 0 0 0 8px #1a120c, 0 0 28px rgba(255, 233, 160, 0.5);
-}
-.deck-view-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 16px 24px;
-  border-bottom: 2px solid var(--line);
-}
-.deck-tabs {
-  display: flex;
-  gap: 10px;
-}
-.deck-tabs button {
-  font-size: 1rem;
-  padding: 12px 26px;
 }
 .deck-tabs button.on {
   background: var(--red);
   border-color: var(--gold);
   color: var(--gold-bright);
-}
-.deck-pick-title {
-  color: var(--gold-bright);
-  font-size: 1.2rem;
-}
-.deck-view-body {
-  display: flex;
-  gap: 20px;
-  padding: 20px 24px 26px;
-  overflow: auto;
-}
-
-/* Left panel — Balatro-style: deck name + a description chip, a "Base Cards" badge row, and per-suit
-   badges. The per-rank tallies live in a separate vertical column (.deck-rankcol) beside it. */
-.deck-stats {
-  flex: none;
-  width: 212px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 14px;
-  background: rgba(10, 6, 16, 0.6);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-  color: var(--muted);
-}
-.ds-title {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.72rem;
-  line-height: 1.45;
-  color: var(--gold);
-}
-.ds-desc {
-  background: var(--parch);
-  color: var(--parch-ink);
-  border-radius: 7px;
-  padding: 8px 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-align: center;
-}
-.ds-section {
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 0.64rem;
-  color: var(--gold);
-  border-bottom: 1px solid var(--line);
-  padding-bottom: 4px;
-}
-.ds-basecards {
-  display: flex;
-  gap: 8px;
-}
-.ds-bc {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-  padding: 7px 4px;
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.ds-bc-ico {
-  font-size: 1.05rem;
-  color: var(--gold-bright);
-  line-height: 1;
-}
-.ds-bc b {
-  color: var(--ink);
-  font-size: 0.95rem;
-}
-.ds-bc i {
-  font-style: normal;
-  font-size: 0.56rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--muted);
-}
-.ds-suits {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-.ds-suit-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 8px;
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-.ds-suit-ico {
-  flex: none;
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  background: linear-gradient(var(--parch-lite) 0 12%, var(--parch) 12% 100%);
-  font-size: 1rem;
 }
 .ds-suit-badge.red .ds-suit-ico {
   color: var(--red);
@@ -3707,84 +1441,14 @@ button:focus-visible {
 .ds-suit-badge.black .ds-suit-ico {
   color: #241f2e;
 }
-.ds-suit-badge b {
-  color: var(--ink);
-  font-size: 1rem;
-}
-.ds-extra {
-  color: var(--gold);
-  font-size: 0.78rem;
-}
-
-/* The per-rank tally column, between the panel and the card grid (Balatro's A..2 strip). */
-.deck-rankcol {
-  flex: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.rank-pill {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  min-width: 56px;
-  padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  font-size: 0.8rem;
-}
-.rank-pill span {
-  color: var(--muted);
-}
-.rank-pill b {
-  color: var(--gold-bright);
-}
 .rank-pill.empty {
   opacity: 0.4;
-}
-
-/* Suit rows — each suit's cards by rank, slightly overlapped like a fanned deck */
-.deck-rows {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  min-width: 0;
-}
-/* the Pixi card grid (deck view) fills the body's right area; the canvas keeps the 820×432 ratio */
-.pixi-deck-rows {
-  flex: 1;
-  min-width: 0;
-  align-self: stretch;
-  aspect-ratio: 820 / 432;
-  max-height: 62vh;
-}
-.pixi-deck-rows canvas { display: block; }
-.deck-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.deck-row-suit {
-  flex: none;
-  width: 42px;
-  text-align: center;
-  font-size: 2.3rem;
-  line-height: 1;
 }
 .deck-row.red .deck-row-suit {
   color: var(--blood);
 }
 .deck-row.black .deck-row-suit {
   color: var(--ink);
-}
-.deck-row-cards {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding: 6px 4px;
 }
 .deck-row-cards .card.small {
   flex: none;
@@ -3826,66 +1490,9 @@ button:focus-visible {
   animation: cardUpgrade 0.72s ease;
   z-index: 6;
 }
-
-/* Keep edge-anchored combat tooltips on-screen — the default opens up-centered, which clips at the
-   top-left HUD and the right-edge guild slots. Re-aim them inward. */
-.ov-stats [data-tip]:hover::after,
-.ov-stats [data-tip]:focus-visible::after {
-  bottom: auto;
-  top: calc(100% + 8px);
-  left: 0;
-  transform: none;
-}
-.ov-left [data-tip]:hover::after,
-.ov-left [data-tip]:focus-visible::after {
-  bottom: auto;
-  top: 50%;
-  left: calc(100% + 10px);
-  right: auto;
-  transform: translateY(-50%);
-}
-.ov-right .side-slot:hover::after,
-.ov-right .side-slot:focus-visible::after {
-  bottom: auto;
-  top: 50%;
-  left: auto;
-  right: calc(100% + 10px);
-  transform: translateY(-50%);
-}
-
-/* Settings — Debug section */
-.settings-debug {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 6px;
-  padding-top: 12px;
-  border-top: 2px dashed var(--line);
-}
-.settings-debug-head {
-  font-size: 0.72rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.setting-toggle {
-  width: 100%;
-  font-size: 0.82rem;
-}
 .setting-toggle.on {
   border-color: var(--good);
   color: var(--good);
-}
-.setting-defeat {
-  width: 100%;
-  font-size: 0.82rem;
-  border-color: var(--blood);
-  color: var(--blood);
-}
-.setting-defeat:hover:not(:disabled) {
-  background: var(--blood);
-  color: #fff;
-  border-color: var(--gold);
 }
 
 /* ===== Title-screen deck & stake carousels ===== */
@@ -3898,126 +1505,16 @@ button:focus-visible {
   max-width: 620px;
   margin: 6px auto 0;
 }
-.picker-arrow {
-  width: 44px;
-  font-size: 1.4rem;
-  padding: 0;
-  flex: none;
-}
-.picker-card {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 16px;
-  background: var(--panel);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-  text-align: left;
-  min-height: 96px;
-}
-.picker-card.locked {
-  opacity: 0.7;
-  border-color: var(--line);
-}
 .picker-card.stake {
   min-height: 64px;
-}
-.deck-cardback {
-  flex: none;
-  width: 60px;
-  height: 84px;
-  border-radius: 6px;
-  border: 2px solid var(--ink);
-  background:
-    repeating-linear-gradient(45deg, #1f5c4a 0 6px, #18493b 6px 12px),
-    radial-gradient(circle at 50% 50%, #2a7a63, #164336);
-  box-shadow: inset 0 0 0 3px #0c2a22, 2px 3px 0 #00000066;
-}
-.stake-chip {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 3px dashed rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 2px #000, 2px 2px 0 #00000055;
-}
-.picker-info {
-  flex: 1;
-}
-.picker-name {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.82rem;
-  color: var(--gold);
-  margin-bottom: 6px;
-}
-.picker-text {
-  margin: 0;
-  padding-left: 16px;
-  color: var(--ink);
-  font-size: 0.7rem;
-  line-height: 1.6;
 }
 .picker-text.single {
   list-style: none;
   padding-left: 0;
   color: var(--muted);
 }
-.picker-locked {
-  color: var(--muted);
-  font-size: 0.7rem;
-  line-height: 1.6;
-}
-.picker-dots {
-  display: flex;
-  gap: 5px;
-  justify-content: center;
-  margin: 6px 0 4px;
-}
-.picker-dots span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--line);
-}
 .picker-dots span.on {
   background: var(--gold);
-}
-
-/* ===== Run-setup overlay — Balatro's New Run / Continue / Challenges flow, in CtC's palette ===== */
-.setup-backdrop {
-  background: rgba(6, 4, 10, 0.9);
-}
-.setup-panel {
-  width: min(660px, 95vw);
-  max-height: 94vh;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  background: var(--bg2);
-  border: 3px solid var(--frame);
-  border-radius: 14px;
-  box-shadow: 0 0 0 3px #000, 0 0 0 6px #3a2a18, 0 18px 50px rgba(0, 0, 0, 0.78);
-}
-.setup-tabs {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-.setup-tab {
-  position: relative;
-  flex: 1;
-  max-width: 190px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.7rem;
-  padding: 13px 8px;
-  background: linear-gradient(var(--red), #8d1b2c);
-  border: 2px solid var(--gold);
-  color: var(--gold-bright);
-  border-radius: 9px;
-  text-transform: none;
 }
 .setup-tab.on {
   background: linear-gradient(#e0455c, var(--red));
@@ -4033,273 +1530,9 @@ button:focus-visible {
   color: var(--red);
   font-size: 0.8rem;
 }
-.setup-tab:disabled {
-  opacity: 0.45;
-}
-
-.setup-body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-  /* Hold a constant height so the panel doesn't resize when switching New Run / Continue / Challenges. */
-  min-height: 19rem;
-}
-.setup-deck-row,
-.setup-stake-row {
-  display: flex;
-  align-items: stretch;
-  gap: 10px;
-}
-.setup-arrow {
-  flex: none;
-  width: 48px;
-  font-size: 1.6rem;
-  padding: 0;
-  background: linear-gradient(var(--red), #8d1b2c);
-  border: 2px solid var(--gold);
-  color: var(--gold-bright);
-  border-radius: 9px;
-}
-.setup-arrow.sm {
-  width: 42px;
-  font-size: 1.3rem;
-}
-.setup-deck {
-  flex: 1;
-  /* Fixed height (cardback 130 + 12px padding × 2) so leafing through decks never resizes the panel. */
-  height: 154px;
-  display: flex;
-  align-items: stretch;
-  gap: 12px;
-  padding: 12px;
-  background: var(--panel);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-}
-.setup-deck.locked {
-  opacity: 0.75;
-}
-.setup-cardback {
-  flex: none;
-  width: 94px;
-  height: 130px;
-  border-radius: 8px;
-  border: 2px solid var(--ink);
-  background:
-    repeating-linear-gradient(45deg, #1f5c4a 0 7px, #18493b 7px 14px),
-    radial-gradient(circle at 50% 50%, #2a7a63, #164336);
-  box-shadow: inset 0 0 0 3px #0c2a22, 2px 3px 0 #00000066;
-}
-/* the generated deck-back illustration (same footprint as the placeholder above) */
-.deck-art {
-  flex: none;
-  width: 94px;
-  height: 130px;
-  border-radius: 8px;
-  image-rendering: pixelated;
-  box-shadow: 2px 3px 0 #00000066;
-}
-.deck-art.locked {
-  filter: grayscale(0.7) brightness(0.55);
-}
-/* joker illustrations rendered into the small guild/shop slots */
-.joker-art {
-  image-rendering: pixelated;
-  display: block;
-  border-radius: 3px;
-}
-/* the parchment info card (Balatro's white box) */
-.setup-info {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden; /* a long name/description never grows the card — see the height clamps above */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 12px 14px;
-  background: var(--parch);
-  border-radius: 8px;
-  color: var(--parch-ink);
-  text-align: center;
-}
-.setup-info-name {
-  font-family: "Press Start 2P", monospace;
-  font-size: 0.95rem;
-  color: var(--parch-ink);
-}
-.setup-info-text {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.82rem;
-  line-height: 1.5;
-}
-/* Keep descriptions to ~3 lines without resizing the card: shrink the font when a deck/stake has
-   more lines so it still fits the fixed-height box. */
-.setup-info-text:has(li:nth-child(3)) {
-  font-size: 0.72rem;
-}
-.setup-info-text:has(li:nth-child(4)) {
-  font-size: 0.62rem;
-}
 .setup-info-text.single {
   color: #5a3f1c;
 }
-.setup-info-locked {
-  font-size: 0.8rem;
-  color: #6a4a2a;
-  line-height: 1.5;
-}
-/* vertical stake ladder on the right edge of the deck card */
-.setup-stakecol {
-  flex: none;
-  width: 16px;
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: center;
-  gap: 5px;
-  padding: 2px 0;
-}
-.setup-stakecol span {
-  width: 13px;
-  height: 13px;
-  border-radius: 3px;
-  background: #2a1c34;
-  border: 1px solid #000;
-}
-.setup-dots {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-}
-.setup-dots span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--line);
-}
 .setup-dots span.on {
   background: var(--gold);
-}
-.setup-stake-label {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 0.58rem;
-  color: var(--muted);
-  align-self: center;
-}
-.setup-stake {
-  flex: 1;
-  /* Fixed height so cycling stakes never resizes the panel (same rationale as the deck card). */
-  height: 86px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--panel);
-  border: 2px solid var(--frame);
-  border-radius: 10px;
-}
-.setup-stake-chip {
-  flex: none;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  border: 3px dashed rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 0 2px #000, 2px 2px 0 #00000055;
-}
-.setup-stake .setup-info {
-  align-items: flex-start;
-  text-align: left;
-}
-
-.setup-foot {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.setup-seeded {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.72rem;
-  color: var(--muted);
-  cursor: pointer;
-}
-.setup-seeded input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--gold);
-}
-.setup-seed {
-  font-family: "Silkscreen", monospace;
-  padding: 9px 11px;
-  border: 2px solid var(--line);
-  background: var(--bg);
-  color: var(--ink);
-  border-radius: 6px;
-  flex: 1;
-  min-width: 130px;
-}
-.setup-play {
-  flex: 1;
-  min-width: 190px;
-  font-family: "Press Start 2P", monospace;
-  font-size: 1.05rem;
-  padding: 16px;
-  background: linear-gradient(#d8324a, #9a1c30);
-  border: 2px solid var(--gold);
-  color: var(--gold-bright);
-  border-radius: 10px;
-  text-shadow: 0 2px 0 #00000088;
-}
-/* The Continue tab's CONTINUE button is a DIRECT child of the body (the New Run PLAY button is nested
-   in .setup-foot). Keep it at its natural height and pin it to the bottom so blank space — not a
-   stretched button — fills the panel, matching New Run's footprint (like Balatro). */
-.setup-body > .setup-play {
-  flex: none;
-  margin-top: auto;
-}
-.setup-back {
-  font-family: "Silkscreen", monospace;
-  font-size: 0.9rem;
-  padding: 13px;
-  background: linear-gradient(var(--gold), #c8941f);
-  border: 2px solid #000;
-  color: #2a1a06;
-  border-radius: 9px;
-  text-transform: uppercase;
-}
-.setup-stats {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 100%;
-  font-size: 0.85rem;
-}
-.setup-stats > div {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-}
-.setup-stats dt {
-  color: #6a4a2a;
-}
-.setup-stats dd {
-  margin: 0;
-  font-weight: bold;
-  color: #3a2412;
-}
-.setup-empty {
-  color: var(--muted);
-  text-align: center;
-  padding: 28px 12px;
-  font-size: 0.9rem;
 }
