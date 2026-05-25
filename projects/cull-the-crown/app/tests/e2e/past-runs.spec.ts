@@ -1,8 +1,5 @@
 import { test, expect, Page } from "@playwright/test";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Win = { __game: { getState: () => any } };
-
 test("PixiPastRuns: scroll modal mounts with seeded history", async ({ page }: { page: Page }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(`PAGEERROR: ${e.message}`));
