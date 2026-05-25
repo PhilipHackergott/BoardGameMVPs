@@ -21,6 +21,9 @@ test("The Descent modal opens, lists royals + decrees, and closes", async ({ pag
   const modal = page.getByRole("dialog", { name: /The Descent/ });
   await expect(modal).toBeVisible();
 
+  // The run-info modal is tabbed now; the Courts/royals live on the "Opponents" tab.
+  await modal.getByRole("tab", { name: "Opponents" }).click();
+
   // All three Courts and all 12 royals are present.
   await expect(page.getByText(/The Jack Court/)).toBeVisible();
   await expect(page.getByText(/The Queen Court/)).toBeVisible();

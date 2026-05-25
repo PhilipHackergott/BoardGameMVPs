@@ -548,6 +548,20 @@ button:focus-visible {
   color: #241f2e;
   box-shadow: inset 0 0 0 1px rgba(138, 106, 58, 0.5), 2px 2px 0 #00000066;
 }
+/* a card rendered with the Pixi model (shared offscreen renderer) presented as an <img>: keep the
+   `.card.small` box (so layouts/animations apply) but drop the parchment fill — the img IS the face. */
+.card.small.pixi-card {
+  padding: 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+.card.small.pixi-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
 .card-corner {
   position: absolute;
   top: 3px;
@@ -614,72 +628,126 @@ button:focus-visible {
   transform: translate(-50%, -50%);
   z-index: 44;
   pointer-events: none;
-  padding: 12px 14px;
-  background: rgba(11, 6, 16, 0.95);
+  padding: 10px;
+  background: rgba(11, 6, 16, 0.96);
   border: 2px solid var(--frame);
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 0 0 3px #000, 0 0 0 6px #3a2a18, 0 16px 40px rgba(0, 0, 0, 0.7);
   animation: gateIn 0.14s ease;
-}
-.dp-title {
-  text-align: center;
   font-family: "Press Start 2P", monospace;
-  font-size: 0.6rem;
-  color: var(--gold);
-  margin-bottom: 8px;
+  image-rendering: pixelated;
 }
 .dp-grid {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6px;
 }
 .dp-row {
   display: flex;
-  gap: 3px;
-  align-items: center;
+  gap: 5px;
+  align-items: stretch;
 }
+/* left label cell: suit glyph + running total in a rounded pill (and the header's empty spacer) */
 .dp-rowlabel {
   flex: none;
-  width: 26px;
+  width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.34);
+}
+.dp-head .dp-rowlabel {
+  background: none;
+}
+.dp-suit-glyph {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.dp-suit-total {
+  min-width: 26px;
+  padding: 4px 0;
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.7rem;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 7px;
 }
-.dp-row.red .dp-rowlabel {
-  color: var(--blood);
+/* rank header: rank name over its column total, stacked */
+.dp-rank {
+  flex: none;
+  width: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
-.dp-row.black .dp-rowlabel {
+.dp-rank-name {
+  width: 100%;
+  text-align: center;
+  font-size: 0.66rem;
   color: var(--ink);
+  background: var(--parchment);
+  border-radius: 6px 6px 3px 3px;
+  padding: 3px 0;
 }
-.dp-rank,
+.dp-rank-total {
+  width: 100%;
+  text-align: center;
+  font-size: 0.6rem;
+  color: var(--gold-bright);
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 3px 3px 6px 6px;
+  padding: 2px 0;
+}
+.dp-rank-total.zero {
+  color: var(--frame-dim, #8a6a2a);
+}
+/* count cells: white on the suit-coloured band, dim when none remain */
 .dp-cell {
   flex: none;
-  width: 26px;
+  width: 30px;
   text-align: center;
   font-size: 0.74rem;
-  line-height: 1.7;
-  border-radius: 4px;
-}
-.dp-rank {
-  color: var(--gold-bright);
-  background: rgba(0, 0, 0, 0.4);
+  line-height: 2.1;
+  color: #fff;
   font-weight: 700;
 }
-.dp-cell {
-  color: var(--ink);
-  background: rgba(255, 255, 255, 0.05);
-}
-.dp-totals .dp-cell {
-  color: var(--gold);
-  background: rgba(0, 0, 0, 0.3);
-}
 .dp-cell.zero {
-  opacity: 0.28;
+  opacity: 0.32;
 }
-.dp-row.red .dp-cell {
-  background: rgba(192, 39, 63, 0.16);
+/* per-suit coloured bands (the row is one continuous band behind its cells) */
+.dp-row.dp-suit-S,
+.dp-row.dp-suit-H,
+.dp-row.dp-suit-C,
+.dp-row.dp-suit-D {
+  border-radius: 9px;
+  padding: 2px 0;
 }
-.dp-row.black .dp-cell {
-  background: rgba(176, 112, 224, 0.13);
+.dp-suit-S {
+  background: linear-gradient(#34306e, #25224e);
+}
+.dp-suit-H {
+  background: linear-gradient(#94203f, #6e1730);
+}
+.dp-suit-C {
+  background: linear-gradient(#1f5c46, #164232);
+}
+.dp-suit-D {
+  background: linear-gradient(#9a5a1e, #6e3f14);
+}
+.dp-suit-S .dp-suit-glyph {
+  color: #c9a0f0;
+}
+.dp-suit-H .dp-suit-glyph {
+  color: #ff9aae;
+}
+.dp-suit-C .dp-suit-glyph {
+  color: #9fe0c0;
+}
+.dp-suit-D .dp-suit-glyph {
+  color: #ffcf8a;
 }
 
 /* End + toast */
@@ -1298,63 +1366,80 @@ button:focus-visible {
 [data-tip]:focus-visible::after {
   content: none;
 }
+/* Tooltips — a dark card (the normal panel background) carrying a title, an inset parchment box that
+   rounds just the description text, and colour-coded pills below it on the dark base (Balatro-style).
+   A thick pixel border + drop shadow; full-bleed header that clips to the rounded panel. */
 .tip-pop {
   position: fixed;
   width: max-content;
-  max-width: 250px;
+  max-width: 256px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 7px;
+  align-items: stretch;
   white-space: normal;
-  background: linear-gradient(#171022, #0d0712);
+  background: var(--panel);
   color: var(--ink);
-  border: 2px solid var(--gold);
-  border-radius: 12px;
-  padding: 10px 12px;
+  border: 3px solid #160e1e;
+  border-radius: 11px;
+  overflow: hidden;
   font-family: "Silkscreen", monospace;
   text-transform: none;
   z-index: 9000;
   pointer-events: none;
-  box-shadow: 0 0 0 2px #000, 0 8px 20px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.55), 0 10px 24px rgba(0, 0, 0, 0.6);
 }
-/* Headline — the name of the hovered thing. */
+/* Headline — a dark band across the top carrying the name of the hovered thing. */
 .tip-title {
   font-family: "Press Start 2P", monospace;
-  font-size: 0.66rem;
-  line-height: 1.3;
+  font-size: 0.6rem;
+  line-height: 1.35;
   color: var(--gold-bright);
   text-align: center;
+  background: linear-gradient(#2c1d3e, #190f24);
+  padding: 8px 12px 7px;
+  border-bottom: 2px solid #160e1e;
+  text-shadow: 1px 1px 0 #000;
 }
-/* Body — the description, in its own inset textbox. */
+/* Body — the description, in an inset parchment box that rounds only the text. */
 .tip-body {
-  align-self: stretch;
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   line-height: 1.5;
   text-align: center;
-  color: var(--ink);
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  padding: 6px 8px;
+  color: var(--parch-ink);
+  background: var(--parch);
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  margin: 8px;
+  padding: 8px 11px;
 }
-/* When there is no headline the body is the whole tip — drop its inset box so it reads as a plain bubble. */
-.tip-pop:not(:has(.tip-title)) .tip-body {
-  background: none;
-  border: none;
-  padding: 0;
-}
-/* Colour-coded type chip beneath the body (Joker, Tarot, Booster, …). */
+/* Colour-coded type pill beneath the body (Joker, Tarot, Booster, …). */
 .tip-type {
+  align-self: center;
+  margin: 0 0 9px;
   font-family: "Press Start 2P", monospace;
-  font-size: 0.5rem;
+  font-size: 0.48rem;
   letter-spacing: 0.5px;
   color: #fff;
-  padding: 4px 10px;
-  border-radius: 7px;
-  border: 2px solid rgba(0, 0, 0, 0.45);
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.55);
 }
+/* a type pill right after the body wants a touch less top gap */
+.tip-body + .tip-type { margin-top: -2px; }
+/* the chip row: type + rarity pills sit side by side BELOW the parchment box, on the dark base */
+.tip-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin: 0 8px 9px;
+}
+.tip-chips .tip-type { margin: 0; }
+/* rarity pills (follow the rarity palette: common neutral, uncommon blue, rare violet) */
+.tt-common { background: #5f6670; }
+.tt-uncommon { background: #2f7cc0; }
+.tt-rare { background: #8a46c0; }
 .tt-joker { background: #c0273f; }
 .tt-tarot { background: #6a4bb0; }
 .tt-spectral { background: #2f6fb0; }
@@ -1365,11 +1450,18 @@ button:focus-visible {
 .tt-sigil { background: #a83f7a; }
 .tt-seal { background: #b0902a; }
 .tt-royal { background: #8a2a3a; }
+/* tip-top / tip-bottom: centred above/below an anchor POINT — used by the Pixi shop hover popup. */
 .tip-pop.tip-top {
   transform: translate(-50%, -100%);
 }
 .tip-pop.tip-bottom {
   transform: translateX(-50%);
+}
+/* tip-right / tip-left: the global DOM tooltip computes its exact top-left corner beside the card,
+   so it carries no transform (see TooltipLayer). */
+.tip-pop.tip-right,
+.tip-pop.tip-left {
+  transform: none;
 }
 .legend span,
 .slot,
@@ -1599,6 +1691,18 @@ button:focus-visible {
   padding: 0;
   background: #120a18;
 }
+/* The run sidebar rendered as a Pixi canvas (SidebarStage) — fills the left chrome column; the
+   gradient backdrop shows behind the transparent canvas. */
+.pixi-sidebar-host {
+  flex: none;
+  width: clamp(280px, 24vw, 360px);
+  height: 100%;
+  border-right: 3px solid var(--frame);
+  background: linear-gradient(var(--bg2), var(--bg));
+}
+.pixi-sidebar-host canvas {
+  display: block;
+}
 /* Balatro-style left chrome column. The moved HUD islands flow as stacked panels here (their old
    floating-corner geometry is dropped by the reset below). */
 .combat-sidebar {
@@ -1728,6 +1832,19 @@ button:focus-visible {
   background: #2a141c;
   border: 1px solid var(--frame);
   overflow: hidden;
+}
+/* the bar flashes + shakes when an attack streak lands on it (combat strike feedback) */
+.cs-hp.hp-hit { animation: csHpHit 0.55s ease-out; }
+@keyframes csHpHit {
+  0% { transform: translateX(0); }
+  12% { transform: translateX(-4px); box-shadow: 0 0 16px 3px var(--gold-bright); filter: brightness(1.7); }
+  30% { transform: translateX(3px); }
+  48% { transform: translateX(-2px); }
+  66% { transform: translateX(1px); }
+  100% { transform: translateX(0); box-shadow: none; filter: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cs-hp.hp-hit { animation: none; }
 }
 .cs-hp-fill {
   position: absolute;
@@ -2036,8 +2153,40 @@ button:focus-visible {
 .ov-stats,
 .side-slot,
 .jester-card,
-.ov-prompt {
+.ov-prompt,
+.felt-sort {
   pointer-events: auto;
+}
+
+/* Sort controls, just below the hand on the felt (moved off the sidebar). */
+.felt-sort {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 7;
+}
+.felt-sort-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.5rem;
+  color: var(--parchment-edge, #8a6a3a);
+  letter-spacing: 1px;
+}
+.felt-sort button {
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.56rem;
+  padding: 7px 12px;
+  color: #ffe9a0;
+  background: linear-gradient(#241733, #161021);
+  border: 2px solid var(--frame, #f2c14e);
+  border-radius: 7px;
+  cursor: pointer;
+}
+.felt-sort button:hover {
+  background: linear-gradient(#3a2a18, #241733);
 }
 
 /* Run stats are engraved on a gilded corner plaque mounted into the top-left of the screen frame —
@@ -2483,6 +2632,98 @@ button:focus-visible {
   font-size: 0.86rem;
   color: #fff;
 }
+
+/* ─── Shop overlay (the market tray slides up over the unchanged battle felt) ─── */
+.shop-board {
+  position: absolute;
+  inset: 0;
+}
+.shop-host {
+  position: absolute;
+  inset: 0;
+}
+.shop-tip {
+  z-index: 9000;
+}
+
+/* A big animated neon SHOP sign in the sidebar (replaces the blind when the market is open). A
+   classic marquee: chasing light bulbs frame the top & bottom edges, over a glowing red plate. */
+.shop-sign {
+  position: relative;
+  text-align: center;
+  padding: 24px 14px 22px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, #d4324a, #8d1b2c);
+  border: 3px solid var(--gold);
+  box-shadow: 0 0 0 2px #000, 0 0 16px rgba(242, 193, 78, 0.45), inset 0 0 18px rgba(0, 0, 0, 0.4);
+  animation: shopSignGlow 1.8s ease-in-out infinite;
+}
+/* marquee bulb rows along the top and bottom: a full dim row + a sparse lit row that chases */
+.shop-sign::before,
+.shop-sign::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  height: 7px;
+  background-image:
+    radial-gradient(circle, #fff2c0 42%, transparent 48%),
+    radial-gradient(circle, #7a5a1e 42%, transparent 48%);
+  background-size: 26px 7px, 13px 7px;
+  background-repeat: repeat-x, repeat-x;
+  background-position: 0 0, 0 0;
+  filter: drop-shadow(0 0 3px rgba(255, 233, 160, 0.8));
+  animation: shopMarquee 0.7s linear infinite;
+}
+.shop-sign::before { top: 7px; }
+.shop-sign::after { bottom: 7px; }
+@keyframes shopMarquee {
+  to { background-position: 26px 0, 0 0; }
+}
+.shop-sign-text {
+  display: block;
+  font-family: "Press Start 2P", monospace;
+  font-size: 1.7rem;
+  letter-spacing: 3px;
+  color: var(--gold-bright);
+  text-shadow: 2px 2px 0 #000, 0 0 10px rgba(242, 193, 78, 0.6);
+}
+.shop-sign-open {
+  display: block;
+  margin-top: 7px;
+  font-family: "Press Start 2P", monospace;
+  font-size: 0.56rem;
+  letter-spacing: 1px;
+  color: #fff;
+  animation: shopSignBlink 1.1s steps(1) infinite;
+}
+@keyframes shopSignGlow {
+  0%, 100% { box-shadow: 0 0 0 2px #000, 0 0 12px rgba(242, 193, 78, 0.35), inset 0 0 18px rgba(0, 0, 0, 0.45); }
+  50% { box-shadow: 0 0 0 2px #000, 0 0 28px rgba(242, 193, 78, 0.9), inset 0 0 18px rgba(0, 0, 0, 0.45); }
+}
+@keyframes shopSignBlink {
+  0%, 60% { opacity: 1; }
+  61%, 100% { opacity: 0.28; }
+}
+
+/* "Physical machine" flip: sidebar panels rotate into view when the shop opens (staggered). */
+.shop-overlay .cs-flip {
+  animation: csFlipIn 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) backwards;
+  transform-origin: left center;
+}
+.shop-overlay .cs-flip:nth-of-type(1) { animation-delay: 0.02s; }
+.shop-overlay .cs-flip:nth-of-type(2) { animation-delay: 0.1s; }
+.shop-overlay .cs-flip:nth-of-type(3) { animation-delay: 0.18s; }
+@keyframes csFlipIn {
+  from { transform: perspective(700px) rotateY(-92deg); opacity: 0; }
+  to { transform: perspective(700px) rotateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shop-overlay .cs-flip { animation: none; }
+  .shop-sign, .shop-sign-open { animation: none; }
+  .shop-sign::before, .shop-sign::after { animation: none; }
+}
+
 /* Used pile stacked ABOVE the deck card-back, bottom-right (Balatro). */
 .field-piles {
   position: absolute;
@@ -2772,6 +3013,47 @@ button:focus-visible {
   border-color: var(--blood);
   color: var(--blood);
 }
+/* Soundtrack picker — one dropdown per main screen (Menu / Combat / Shop) */
+.setting-tracks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.setting-tracks .setting-name {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-bottom: 2px;
+}
+.track-row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+.track-screen {
+  font-size: 0.78rem;
+  color: var(--parch);
+}
+.track-select {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.74rem;
+  color: var(--ink);
+  background: #160f1e;
+  border: 1px solid var(--frame);
+  border-radius: 7px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+.track-select:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+.track-select option {
+  background: #160f1e;
+  color: var(--ink);
+}
 
 /* Past runs */
 .past-runs {
@@ -2952,6 +3234,52 @@ button:focus-visible {
 }
 .pp-name { color: var(--gold-bright); font-size: 0.78rem; }
 .pp-text { color: var(--muted); font-size: 0.64rem; line-height: 1.5; }
+.pp-hint { font-size: 0.56rem; color: var(--gold); letter-spacing: 0.5px; }
+
+/* Tarot/Spectral pack: a fan of cards drawn from the deck, sitting above the pack's contents. You
+   arm a consumable, then tap a fan card to apply it (or hand-wide cards apply to the whole fan). */
+.pack-fan-wrap {
+  padding: 16px 18px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+.pack-fan-label {
+  font-size: 0.66rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.pack-fan-label.armed { color: var(--gold-bright); }
+.pack-fan {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 86px;
+  padding-top: 6px;
+}
+.pack-fan-card {
+  margin: 0 -5px;
+  transform-origin: bottom center;
+}
+.pack-fan-card .card.small {
+  width: 50px;
+  height: 70px;
+}
+.pack-fan-card .card.small.targetable {
+  cursor: pointer;
+  box-shadow: 0 0 0 2px var(--gold), 0 0 12px rgba(242, 193, 78, 0.65);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.pack-fan-card .card.small.targetable:hover {
+  box-shadow: 0 0 0 3px var(--gold-bright), 0 0 16px rgba(255, 233, 160, 0.9);
+  filter: brightness(1.08);
+}
+.pack-fan-empty { color: var(--muted); font-size: 0.8rem; padding: 28px 0; }
+.pack-pick.armed {
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 14px rgba(242, 193, 78, 0.7);
+}
 
 /* Card-pack reveals show a real card face (the shared <CardFace>), sized up from the combat mini-card. */
 .pack-pick .card.small.pack-card {
@@ -3007,7 +3335,9 @@ button:focus-visible {
 /* ===== Compendium (rules + the COLLECT galleries, with a sidebar) ===== */
 .comp-panel {
   width: min(1080px, 96vw);
-  max-height: 92vh;
+  /* Fixed height so the panel is the SAME SIZE on every tab; content scrolls in .comp-main
+     rather than the whole panel growing/shrinking per tab. */
+  height: 92vh;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -3070,13 +3400,39 @@ button:focus-visible {
 .comp-main {
   flex: 1;
   min-width: 0;
-  overflow-y: auto;
+  /* A fixed-height column: title + a paged body. Galleries paginate to fit (no scroll); a prose
+     page scrolls only if a single page runs long. */
+  display: flex;
+  flex-direction: column;
   padding-right: 6px;
 }
 .comp-main-title {
   color: var(--gold);
   font-size: 1.15rem;
   margin: 0 0 12px;
+  flex-shrink: 0;
+}
+/* prose rules pages: fill the body, scroll only if a single page overflows */
+.comp-main > .comp-rules { flex: 1; min-height: 0; overflow-y: auto; }
+/* paginated gallery / enemies: a fixed grid that fits the body, with a pager beneath */
+.comp-main > .comp-enemies { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.coll-paged { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.comp-pager {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding-top: 10px;
+  margin-top: auto;
+}
+.comp-pager button:disabled { opacity: 0.35; cursor: default; }
+.comp-pager-info {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  min-width: 92px;
+  text-align: center;
 }
 /* rules prose */
 .comp-rules { max-width: 620px; color: var(--ink); }
@@ -3146,7 +3502,12 @@ button:focus-visible {
 .coll-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+  grid-auto-rows: 158px; /* uniform tile height so a measured page always fits */
+  align-content: start;
   gap: 12px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden; /* the page is sized to fit; pagination (not scroll) reveals the rest */
 }
 .coll-card {
   display: flex;
@@ -3158,12 +3519,18 @@ button:focus-visible {
   border: 1px solid #3a2c46;
   border-radius: 8px;
   text-align: center;
+  height: 158px;
+  overflow: hidden;
 }
-.coll-art { height: 96px; display: grid; place-items: center; }
-.coll-art img { image-rendering: pixelated; height: 96px; width: auto; }
-.coll-style { display: grid; place-items: center; height: 96px; }
+.coll-art { height: 86px; display: grid; place-items: center; }
+.coll-art img { image-rendering: pixelated; height: 86px; width: auto; }
+.coll-style { display: grid; place-items: center; height: 86px; }
 .coll-name { font-size: 0.66rem; font-weight: bold; color: var(--gold); line-height: 1.15; }
-.coll-text { font-size: 0.56rem; color: #b8aec8; line-height: 1.2; }
+/* clamp the blurb so tiles stay uniform; the full text is on the card's hover tooltip (data-tip) */
+.coll-text {
+  font-size: 0.56rem; color: #b8aec8; line-height: 1.2;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
 /* Edition badge: a small gem at a guild slot's top-right (Spectral-applied joker Edition). */
 .ed-badge {
   position: absolute;
@@ -3386,6 +3753,15 @@ button:focus-visible {
   gap: 14px;
   min-width: 0;
 }
+/* the Pixi card grid (deck view) fills the body's right area; the canvas keeps the 820×432 ratio */
+.pixi-deck-rows {
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  aspect-ratio: 820 / 432;
+  max-height: 62vh;
+}
+.pixi-deck-rows canvas { display: block; }
 .deck-row {
   display: flex;
   align-items: center;

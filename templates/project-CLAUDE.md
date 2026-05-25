@@ -14,9 +14,12 @@ its state, stage artifacts, and `app/` code all live in this folder.
 | 1 Discovery | `01-candidate-brief.md` |
 | 2 Analysis | `02-market-analysis.md` |
 | 3 Specification | `03-mvp-spec.md`, `04-build-plan.md` |
-| 4 Build | `app/` + `app/README.md` |
+| 4 Build | `app/` + `app/README.md` + `art-direction.md` (visual-cohesion design doc) |
 | 5 Test | `05-playtest-report.md` |
 | Close | `retrospective.md` |
+
+The build target is the "definition of done" in `../../knowledge/playbooks/target-state.md`:
+finished-feeling, content-rich, and tuned on the first build — not a flat, thin slice.
 
 ## Working in this folder
 

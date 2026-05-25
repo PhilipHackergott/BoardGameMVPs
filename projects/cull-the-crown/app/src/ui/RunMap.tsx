@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useGame } from "./store";
 import StyleSprite from "./StyleSprite";
-import CardFace from "./CardFace";
+import PixiCard from "./PixiCard";
 import {
   activeEdicts,
   gauntletView,
@@ -114,7 +114,7 @@ function StylesPane({ levels }: { levels: Record<FightingStyleId, number> }) {
                 <div className="ri-style-demo" aria-hidden="true">
                   <div className="ri-style-demo-cards">
                     {STYLE_DEMO[id].map((c) => (
-                      <CardFace key={c.id} card={c} />
+                      <PixiCard key={c.id} card={c} w={50} />
                     ))}
                   </div>
                   <div className="ri-style-demo-cap">

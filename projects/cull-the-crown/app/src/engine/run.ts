@@ -303,7 +303,7 @@ function awardAndAdvance(run: RunState, exact: boolean): void {
     return;
   }
   run.combat = freshCombat(run.castle[run.enemyIndex]);
-  run.notice = `Defeated! +${total} gold${exact ? " (exact kill!)" : ""}.`;
+  run.notice = null; // the spoils are shown by the win gate (CombatGate) — no redundant toast
   openShop(run);
 }
 
@@ -378,6 +378,19 @@ function creditLimit(run: RunState): number {
   return run.slots.reduce((a, id) => a + (jokerById(id)?.creditBonus ?? 0), 0);
 }
 
+/** Tarot & Spectral packs are opened over a "hand" — up to 8 cards drawn from the deck (Balatro's
+ *  booster flow). Their consumables apply to that hand immediately (targeted tarots enchant a chosen
+ *  card; hand-wide spectrals reshape the lot). On close the hand is folded back into the deck. */
+function packDrawsHand(kind: PackKind): boolean {
+  return kind === "tarot" || kind === "spectral";
+}
+function endPackHand(run: RunState): void {
+  if (run.hand.length) {
+    run.deck = [...run.hand, ...run.deck];
+    run.hand = [];
+  }
+}
+
 function doOpenPack(run: RunState, packId: string): void {
   const shop = run.shop!;
   const pack = shop.packs.find((p) => p.id === packId);
@@ -390,6 +403,12 @@ function doOpenPack(run: RunState, packId: string): void {
   run.gold -= price;
   shop.packs = shop.packs.filter((p) => p.id !== packId);
   shop.openPack = pack; // enter the pick UI
+  if (packDrawsHand(pack.kind)) {
+    // draw a fan of up to 8 cards from the top of the deck to apply the pack's cards onto
+    const n = Math.min(8, run.deck.length);
+    run.hand = run.deck.slice(0, n);
+    run.deck = run.deck.slice(n);
+  }
   run.notice = null;
 }
 
@@ -397,13 +416,25 @@ function doPickPackContent(run: RunState, contentId: string, targetCardId?: stri
   const shop = run.shop!;
   const pack = shop.openPack;
   if (!pack || !pack.contentIds.includes(contentId)) return;
-  if (!grantContent(run, pack.kind, contentId, targetCardId)) return; // couldn't apply — keep open
+  // Tarot/Spectral packs apply their card to the drawn hand right here (not into the pouch).
+  let ok: boolean;
+  if (packDrawsHand(pack.kind)) {
+    const t = tarotById(contentId);
+    ok = t ? t.apply(run, targetCardId) : false;
+  } else {
+    ok = grantContent(run, pack.kind, contentId, targetCardId);
+  }
+  if (!ok) return; // couldn't apply (e.g. needs a target) — keep the pack open
   pack.contentIds.splice(pack.contentIds.indexOf(contentId), 1);
   pack.picksRemaining -= 1;
-  if (pack.picksRemaining <= 0 || pack.contentIds.length === 0) shop.openPack = null;
+  if (pack.picksRemaining <= 0 || pack.contentIds.length === 0) {
+    endPackHand(run);
+    shop.openPack = null;
+  }
 }
 
 function doClosePack(run: RunState): void {
+  endPackHand(run); // fold the drawn fan back into the deck (no-op for non-hand packs)
   if (run.shop) run.shop.openPack = null; // abandon remaining picks (already paid for the pack)
 }
 

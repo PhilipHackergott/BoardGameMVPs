@@ -1,8 +1,9 @@
 import { test, expect, Page } from "@playwright/test";
 
-// Two DOM-card behaviours that previously regressed: (1) card packs reveal the actual card face
-// (shared <CardFace>, not an emblem); (2) the global <TooltipLayer> bubble escapes the scrollable
-// deck view and clamps inside the viewport instead of clipping at an edge.
+// Card-rendering surfaces, now that cards are drawn with the Pixi model (PixiCard / PixiDeckRows)
+// presented as data-URL <img>s: (1) a card pack reveals real card faces (not procedural emblems),
+// with engraved picks carrying their sigil; (2) the full-deck view renders every card via the Pixi
+// deck-rows canvas, with the DOM stats panel summarising the deck.
 
 declare global {
   interface Window {
@@ -45,40 +46,34 @@ test("a card pack reveals real card faces, not emblems", async ({ page }: { page
   });
 
   await expect(page.getByText(/Card Pack/)).toBeVisible();
-  // every pick renders a card face; the engraved ones carry a wax-seal sigil
-  expect(await page.locator(".pack-pick .card.small.pack-card").count()).toBe(5);
-  expect(await page.locator(".pack-pick .card-sigil").count()).toBe(2);
+  const picks = page.locator(".pack-pick .pack-card");
+  await expect(picks).toHaveCount(5);
+  // every pick renders a real Pixi card face (a data-URL image), not a procedural emblem
+  await expect(picks.locator("img").first()).toHaveAttribute("src", /^data:image/);
+  const faces = await picks.locator("img").evaluateAll((els) => els.map((e) => (e as HTMLImageElement).src));
+  expect(faces.every((s) => s.startsWith("data:image"))).toBe(true);
+  // the two engraved picks (D5:keen, S8:honed) carry their sigil in the accessible label
+  const labels = await picks.evaluateAll((els) => els.map((e) => e.getAttribute("aria-label") ?? ""));
+  expect(labels.filter((l) => l.includes(",")).length).toBe(2);
 });
 
-test("a sigil tooltip escapes the deck scroll box and clamps to the viewport", async ({ page }: { page: Page }) => {
+test("the full-deck view renders every card via the Pixi deck-rows canvas", async ({ page }: { page: Page }) => {
   await boot(page);
   await page.evaluate(() => {
     const g = window.__game;
-    g.getState().newRun("sigil-demo");
-    g.setState((s: { run: { deck: { sigils?: string[]; extraSuit?: string }[] } }) => {
-      const run = structuredClone(s.run);
-      const d = run.deck;
-      if (d[0]) d[0].sigils = ["keen"];
-      if (d[1]) {
-        d[1].sigils = ["extra"];
-        d[1].extraSuit = "S";
-      }
-      return { run };
-    });
+    g.getState().newRun("deck-demo");
     g.getState().setPileModal("all");
   });
 
   await expect(page.locator(".deck-view")).toBeVisible();
-  await page.locator(".card-sigil").first().hover();
-  const tip = page.locator(".tip-pop");
-  await expect(tip).toBeVisible();
+  // the deck is now one Pixi canvas (PixiDeckRows) — no DOM card elements / DOM scroll box
+  await expect(page.locator(".deck-view .pixi-deck-rows canvas")).toBeVisible();
+  expect(await page.locator(".deck-view .card.small").count()).toBe(0);
 
-  // the bubble must sit fully inside the viewport (the old ::after clipped at the top/edges)
-  const box = await tip.boundingBox();
-  const vw = page.viewportSize()!;
-  expect(box).not.toBeNull();
-  expect(box!.x).toBeGreaterThanOrEqual(0);
-  expect(box!.y).toBeGreaterThanOrEqual(0);
-  expect(box!.x + box!.width).toBeLessThanOrEqual(vw.width);
-  expect(box!.y + box!.height).toBeLessThanOrEqual(vw.height);
+  // the DOM stats panel summarises the same deck the engine holds (∑ Total is the last base-card stat)
+  const total = await page.evaluate(() => {
+    const r = window.__game.getState().run;
+    return r.deck.length + r.hand.length + r.discard.length + r.table.length;
+  });
+  await expect(page.locator(".deck-stats .ds-bc").last().locator("b")).toHaveText(String(total));
 });

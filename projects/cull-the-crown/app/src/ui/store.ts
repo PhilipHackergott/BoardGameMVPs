@@ -3,9 +3,9 @@
 // FX events the presentation layer animates against (hit / strike / discard / jester).
 
 import { create } from "zustand";
-import { Action, DeckDef, ResolutionResult, RunState, Suit } from "../engine/types";
+import { Action, DeckDef, FightingStyleId, ResolutionResult, RunState, Suit } from "../engine/types";
 import { applyAction, createRun } from "../engine/run";
-import { previewPlay, STAKE_IDS, stakeIndex } from "../engine/index";
+import { previewPlay, STAKE_IDS, stakeIndex, styleOf } from "../engine/index";
 
 export type FxKind = "play" | "yield" | "discard" | "jester";
 
@@ -14,8 +14,15 @@ export interface FxEvent {
   kind: FxKind;
   result?: ResolutionResult; // for 'play'
   killed?: boolean; // for 'play'
-  strike?: number; // incoming damage when the enemy strikes back (block OR lethal)
+  strike?: number; // incoming damage when the enemy strikes back (partial-block OR lethal OR fully-blocked amount)
   lost?: boolean; // the strike was lethal (the run will end after the animation)
+  blocked?: boolean; // the enemy attacked but shield turned it FULLY aside (no damage) — play the parry beat
+
+  // for 'play' — drives the per-fighting-style attack animation (origin = the played cards,
+  // directional toward the royal; size scales with comboValue, intensity with result.damage).
+  style?: FightingStyleId; // size-style (1→twoHanded … 5→mage)
+  mounted?: boolean; // an Animal Companion (Ace) rode along → a charge overlay
+  comboValue?: number; // raw point total of the play (for animation size)
 }
 
 const SAVE_KEY = "ctc_save";
@@ -191,13 +198,20 @@ interface UIState {
 
 const TITLE_RUN: RunState = { ...createRun(""), phase: "title", notice: null };
 
-// After a non-killing play/yield the enemy strikes; report the blow and whether it was lethal.
-function strikeOf(run: RunState): { strike: number; lost: boolean } {
+// After a non-killing play/yield the enemy strikes back. Report the blow and how it landed:
+//  • lost      — the blow is lethal (run ends after the animation)
+//  • defend    — a partial blow the player must cover (strike = incoming to discard against)
+//  • blocked   — shield turned the blow FULLY aside (the turn continued straight to "play"); the
+//                strike is the attack that was parried, so the FX can scale to it
+//  • (none)    — the royal was felled (outcome "won"); no counter
+function strikeOf(run: RunState): { strike: number; lost: boolean; blocked: boolean } {
   const c = run.combat;
-  if (!c) return { strike: 0, lost: false };
-  if (c.outcome === "lost") return { strike: c.incoming, lost: true };
-  if (c.subphase === "defend" && !c.outcome) return { strike: c.incoming, lost: false };
-  return { strike: 0, lost: false };
+  if (!c) return { strike: 0, lost: false, blocked: false };
+  if (c.outcome === "won") return { strike: 0, lost: false, blocked: false }; // felled — no counter
+  if (c.outcome === "lost") return { strike: c.incoming, lost: true, blocked: false };
+  if (c.subphase === "defend") return { strike: c.incoming, lost: false, blocked: false };
+  // Back to "play" with no outcome ⇒ the counter was fully absorbed by shield (a full block).
+  return { strike: c.enemy.attack, lost: false, blocked: true };
 }
 
 export const useGame = create<UIState>((set) => ({
@@ -242,16 +256,21 @@ export const useGame = create<UIState>((set) => ({
       const after = applyAction(before, { type: "play", cardIds, wildSuits: s.wildSuits });
       if (!result.valid) return { run: after, selected: [], wildSuits: {} };
       const killed = after.combat?.outcome === "won";
-      const { strike, lost } = strikeOf(after);
-      return { run: after, selected: [], wildSuits: {}, fxEvent: { id: (s.fxEvent?.id ?? 0) + 1, kind: "play", result, killed, strike, lost } };
+      const { strike, lost, blocked } = strikeOf(after);
+      // classify the play for its fighting-style animation
+      const played = before.hand.filter((c) => cardIds.includes(c.id));
+      const { size, mounted } = styleOf(played);
+      const comboValue = played.reduce((a, c) => a + c.value, 0);
+      return { run: after, selected: [], wildSuits: {}, fxEvent: { id: (s.fxEvent?.id ?? 0) + 1, kind: "play", result, killed, strike, lost, blocked, style: size, mounted, comboValue } };
     }),
   yieldTurn: () =>
     set((s) => {
       const before = s.run;
       if (before.phase !== "combat" || before.combat?.subphase !== "play" || before.combat?.outcome) return {};
+      if (before.combat?.yieldedLastTurn) return {}; // can't yield twice — a no-op, emit no FX
       const after = applyAction(before, { type: "yield" });
-      const { strike, lost } = strikeOf(after);
-      return { run: after, selected: [], fxEvent: { id: (s.fxEvent?.id ?? 0) + 1, kind: "yield", strike, lost } };
+      const { strike, lost, blocked } = strikeOf(after);
+      return { run: after, selected: [], fxEvent: { id: (s.fxEvent?.id ?? 0) + 1, kind: "yield", strike, lost, blocked } };
     }),
   discardSelected: () =>
     set((s) => {

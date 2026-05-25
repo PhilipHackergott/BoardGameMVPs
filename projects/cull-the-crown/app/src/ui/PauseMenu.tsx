@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useGame } from "./store";
 import Collection from "./Collection";
 import SettingsMenu from "./SettingsMenu";
+import Modal from "./Modal";
 
 // The pause screen, opened from the in-combat gear button. It actually pauses the run (the board
 // freezes — see PixiBoard) and blocks input. From here you can open the compendium (rules + every
@@ -18,15 +19,8 @@ export default function PauseMenu() {
   if (view === "settings") return <SettingsMenu onClose={() => setView("menu")} />;
 
   return (
-    <div className="help-backdrop pause-backdrop" role="dialog" aria-modal="true" aria-label="Paused">
-      <div className="menu-panel">
-        <div className="help-head">
-          <h2>Paused</h2>
-          <button type="button" className="primary" onClick={() => setPaused(false)}>
-            Resume
-          </button>
-        </div>
-        <div className="menu-list">
+    <Modal title="Paused" closeLabel="Resume" onClose={() => setPaused(false)}>
+      <div className="menu-list">
           <button type="button" onClick={() => setView("compendium")}>
             📖 Compendium &amp; rules
           </button>
@@ -54,7 +48,6 @@ export default function PauseMenu() {
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

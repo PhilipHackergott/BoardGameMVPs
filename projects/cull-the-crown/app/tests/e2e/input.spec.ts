@@ -13,13 +13,14 @@ declare global {
 }
 
 async function cardScreenPos(page: Page, index: number) {
-  const box = (await page.locator("canvas").first().boundingBox())!;
+  // the felt is no longer the first canvas on the page (the Pixi run-sidebar precedes it) — target it.
+  const box = (await page.locator(".pixi-host canvas").boundingBox())!;
   const n = await page.evaluate(() => window.__game.getState().run.hand.length);
   const spacing = Math.min(42, 300 / Math.max(1, n));
   const totalW = spacing * (n - 1);
   const stageX = 480 / 2 - totalW / 2 + index * spacing;
   const t = n > 1 ? index / (n - 1) - 0.5 : 0;
-  const stageY = 360 - 52 + t * t * 16;
+  const stageY = 360 - 64 + t * t * 16; // HAND_Y = STAGE_H - 64 (cards lifted for the felt sort bar)
   return { x: box.x + (stageX / 480) * box.width, y: box.y + (stageY / 360) * box.height, box };
 }
 

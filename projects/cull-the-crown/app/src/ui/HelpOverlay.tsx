@@ -1,3 +1,5 @@
+import Modal from "./Modal";
+
 // "How to Play" — the tutorial. A modal that explains every system, opened from the title and the
 // combat HUD, and auto-shown on a player's first run (localStorage flag).
 
@@ -10,16 +12,8 @@ const SUITS: { g: string; name: string; cls: string; text: string }[] = [
 
 export default function HelpOverlay({ onClose }: { onClose: () => void }) {
   return (
-    <div className="help-backdrop" role="dialog" aria-modal="true" aria-label="Rules">
-      <div className="help">
-        <div className="help-head">
-          <h2>Rules</h2>
-          <button type="button" className="primary" onClick={onClose}>
-            Close
-          </button>
-        </div>
-
-        <div className="help-body">
+    <Modal title="Rules" panelClass="help" onClose={onClose}>
+      <div className="help-body">
           <section>
             <h3>The Goal</h3>
             <p>Overthrow all <b>12 royals</b> — four Jacks, four Queens, four Kings, in that order.
@@ -77,7 +71,6 @@ export default function HelpOverlay({ onClose }: { onClose: () => void }) {
             time to inspect its cards.</p>
           </section>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useGame } from "./store";
 import { Card, Suit } from "../engine/types";
-import { displayOrder, deckById } from "../engine/index";
+import { deckById } from "../engine/index";
 import { sfx } from "../audio/chiptune";
-import CardFace from "./CardFace";
+import PixiDeckRows from "./PixiDeckRows";
 
 // The deck overview / card-upgrade screen. A Balatro-style layout: one row per suit (cards by rank,
 // descending) + a stats panel (per-rank & per-suit counts) + Remaining / Full-Deck tabs. Opened to
@@ -64,10 +64,6 @@ export default function DeckModal() {
   const jesters = cards.filter((c) => c.kind === "jester").length;
   const title = used ? "Used Pile" : picking ? "Choose a Card" : "Your Deck";
   const variant = deckById(run.deckId);
-
-  const cardEl = (c: Card) => (
-    <CardFace key={c.id} card={c} className={flashId === c.id ? "upgraded" : ""} onClick={picking ? () => pick(c) : undefined} />
-  );
 
   return (
     <div className="help-backdrop" role="dialog" aria-modal="true" aria-label={title} onClick={close}>
@@ -134,19 +130,15 @@ export default function DeckModal() {
             ))}
           </div>
 
-          <div className="deck-rows">
-            {SUIT_ROWS.map((s) => {
-              const rowCards = displayOrder(cards.filter((c) => c.suit === s));
-              return (
-                <div key={s} className={`deck-row ${s === "H" || s === "D" ? "red" : "black"}`}>
-                  <span className="deck-row-suit">{GLYPH[s]}</span>
-                  <div className="deck-row-cards">
-                    {rowCards.length === 0 ? <span className="hint">—</span> : rowCards.map(cardEl)}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          <PixiDeckRows
+            cards={cards}
+            picking={picking}
+            flashId={flashId}
+            onPick={(id) => {
+              const c = cards.find((x) => x.id === id);
+              if (c) pick(c);
+            }}
+          />
         </div>
       </div>
     </div>

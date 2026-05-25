@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   JOKER_LIBRARY,
   TAROT_LIBRARY,
@@ -127,6 +127,57 @@ function Tile({ title, sub, children }: { title: string; sub: string; children: 
       <div className="coll-art">{children}</div>
       <div className="coll-name">{title}</div>
       <div className="coll-text">{sub}</div>
+    </div>
+  );
+}
+
+// Tile geometry (kept in sync with styles.css .coll-grid / .coll-card) — used to compute how many
+// tiles fit one page so galleries PAGINATE (fixed-size pages + a pager) instead of scrolling.
+const TILE_W = 116;
+const TILE_H = 158;
+const GAP = 12;
+
+function Pager({ page, pages, set }: { page: number; pages: number; set: (n: number) => void }) {
+  return (
+    <div className="comp-pager">
+      <button type="button" onClick={() => set(page - 1)} disabled={page <= 0} aria-label="Previous page">‹ Prev</button>
+      <span className="comp-pager-info">Page {page + 1} / {pages}</span>
+      <button type="button" onClick={() => set(page + 1)} disabled={page >= pages - 1} aria-label="Next page">Next ›</button>
+    </div>
+  );
+}
+
+// A gallery that shows a fixed page of tiles (measured to fill the panel) with a pager beneath, so
+// long collections never scroll. Re-measures on resize; remounts per tab (see the Shell's key).
+function PagedGrid<T>({ items, render }: { items: T[]; render: (item: T) => React.ReactNode }) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [perPage, setPerPage] = useState(12);
+  const [page, setPage] = useState(0);
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      const h = el.clientHeight;
+      if (w < 1 || h < 1) return;
+      const cols = Math.max(1, Math.floor((w + GAP) / (TILE_W + GAP)));
+      const rows = Math.max(1, Math.floor((h + GAP) / (TILE_H + GAP)));
+      setPerPage(cols * rows);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  const pages = Math.max(1, Math.ceil(items.length / perPage));
+  const cur = Math.min(page, pages - 1);
+  const slice = items.slice(cur * perPage, cur * perPage + perPage);
+  return (
+    <div className="coll-paged">
+      <div className="coll-grid" ref={gridRef}>
+        {slice.map(render)}
+      </div>
+      {pages > 1 && <Pager page={cur} pages={pages} set={(n) => setPage(Math.max(0, Math.min(pages - 1, n)))} />}
     </div>
   );
 }
@@ -287,62 +338,67 @@ function RulesPage({ page }: { page: Page }) {
 function Gallery({ page }: { page: Page }) {
   if (page === "jokers")
     return (
-      <div className="coll-grid">
-        {JOKER_LIBRARY.map((j) => (
+      <PagedGrid
+        items={JOKER_LIBRARY}
+        render={(j) => (
           <Tile key={j.id} title={j.name} sub={j.text}>
             <JokerArt id={j.id} art={j.art} size={84} />
           </Tile>
-        ))}
-      </div>
+        )}
+      />
     );
 
   if (page === "tarots" || page === "spectrals") {
     const list = page === "tarots" ? ARCANA : SPECTRAL_LIBRARY;
     return (
-      <div className="coll-grid">
-        {list.map((t) => (
+      <PagedGrid
+        items={list}
+        render={(t) => (
           <Tile key={t.id} title={t.name} sub={t.text}>
             <TarotArt id={t.id} art={t.art} size={84} />
           </Tile>
-        ))}
-      </div>
+        )}
+      />
     );
   }
 
   if (page === "decks")
     return (
-      <div className="coll-grid">
-        {DECK_LIBRARY.map((d) => (
+      <PagedGrid
+        items={DECK_LIBRARY}
+        render={(d) => (
           <Tile key={d.id} title={d.name} sub={d.text.join(" · ")}>
             <DeckArt id={d.id} />
           </Tile>
-        ))}
-      </div>
+        )}
+      />
     );
 
   if (page === "styles")
     return (
-      <div className="coll-grid">
-        {FIGHTING_STYLE_IDS.map((id) => {
+      <PagedGrid
+        items={FIGHTING_STYLE_IDS}
+        render={(id) => {
           const pct = `+${Math.round(FIGHTING_STYLE_PER_LEVEL[id] * 100)}% of base per level`;
           return (
             <Tile key={id} title={FIGHTING_STYLE_NAME[id]} sub={`Played with ${STYLE_PLAYED[id]}. ${pct}.`}>
               <div className="coll-style"><StyleSprite id={id} size={64} /></div>
             </Tile>
           );
-        })}
-      </div>
+        }}
+      />
     );
 
   // sigils
   return (
-    <div className="coll-grid">
-      {SIGIL_IDS.map((s) => (
+    <PagedGrid
+      items={SIGIL_IDS}
+      render={(s) => (
         <Tile key={s} title={SIGIL_INFO[s].name} sub={SIGIL_INFO[s].text}>
           <div className="coll-style"><WaxSeal sigil={s} glyph={SIGIL_INFO[s].glyph} size={56} /></div>
         </Tile>
-      ))}
-    </div>
+      )}
+    />
   );
 }
 
@@ -350,7 +406,7 @@ function Gallery({ page }: { page: Page }) {
 
 function EnemiesPage() {
   return (
-    <>
+    <div className="comp-enemies">
       <div className="comp-rules comp-rules-tight">
         <p className="comp-lead">
           The Castle is <b>12 royals</b>: four Jacks, then four Queens, then four Kings. Each is{" "}
@@ -380,8 +436,9 @@ function EnemiesPage() {
       <p className="comp-decree-intro">
         A royal's decree is drawn from this set, scaled to its rank. Read it before you commit a play.
       </p>
-      <div className="coll-grid">
-        {DECREE_LIBRARY.map((d) => {
+      <PagedGrid
+        items={DECREE_LIBRARY}
+        render={(d) => {
           const sev = DECREE_SEVERITY[d.id] ?? "standard";
           const tint = SEVERITY_TINT[sev];
           return (
@@ -394,9 +451,9 @@ function EnemiesPage() {
               <div className="coll-text">{d.text}</div>
             </div>
           );
-        })}
-      </div>
-    </>
+        }}
+      />
+    </div>
   );
 }
 
@@ -438,11 +495,11 @@ export default function Collection({ onClose, start = "overview" }: { onClose: (
           <div className="comp-main">
             <h2 className="comp-main-title">{PAGE_TITLE[page]}</h2>
             {page === "enemies" ? (
-              <EnemiesPage />
+              <EnemiesPage key={page} />
             ) : RULES_PAGES.includes(page) ? (
-              <RulesPage page={page} />
+              <RulesPage key={page} page={page} />
             ) : (
-              <Gallery page={page} />
+              <Gallery key={page} page={page} />
             )}
           </div>
         </div>

@@ -54,7 +54,7 @@ makes the next one cheaper to build.
 | 1. Discovery | "Which game should we adapt, and why this one?" | `01-discovery.md` |
 | 2. Analysis | "Is there a market, and what's the competitive/IP picture?" | `02-analysis.md` |
 | 3. Specification | "Exactly what MVP are we building, and how?" | `03-specification.md` |
-| 4. Build | "Make the smallest playable, correct version." | `04-build.md` |
+| 4. Build | "Build it to the target state — finished-feeling, content-rich, tuned." | `04-build.md` |
 | 5. Test & iterate | "Does it work and is it fun? What did we learn?" | `05-test-iterate.md` |
 
 Cross-cutting concerns:

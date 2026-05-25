@@ -42,9 +42,9 @@ test("capture the look: tutorial, combat, cascade, defend, shop", async ({ page 
   await shotCanvas(page, "02-combat");
   await page.screenshot({ path: "screenshots/02b-combat-full.png" });
 
-  // Pause menu (the sidebar Options button in combat): freezes the board; rules / settings / save /
-  // surrender live here.
-  await page.getByRole("button", { name: "Options" }).click();
+  // Pause menu (the sidebar Options button is now a Pixi hit-target; drive it via the seam): freezes
+  // the board; rules / settings / save / surrender live in the DOM modal it opens.
+  await page.evaluate(() => window.__game.getState().setPaused(true));
   await page.waitForTimeout(150);
   await page.screenshot({ path: "screenshots/09-pause.png" });
   await page.getByRole("button", { name: "Settings" }).click();

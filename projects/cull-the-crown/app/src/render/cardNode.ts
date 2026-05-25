@@ -8,8 +8,8 @@ import { SIGIL_INFO } from "../engine/index";
 import { Card, Suit } from "../engine/types";
 import { PIXEL_FONT, SUIT_GLYPH, suitInkColor, THEME } from "./theme";
 
-export const CARD_W = 40;
-export const CARD_H = 58;
+export const CARD_W = 44;
+export const CARD_H = 62;
 const RADIUS = 5;
 
 /** A card's visual signature — when it changes (suit/value/kind/sigils via a tarot), the stage

@@ -28,13 +28,13 @@ await wait(300);
 // 2. Title screen
 await shot("02-title");
 
-// 3. Title overlays
+// 3. Title overlays (each closes with its own button label: RunSetup→Back, Settings→Done, rest→Close)
 await clickBtn(/new run|play/i); await wait(400); await shot("03-runsetup");
-await clickBtn(/back|close/i); await wait(250);
+await clickBtn(/^back$/i); await wait(250);
 await clickBtn(/settings/i); await wait(350); await shot("04-settings");
-await clickBtn(/back|close/i); await wait(250);
+await clickBtn(/^done$/i); await wait(250);
 await clickBtn(/past runs/i); await wait(350); await shot("05-pastruns");
-await clickBtn(/back|close/i); await wait(250);
+await clickBtn(/^close$/i); await wait(250);
 await clickBtn(/compendium/i); await wait(400); await shot("06-compendium");
 await clickBtn(/^close$/i); await wait(250);
 
@@ -90,13 +90,26 @@ await wait(900); await shot("14-packmodal");
 await drive(() => { try { window.__game.getState().dispatch({ type: "closePack" }); } catch { /* */ } });
 await wait(250);
 
-// 12. Event screen (force the phase + a known event)
+// 11b. Tarot pack opening — the deck-fan flow (inject a tarot pack so it's deterministic)
+await drive(() => {
+  const g = window.__game;
+  g.setState((s) => ({ run: { ...s.run, gold: 50, shop: { ...s.run.shop, packs: [{ id: "catTp", kind: "tarot", size: "l", price: 4, contentIds: ["the-hierophant", "the-star", "strength", "the-fool", "the-sun"], picksRemaining: 1 }, ...s.run.shop.packs] } } }));
+  g.getState().dispatch({ type: "openPack", packId: "catTp" });
+});
+await wait(700); await shot("17-pack-tarot-fan");
+{ const h = p.getByText("The Hierophant", { exact: true }).first(); try { await h.click({ timeout: 1500 }); } catch { /* */ } }
+await wait(400); await shot("18-pack-tarot-armed");
+await drive(() => { try { window.__game.getState().dispatch({ type: "closePack" }); } catch { /* */ } });
+await wait(250);
+
+// 12. Event screen (force the phase + a known event); move the pointer off any data-tip first
+await p.mouse.move(640, 430);
 await drive(() => window.__game.setState((s) => ({ run: { ...s.run, phase: "event", eventId: "shrine" } })));
-await wait(450); await shot("15-event");
+await wait(450); await p.mouse.move(640, 770); await wait(150); await shot("15-event");
 
 // 13. End screen (force a loss for the catalogue)
 await drive(() => window.__game.setState((s) => ({ run: { ...s.run, phase: "lost", notice: "The gauntlet claims you." } })));
-await wait(500); await shot("16-endscreen");
+await wait(800); await p.mouse.move(40, 40); await wait(150); await shot("16-endscreen");
 
 console.log("captured:", log.join(", "));
 await b.close();

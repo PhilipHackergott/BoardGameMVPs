@@ -17,6 +17,20 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
 - [IP precedents](patterns/ip-precedents.md) — how specific publishers/designers tend to react.
 
 ## Playbooks (process)
+- ⭐ [Target state](playbooks/target-state.md) — **read first before any build.** The definition of
+  "done": the six-row bar (correct core · finished feel · not-a-demo · content-rich · a real opponent ·
+  tuned) + the milestone shape that **collapses the polish/content/balance waves into the first build**.
+  Also: commit a **design/art-direction doc** + **reusable UI primitives (one `<Modal>` shell)** before
+  filling screens. Distilled from the days of hand-driven iteration on Cull the Crown + Lacuna.
+- [Content depth](playbooks/content-depth.md) — **the catalog is the product.** Ship the full base
+  content set, data-driven (a registry + fixed hook points, default-off ⇒ base game) so depth is
+  additive; the categories that pay off (run-variants, tiered progression, rarity/downside/scaling
+  pieces, events, orthogonal axes); map the design axes and open the empty ones. (CTC + Lacuna.)
+- [Balance & tuning](playbooks/balance-and-tuning.md) — **let the AI playtest the content for you.**
+  A headless AI-vs-AI sim (`npm run sim`) → win-rate sweeps → compress the spread; verify the difficulty
+  ladder climbs; the patch→re-sim loop. The two traps: **balance is relative to AI skill** (re-tune
+  against the AI you ship; don't over-fit noise) and **AI-blind content reads low for the wrong reason**
+  (fix the AI or flag for `/test`, don't buff it broken). (Lacuna's `07-balance-report.md`.)
 - [Discovery](playbooks/discovery.md) — what kinds of games adapt well.
 - [Market](playbooks/market.md) — recurring market/positioning patterns.
 - [Spec](playbooks/spec.md) — spec practices that kept builds tight.

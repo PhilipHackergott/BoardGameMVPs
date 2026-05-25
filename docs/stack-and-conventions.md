@@ -59,10 +59,15 @@ projects/<slug>/app/
 ├── src/                    # (engine/ ui/ render/ ai/ main.tsx as above)
 ├── tests/
 │   ├── engine/             # Vitest: rules, setup, legal moves, full-game simulations
+│   ├── sim/                # Vitest: headless AI-vs-AI balance sweep (`npm run sim`)
 │   └── e2e/                # Playwright: load app, play a turn, assert UI
 ├── public/
-└── README.md               # how to run/build/test THIS app
+└── README.md               # how to run/build/test/sim THIS app
 ```
+
+Plus, alongside the stage artifacts (not under `app/`): **`projects/<slug>/art-direction.md`** — the
+written design/art-direction doc that keeps every screen visually cohesive (palette tokens, the one
+card/piece model, panel/modal/button recipes, an audit checklist). See `knowledge/playbooks/target-state.md`.
 
 ## Standard scripts (every `app/package.json`)
 
@@ -74,12 +79,15 @@ projects/<slug>/app/
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "lint": "eslint . && tsc --noEmit"
+    "lint": "eslint . && tsc --noEmit",
+    "sim": "vitest run tests/sim"
   }
 }
 ```
 
-The build and test stages rely on these script names existing. Keep them stable.
+The build and test stages rely on these script names existing. Keep them stable. `sim` runs the
+headless AI-vs-AI balance sweep (see `knowledge/playbooks/balance-and-tuning.md`); it's how the build
+stage verifies content balance + the difficulty ladder without a browser.
 
 ## Conventions
 
@@ -95,6 +103,13 @@ The build and test stages rely on these script names existing. Keep them stable.
   multiplayer game is never a reason to skip a title.
 - **Assets**: original or properly licensed only. The board/components are reimplemented, not
   copied from the publisher's files. See `legal-and-ip.md`.
+- **Content is data-driven from day one**: a content registry + pure hooks read at fixed decision
+  points, default-off ⇒ the base game. This is what makes a rich catalog affordable — see
+  `knowledge/playbooks/content-depth.md` and `knowledge/patterns/engine.md`.
+- **Visual cohesion is decided, not discovered**: commit an `art-direction.md` + a tokenized palette
+  (`:root` for DOM and `render/theme.ts` for canvas) up front, and build shared UI primitives — ONE
+  `<Modal>`/overlay shell + one card/piece component reused everywhere — before the individual screens.
+  See `knowledge/playbooks/target-state.md`.
 
 ## Wrapping (defer until web MVP is approved)
 

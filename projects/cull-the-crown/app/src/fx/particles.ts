@@ -26,6 +26,12 @@ interface Particle {
   gravity: number;
 }
 
+// Hard ceiling on live particles. Normal combat sits well under this; the cap only bites a
+// pathological burst (e.g. an automated run firing many turns' FX in one frame), where it sheds the
+// oldest particles so the renderer is never handed an unbounded batch (which can trip a Pixi v8
+// batcher crash). Purely defensive — invisible in normal play.
+const MAX_PARTICLES = 320;
+
 export class Particles {
   readonly layer = new Container();
   private items: Particle[] = [];
@@ -59,6 +65,11 @@ export class Particles {
         spin: (Math.random() - 0.5) * 12,
         gravity,
       });
+    }
+    // shed the oldest if a burst storm pushed us past the ceiling
+    if (this.items.length > MAX_PARTICLES) {
+      const excess = this.items.splice(0, this.items.length - MAX_PARTICLES);
+      for (const p of excess) p.g.destroy();
     }
   }
 

@@ -38,13 +38,16 @@ interface Track {
   bars: Bar[];
 }
 type TrackName = "menu" | "combat" | "shop";
+export const SCREENS: TrackName[] = ["menu", "combat", "shop"];
+export type SongId = "court" | "vigil" | "iron" | "gauntlet" | "gilded" | "market";
 
-// Three tracks in one D-minor / D-Dorian modal world (so they feel like one game) but with distinct
-// tempo, density and colour. 8-bar progressions at slow tempos => long ~20–35s hypnotic loops, over a
-// sub-bass (root −12) and a slow filter sweep for "breathing" shape.
-const TRACKS: Record<TrackName, Track> = {
-  // Calm, floating, hypnotic — long held chords over a drone. (title / menus / end screens)
-  menu: {
+// A flat catalog of standalone songs — each a complete ~8-bar chip loop over a sub-bass (root −12) and
+// a slow filter sweep ("breathing"). The player assigns ANY song to each main screen (menu / combat /
+// shop) in Settings, so you can run e.g. "Candlelit Vigil" on the menu, "The Gauntlet" in fights and
+// "Merchant's Rest" in the shop. New songs are pure data — no synth changes needed.
+const SONGS: Record<SongId, Track> = {
+  // Court of Dusk — calm, floating D-Dorian drone (the original title theme).
+  court: {
     bpm: 60,
     bass: "drone",
     arp: "none",
@@ -60,41 +63,127 @@ const TRACKS: Record<TrackName, Track> = {
       { root: 45, chord: [57, 60, 64] },
     ],
   },
-  // Driving, hypnotic — pulsing sub-bass + a rolling arpeggio, a little harmonic tension. (combat / events)
-  combat: {
-    bpm: 84,
+  // Candlelit Vigil — slow, somber D-minor; sparse held lead. (NEW)
+  vigil: {
+    bpm: 52,
+    bass: "drone",
+    arp: "none",
+    pad: true,
+    bars: [
+      { root: 50, chord: [62, 65, 69], lead: [[74, 0, 4]] }, // Dm
+      { root: 50, chord: [62, 65, 69] },
+      { root: 45, chord: [60, 64, 69], lead: [[69, 0, 4]] }, // Am
+      { root: 45, chord: [60, 64, 69] },
+      { root: 46, chord: [58, 62, 65], lead: [[70, 0, 4]] }, // Bb
+      { root: 43, chord: [58, 62, 67], lead: [[67, 0, 4]] }, // Gm
+      { root: 50, chord: [62, 65, 69], lead: [[65, 0, 2], [62, 2, 2]] }, // Dm (F→D)
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 4]] }, // Am
+    ],
+  },
+  // Iron March — martial, tense A-minor with a leading-tone E (V) pull.
+  iron: {
+    bpm: 96,
     bass: "pulse",
     arp: "roll",
     pad: true,
     bars: [
-      { root: 50, chord: [62, 65, 69], lead: [[69, 0, 1], [74, 2, 2]] }, // Dm
-      { root: 50, chord: [62, 65, 69] },
-      { root: 53, chord: [65, 69, 72] }, // F
-      { root: 48, chord: [60, 64, 67], lead: [[72, 2, 2]] }, // C
-      { root: 50, chord: [62, 65, 69], lead: [[69, 0, 1], [72, 1, 1]] }, // Dm
-      { root: 50, chord: [62, 65, 69] },
-      { root: 46, chord: [58, 62, 65] }, // Bb
-      { root: 45, chord: [57, 61, 64], lead: [[69, 2, 2]] }, // A major (V — tension into the loop)
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 1], [72, 2, 2]] }, // Am
+      { root: 45, chord: [57, 60, 64] },
+      { root: 41, chord: [57, 60, 65] }, // F
+      { root: 43, chord: [58, 62, 67], lead: [[70, 2, 2]] }, // Gm
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 1], [71, 1, 1]] }, // Am
+      { root: 45, chord: [57, 60, 64] },
+      { root: 38, chord: [53, 57, 62] }, // Dm
+      { root: 40, chord: [56, 59, 64], lead: [[68, 2, 2]] }, // E (V tension)
     ],
   },
-  // Warm, lighter, brighter (Dorian's major IV) — plucky arp + a cheerful melody. (shop)
-  shop: {
-    bpm: 76,
+  // The Gauntlet — fast, relentless A-minor / Phrygian; the most intense. (NEW)
+  gauntlet: {
+    bpm: 108,
+    bass: "pulse",
+    arp: "roll",
+    pad: true,
+    bars: [
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 1], [72, 1, 1], [76, 2, 2]] }, // Am rising
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 1], [71, 2, 1]] },
+      { root: 46, chord: [58, 62, 65], lead: [[70, 0, 2]] }, // Bb (Phrygian colour)
+      { root: 43, chord: [55, 58, 62], lead: [[67, 0, 1], [70, 2, 2]] }, // Gm
+      { root: 45, chord: [57, 60, 64], lead: [[72, 0, 1], [76, 1, 1]] }, // Am
+      { root: 41, chord: [53, 57, 60] }, // F
+      { root: 40, chord: [56, 59, 64], lead: [[68, 0, 1], [71, 2, 2]] }, // E (V)
+      { root: 45, chord: [57, 60, 64], lead: [[69, 0, 1], [68, 1, 1], [69, 2, 2]] }, // Am (leading tone)
+    ],
+  },
+  // Gilded Halls — bright, heroic G major with a triumphant lift.
+  gilded: {
+    bpm: 88,
+    bass: "pulse",
+    arp: "roll",
+    pad: true,
+    bars: [
+      { root: 43, chord: [62, 67, 71], lead: [[74, 0, 1], [79, 2, 2]] }, // G
+      { root: 43, chord: [62, 67, 71] },
+      { root: 48, chord: [60, 64, 67], lead: [[72, 2, 2]] }, // C
+      { root: 50, chord: [62, 66, 69], lead: [[74, 2, 2]] }, // D
+      { root: 43, chord: [62, 67, 71], lead: [[79, 0, 1], [78, 1, 1]] }, // G
+      { root: 45, chord: [60, 64, 69] }, // Am
+      { root: 48, chord: [60, 64, 67] }, // C
+      { root: 50, chord: [62, 66, 69], lead: [[81, 2, 2]] }, // D (V — heroic lift)
+    ],
+  },
+  // Merchant's Rest — warm, cozy, plucky F major. (NEW)
+  market: {
+    bpm: 80,
     bass: "pulse",
     arp: "pluck",
     pad: false,
     bars: [
-      { root: 50, chord: [62, 65, 69], lead: [[74, 0, 1], [72, 1, 1], [69, 2, 2]] }, // Dm
-      { root: 43, chord: [62, 67, 71], lead: [[71, 0, 2], [74, 2, 2]] }, // G (major IV)
-      { root: 50, chord: [62, 65, 69], lead: [[72, 0, 1], [69, 1, 1]] }, // Dm
-      { root: 48, chord: [60, 64, 67], lead: [[67, 0, 2], [72, 2, 2]] }, // C
-      { root: 53, chord: [65, 69, 72], lead: [[72, 0, 1], [74, 1, 1], [77, 2, 2]] }, // F
+      { root: 41, chord: [60, 65, 69], lead: [[72, 0, 1], [69, 1, 1], [65, 2, 2]] }, // F
       { root: 48, chord: [60, 64, 67], lead: [[72, 0, 2]] }, // C
       { root: 43, chord: [62, 67, 71], lead: [[74, 0, 1], [71, 1, 1]] }, // G
-      { root: 50, chord: [62, 65, 69], lead: [[69, 0, 4]] }, // Dm
+      { root: 41, chord: [60, 65, 69], lead: [[69, 0, 2]] }, // F
+      { root: 45, chord: [60, 64, 69], lead: [[72, 0, 1], [76, 1, 1]] }, // Am
+      { root: 46, chord: [58, 62, 65], lead: [[70, 0, 2]] }, // Bb
+      { root: 48, chord: [60, 64, 67], lead: [[72, 0, 1], [76, 2, 1]] }, // C
+      { root: 41, chord: [60, 65, 69], lead: [[77, 0, 4]] }, // F (resolve)
     ],
   },
 };
+
+/** Songs the player can assign to a screen, in the order shown in each dropdown. */
+export const SONG_INFO: { id: SongId; name: string; desc: string }[] = [
+  { id: "court", name: "Court of Dusk", desc: "Hypnotic, modal" },
+  { id: "vigil", name: "Candlelit Vigil", desc: "Slow & somber" },
+  { id: "iron", name: "Iron March", desc: "Dark & martial" },
+  { id: "gauntlet", name: "The Gauntlet", desc: "Fast & relentless" },
+  { id: "gilded", name: "Gilded Halls", desc: "Bright & heroic" },
+  { id: "market", name: "Merchant's Rest", desc: "Warm & cozy" },
+];
+
+/** Friendly labels for each main screen (the dropdown headings). */
+export const SCREEN_LABEL: Record<TrackName, string> = {
+  menu: "Menu & Title",
+  combat: "Combat",
+  shop: "Shop",
+};
+
+// Default song per screen — preserves the original feel (calm menu, driving fight, warm shop).
+const DEFAULT_SCREEN_SONG: Record<TrackName, SongId> = { menu: "court", combat: "iron", shop: "market" };
+const SCREEN_SONG_KEY = "ctc_screen_songs";
+
+function loadScreenSongs(): Record<TrackName, SongId> {
+  const chosen = { ...DEFAULT_SCREEN_SONG };
+  try {
+    const raw = localStorage.getItem(SCREEN_SONG_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw) as Partial<Record<TrackName, SongId>>;
+      for (const s of SCREENS) if (parsed[s] && parsed[s]! in SONGS) chosen[s] = parsed[s]!;
+    }
+  } catch {
+    /* storage may be unavailable */
+  }
+  return chosen;
+}
 
 type Ctor = typeof AudioContext;
 type FilterKind = "lowpass" | "highpass" | "bandpass";
@@ -114,9 +203,10 @@ class AudioEngine {
   muted = false;
   musicVol = 1;
   sfxVol = 1;
+  screenSong: Record<TrackName, SongId> = { ...DEFAULT_SCREEN_SONG };
 
   private get track(): Track {
-    return TRACKS[this.trackName];
+    return SONGS[this.screenSong[this.trackName]];
   }
 
   constructor() {
@@ -127,6 +217,7 @@ class AudioEngine {
     } catch {
       /* storage may be unavailable */
     }
+    this.screenSong = loadScreenSongs();
   }
 
   /** Create the AudioContext + graph. Must originate from a user gesture the first time, or the
@@ -242,10 +333,9 @@ class AudioEngine {
     }
   }
 
-  /** Switch the active score (menu / combat / shop) with a brief crossfade dip. */
-  setTrack(name: TrackName): void {
-    if (name === this.trackName) return;
-    this.trackName = name;
+  /** Restart the bar clock from the top with a brief crossfade dip (used when the active score or the
+   *  chosen soundtrack changes, so the switch is heard immediately rather than at the next bar). */
+  private restartScore(): void {
     this.barIndex = 0;
     const ctx = this.ctx;
     if (ctx && this.musicStarted && this.musicGain) {
@@ -260,6 +350,26 @@ class AudioEngine {
         g.exponentialRampToValueAtTime(target, t + 0.7);
       }
     }
+  }
+
+  /** Switch the active score (menu / combat / shop) with a brief crossfade dip. */
+  setTrack(name: TrackName): void {
+    if (name === this.trackName) return;
+    this.trackName = name;
+    this.restartScore();
+  }
+
+  /** Assign a song to one main screen (Settings). Persists the whole map; if the chosen screen is the
+   *  one playing right now, crossfade to the new song so the change is heard immediately. */
+  setScreenSong(screen: TrackName, id: SongId): void {
+    if (!(id in SONGS) || this.screenSong[screen] === id) return;
+    this.screenSong = { ...this.screenSong, [screen]: id };
+    try {
+      localStorage.setItem(SCREEN_SONG_KEY, JSON.stringify(this.screenSong));
+    } catch {
+      /* ignore */
+    }
+    if (screen === this.trackName) this.restartScore();
   }
 
   private scheduler = (): void => {
@@ -441,6 +551,14 @@ class AudioEngine {
     this.noise(0.05, 0.06, "bandpass", 3000, 0.6);
   }
 
+  /** An enemy blow turned FULLY aside by shield — a bright metallic parry/clang that rings off. */
+  parry(): void {
+    this.noise(0.09, 0.28, "bandpass", 4400, 1.4); // the metal-on-metal clash
+    this.noise(0.05, 0.14, "highpass", 6000, 0.8, this.now + 0.005); // bright edge
+    this.tone(1245, 0.18, "triangle", 0.22, { slideTo: 1860, attack: 0.003 }); // ringing up
+    this.tone(880, 0.26, "triangle", 0.16, { when: this.now + 0.04, attack: 0.004 }); // sustained ring
+  }
+
   /** Drawing/fanning n cards — a quick, soft ascending riffle. */
   draw(n = 1): void {
     const k = Math.max(1, Math.min(6, n));
@@ -529,6 +647,11 @@ export const audio = {
     return engine.sfxVol;
   },
   setSfxVolume: (v: number) => engine.setSfxVolume(v),
+  /** The song assigned to each main screen (a copy). */
+  get screenSongs(): Record<TrackName, SongId> {
+    return { ...engine.screenSong };
+  },
+  setScreenSong: (screen: TrackName, id: SongId) => engine.setScreenSong(screen, id),
 };
 
 export const music = {
@@ -543,6 +666,7 @@ export const sfx = {
   kill: () => engine.kill(),
   strike: (amount?: number) => engine.strike(amount),
   block: () => engine.block(),
+  parry: () => engine.parry(),
   draw: (n?: number) => engine.draw(n),
   heal: () => engine.heal(),
   coin: () => engine.coin(),

@@ -1,39 +1,49 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { RARITY_CHIP, TYPE_CHIP } from "./packMeta";
 
 // One global tooltip, mounted once. Reads `data-tip` off whatever the pointer/focus is on and renders
 // a single `position: fixed` bubble clamped to the viewport. Fixes the two failure modes of pure-CSS
 // `::after` tooltips: (1) they clip at screen edges, and (2) they're trapped/clipped inside
 // `overflow:auto/hidden` ancestors (e.g. the scrollable deck view — the sigil-tooltip bug).
 //
-// Balatro-style structure: a headline, a body textbox, and — when the hovered thing has a type — a
-// colour-coded type chip beneath. The headline is taken from `data-tip-title`, or split off the body
-// at the first " — " (so the existing `Name — text` tooltips get a headline for free). The chip comes
-// from `data-tip-type` (a slug → label + colour, below).
+// Placement: the bubble spawns BESIDE the hovered thing — to its right, or to its left when there
+// isn't room — vertically centred on it and clamped to the viewport, so it never sits on top of the
+// card it describes (Balatro-style). Because the side+clamp depend on the bubble's own size, we render
+// it once (hidden), measure it, then position it in a layout effect before the browser paints.
+//
+// Balatro-style structure: a headline (dark header band), an inset parchment box around the body text,
+// and — when the hovered thing has a type — colour-coded pills beneath. The headline is taken from
+// `data-tip-title`, or split off the body at the first " — " (so existing `Name — text` tooltips get a
+// headline for free). The chip comes from `data-tip-type` (a slug → label + colour; see
+// packMeta.TYPE_CHIP); a second, optional chip comes from `data-tip-rarity` (a Joker's rarity → see
+// packMeta.RARITY_CHIP).
 
-const TYPE_CHIP: Record<string, { label: string; cls: string }> = {
-  joker: { label: "Joker", cls: "tt-joker" },
-  tarot: { label: "Tarot", cls: "tt-tarot" },
-  spectral: { label: "Spectral", cls: "tt-spectral" },
-  drill: { label: "Training", cls: "tt-drill" },
-  card: { label: "Playing Card", cls: "tt-card" },
-  edict: { label: "Edict", cls: "tt-edict" },
-  booster: { label: "Booster", cls: "tt-booster" },
-  sigil: { label: "Sigil", cls: "tt-sigil" },
-  seal: { label: "Seal", cls: "tt-seal" },
-  royal: { label: "Royal", cls: "tt-royal" },
-};
-
+interface Anchor {
+  left: number;
+  top: number;
+  right: number;
+  height: number;
+}
 interface Tip {
   title?: string;
   text: string;
   type?: string;
+  rarity?: string;
+  anchor: Anchor;
+}
+interface Pos {
   left: number;
   top: number;
-  place: "top" | "bottom";
+  side: "right" | "left";
 }
+
+const GAP = 12; // space between the hovered element and the tooltip
+const EDGE = 8; // keep this far from the viewport edges
 
 export default function TooltipLayer() {
   const [tip, setTip] = useState<Tip | null>(null);
+  const [pos, setPos] = useState<Pos | null>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let current: Element | null = null;
@@ -52,9 +62,10 @@ export default function TooltipLayer() {
         }
       }
       const type = el.getAttribute("data-tip-type") ?? undefined;
+      const rarity = el.getAttribute("data-tip-rarity") ?? undefined;
       const r = el.getBoundingClientRect();
-      const above = r.top > 96; // enough headroom to open upward, else open below
-      setTip({ title, text, type, left: r.left + r.width / 2, top: above ? r.top - 8 : r.bottom + 8, place: above ? "top" : "bottom" });
+      setPos(null); // hide until the new tip is measured & re-placed (see the layout effect)
+      setTip({ title, text, type, rarity, anchor: { left: r.left, top: r.top, right: r.right, height: r.height } });
     };
 
     const enter = (e: Event) => {
@@ -96,15 +107,41 @@ export default function TooltipLayer() {
     };
   }, []);
 
+  // Measure the rendered bubble and place it to the side of the anchor, clamped to the viewport.
+  useLayoutEffect(() => {
+    if (!tip || !ref.current) return;
+    const b = ref.current.getBoundingClientRect();
+    const a = tip.anchor;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    // prefer the right of the card; fall back to the left when the bubble wouldn't fit
+    const fitsRight = a.right + GAP + b.width <= vw - EDGE;
+    const side: "right" | "left" = fitsRight ? "right" : "left";
+    let left = side === "right" ? a.right + GAP : a.left - GAP - b.width;
+    left = Math.min(Math.max(left, EDGE), vw - b.width - EDGE);
+    let top = a.top + a.height / 2 - b.height / 2; // vertically centred on the card
+    top = Math.min(Math.max(top, EDGE), vh - b.height - EDGE);
+    setPos({ left, top, side });
+  }, [tip]);
+
   if (!tip) return null;
-  const half = 132; // ~half the max width, for horizontal clamping
-  const left = Math.min(Math.max(tip.left, half + 6), window.innerWidth - half - 6);
   const chip = tip.type ? TYPE_CHIP[tip.type] : undefined;
+  const rarityChip = tip.rarity ? RARITY_CHIP[tip.rarity] : undefined;
   return (
-    <div className={`tip-pop tip-${tip.place}`} style={{ left, top: tip.top }} role="tooltip">
+    <div
+      ref={ref}
+      className={`tip-pop tip-${pos?.side ?? "right"}`}
+      style={{ left: pos?.left ?? -9999, top: pos?.top ?? 0, visibility: pos ? "visible" : "hidden" }}
+      role="tooltip"
+    >
       {tip.title && <div className="tip-title">{tip.title}</div>}
       <div className="tip-body">{tip.text}</div>
-      {chip && <div className={`tip-type ${chip.cls}`}>{chip.label}</div>}
+      {(chip || rarityChip) && (
+        <div className="tip-chips">
+          {chip && <span className={`tip-type ${chip.cls}`}>{chip.label}</span>}
+          {rarityChip && <span className={`tip-type ${rarityChip.cls}`}>{rarityChip.label}</span>}
+        </div>
+      )}
     </div>
   );
 }

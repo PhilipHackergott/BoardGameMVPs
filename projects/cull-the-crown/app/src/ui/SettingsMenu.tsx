@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { audio, music, sfx } from "../audio/chiptune";
+import { audio, music, sfx, SONG_INFO, SCREENS, SCREEN_LABEL, type SongId } from "../audio/chiptune";
 import { useGame } from "./store";
+import Modal from "./Modal";
 
 // Settings: per-channel volume sliders (music + sound effects), a master mute, and a Debug section.
 // Volumes persist via the audio engine; debug mode persists in the store. Opened from the main menu
@@ -10,20 +11,14 @@ export default function SettingsMenu({ onClose }: { onClose: () => void }) {
   const [musicVol, setMusicVol] = useState(Math.round(audio.musicVolume * 100));
   const [sfxVol, setSfxVol] = useState(Math.round(audio.sfxVolume * 100));
   const [muted, setMuted] = useState(audio.muted);
+  const [songs, setSongs] = useState(audio.screenSongs); // chosen song per screen
   const debug = useGame((s) => s.debug);
   const setDebug = useGame((s) => s.setDebug);
   const inCombat = useGame((s) => s.run.phase === "combat" && !s.run.combat?.outcome);
 
   return (
-    <div className="help-backdrop" role="dialog" aria-modal="true" aria-label="Settings" onClick={onClose}>
-      <div className="menu-panel" onClick={(e) => e.stopPropagation()}>
-        <div className="help-head">
-          <h2>Settings</h2>
-          <button type="button" className="primary" onClick={onClose}>
-            Done
-          </button>
-        </div>
-        <div className="settings-body">
+    <Modal title="Settings" closeLabel="Done" onClose={onClose}>
+      <div className="settings-body">
           <label className="setting-row">
             <span className="setting-name">♪ Music</span>
             <input
@@ -75,6 +70,32 @@ export default function SettingsMenu({ onClose }: { onClose: () => void }) {
             {muted ? "🔇 All sound muted — click to unmute" : "🔊 Mute all sound"}
           </button>
 
+          <div className="setting-tracks">
+            <div className="setting-name">♬ Soundtrack — pick a song per screen</div>
+            {SCREENS.map((screen) => (
+              <label key={screen} className="track-row">
+                <span className="track-screen">{SCREEN_LABEL[screen]}</span>
+                <select
+                  className="track-select"
+                  value={songs[screen]}
+                  aria-label={`${SCREEN_LABEL[screen]} song`}
+                  onChange={(e) => {
+                    const id = e.target.value as SongId;
+                    audio.setScreenSong(screen, id);
+                    setSongs((prev) => ({ ...prev, [screen]: id }));
+                    music.start(); // ensure the loop is running so the change is heard at once
+                  }}
+                >
+                  {SONG_INFO.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} — {s.desc}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+
           <div className="settings-debug">
             <div className="settings-debug-head">⚙ Debug</div>
             <button
@@ -102,7 +123,6 @@ export default function SettingsMenu({ onClose }: { onClose: () => void }) {
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
