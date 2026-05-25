@@ -126,6 +126,7 @@ export class CombatStage {
   private discardPile = new Graphics();
   private deckStack = new Container(); // the draw pile = a real stack of the deck's card-back models
   private deckSprites: Sprite[] = [];
+  private deckMasks: Graphics[] = []; // a rounded-rect mask per card-back sprite (the SVG art is full-bleed/square)
   private deckBackId?: string; // which deck's back is currently loaded
   private deckSpriteReady = false;
   private destroyed = false;
@@ -303,8 +304,13 @@ export class CombatStage {
       s.anchor.set(0.5);
       s.visible = false;
       s.roundPixels = true;
+      // the deck-back SVGs are full-bleed (square) pixel art → clip each to a rounded card silhouette
+      const m = new Graphics();
+      m.roundRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 7).fill(0xffffff);
+      s.mask = m;
       this.deckSprites.push(s);
-      this.deckStack.addChild(s);
+      this.deckMasks.push(m);
+      this.deckStack.addChild(m, s);
     }
     // deckPile (fallback edges) → deckStack (real backs) → discard stack → discard face → counts
     this.pileLayer.addChild(this.deckPile, this.deckStack, this.discardPile, this.discardFace, this.deckText, this.discardText);
@@ -351,23 +357,23 @@ export class CombatStage {
     let cx = x;
     let cy = y;
     for (let i = 0; i < layers; i++) {
-      cx = x + i * dx + Math.sin(i * 21.42) * 2.4; // organic jitter so the pile reads as physical cards
-      cy = y + i * dy + Math.cos(i * 13.77) * 1.4;
+      cx = x + i * dx + Math.sin(i * 21.42) * 1.0; // small jitter so the pile reads as physical cards (kept tidy)
+      cy = y + i * dy + Math.cos(i * 13.77) * 0.6;
       const ox = cx - w / 2;
       const oy = cy - h / 2;
       if (i < layers - 1) {
         // an under-card: just its body + outline, so the fanned edges show as a stack
-        g.roundRect(ox, oy, w, h, 5).fill(edgeFill).stroke({ width: 1, color: edgeLine });
+        g.roundRect(ox, oy, w, h, 7).fill(edgeFill).stroke({ width: 1, color: edgeLine });
         continue;
       }
       // the top card
       if (top === "discard") {
-        g.roundRect(ox, oy, w, h, 5).fill(THEME.parchment).stroke({ width: 1.5, color: THEME.ink });
+        g.roundRect(ox, oy, w, h, 7).fill(THEME.parchment).stroke({ width: 1.5, color: THEME.ink });
       } else if (top === "plain") {
-        g.roundRect(ox, oy, w, h, 5).fill(THEME.redDark).stroke({ width: 1.5, color: 0x3a0a16 });
+        g.roundRect(ox, oy, w, h, 7).fill(THEME.redDark).stroke({ width: 1.5, color: 0x3a0a16 });
       } else {
         // procedural card-back fallback (shown only until the real back texture loads): dark frame
-        g.roundRect(ox, oy, w, h, 5).fill(THEME.redDark).stroke({ width: 1.5, color: 0x3a0a16 });
+        g.roundRect(ox, oy, w, h, 7).fill(THEME.redDark).stroke({ width: 1.5, color: 0x3a0a16 });
         g.roundRect(ox + 3, oy + 3, w - 6, h - 6, 3).stroke({ width: 1, color: 0x6a1226 });
         g.poly([cx, oy + 12, cx + 7, oy + h / 2, cx, oy + h - 12, cx - 7, oy + h / 2]).fill(0x8a2030);
       }
@@ -387,11 +393,17 @@ export class CombatStage {
       const on = useBack && i < layers;
       s.visible = on;
       if (on) {
-        // organic 2.5D stack: each card-back leans at a slightly different angle + jittered offset
-        s.position.set(DECK_X + i * dx + Math.sin(i * 21.42) * 2.4, PILE_Y + i * dy + Math.cos(i * 13.77) * 1.4);
+        // tidy 2.5D stack: each card-back leans at a slightly different angle + small jittered offset
+        const px = DECK_X + i * dx + Math.sin(i * 21.42) * 1.0;
+        const py = PILE_Y + i * dy + Math.cos(i * 13.77) * 0.6;
+        const rot = Math.sin(i * 8.13 + 1.7) * 0.022;
+        s.position.set(px, py);
         s.width = w;
         s.height = h;
-        s.rotation = Math.sin(i * 8.13 + 1.7) * 0.05;
+        s.rotation = rot;
+        const m = this.deckMasks[i]; // keep the rounded-corner mask aligned with its sprite
+        m.position.set(px, py);
+        m.rotation = rot;
       }
     });
     this.deckPile.clear();
@@ -449,7 +461,7 @@ export class CombatStage {
       this.discardFace.removeChildren();
       if (last) {
         this.discardFace.addChild(buildCardFace({ id: "discard-top", suit: last.suit, value: last.value, kind: last.kind, sigils: [] } as Card, CARD_W));
-        this.discardFace.rotation = 0.06; // slight lean for the organic used-pile look
+        this.discardFace.rotation = 0.03; // slight lean for the organic used-pile look (kept subtle)
       }
     }
     this.discardFace.visible = !!last;

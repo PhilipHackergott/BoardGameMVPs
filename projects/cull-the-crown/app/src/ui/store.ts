@@ -124,7 +124,9 @@ export function isDeckUnlocked(deck: DeckDef): boolean {
 /** Highest stake index selectable: White always; each win unlocks the next rung. Debug unlocks all. */
 export function maxStakeUnlocked(): number {
   if (loadDebug()) return STAKE_IDS.length - 1;
-  return Math.min(STAKE_IDS.length - 1, Math.max(0, highestStakeWon() + 1));
+  // TEMP (testing the stake-ladder states): force the first 5 stakes unlocked regardless of progress.
+  // Revert the Math.max(4, …) to Math.max(0, …) once the ladder look is signed off.
+  return Math.min(STAKE_IDS.length - 1, Math.max(4, highestStakeWon() + 1));
 }
 
 function recordWin(run: RunState): void {

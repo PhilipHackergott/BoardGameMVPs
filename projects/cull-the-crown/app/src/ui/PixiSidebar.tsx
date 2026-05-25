@@ -37,10 +37,12 @@ function buildVM(): SidebarVM {
   const empty = previewIds.length === 0;
   const styleMult = 1 + styleBonus; // STYLE phase scales suit effects by floor(base × (1 + Σ lvl·per))
   const eff = { damage: preview.damage, shield: preview.shield, draw: preview.draw, heal: preview.heal };
-  // per-effect highlight: red if the royal's immunity disables that suit, green if the style boosts it
+  // per-effect highlight, only when that effect actually has a value (a box at 0 stays neutral grey —
+  // the royal's immunity is already shown in the royal panel, so an empty box never lights up):
+  // red if the royal's immunity disables that suit, green if the style boosts it.
   const imm: Suit | null = combat.enemy.immunityCancelled ? null : combat.enemy.suit;
   const boosted = !empty && preview.valid && styleMult > 1.001;
-  const fxFor = (s: Suit, val: number): FxCol => (imm === s ? "debuff" : boosted && val > 0 ? "buff" : "none");
+  const fxFor = (s: Suit, val: number): FxCol => (val <= 0 ? "none" : imm === s ? "debuff" : boosted ? "buff" : "none");
   return {
     mode: "combat",
     gold: run.gold,

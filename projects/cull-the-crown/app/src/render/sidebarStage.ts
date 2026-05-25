@@ -16,6 +16,7 @@ export const SIDEBAR_H = 640;
 
 const PAD = 14;
 const INNER = SIDEBAR_W - PAD * 2;
+const STAT_BOX_H = 50; // Gold/Round boxes — tall enough for the suit-effect-box layout (label + big value)
 
 // FightingStyleId (camelCase) → the kebab-case art file in /public/art/styles/.
 export const STYLE_ART_SLUG: Record<FightingStyleId, string> = {
@@ -175,8 +176,8 @@ export class SidebarStage {
     this.text("SHOP", PAD + INNER / 2, PAD + 18, 30, THEME.goldBright, { font: TITLE_FONT, anchor: 0.5 });
     this.text("◆ OPEN ◆", PAD + INNER / 2, PAD + 54, 9, 0xffffff, { anchor: 0.5 });
     this.statRow(PAD + 92, [["Gold", `◆ ${vm.gold}`, THEME.goldBright], ["Round", vm.round, 0xffffff]]);
-    this.button("⌖ Run Info", PAD, PAD + 138, INNER, 36, THEME.gold, true, () => this.onRunInfo?.());
-    this.footer(PAD + 186);
+    this.button("⌖ Run Info", PAD, PAD + 152, INNER, 36, THEME.gold, true, () => this.onRunInfo?.());
+    this.footer(PAD + 200);
   }
 
   private drawCombat(): void {
@@ -192,7 +193,7 @@ export class SidebarStage {
     sections.push({ h: royalH, draw: (y) => this.drawRoyalPanel(y, royalH, vm, suit, accent) });
     if (!vm.outcome) sections.push({ h: 30, draw: (y) => this.drawTurnBanner(y, vm) });
     sections.push({ h: styleH, draw: (y) => this.drawStylePanel(y, styleH, vm) });
-    sections.push({ h: 34, draw: (y) => this.statRow(y, [["Gold", `◆ ${vm.gold}`, THEME.goldBright], ["Round", vm.round, 0xffffff]]) });
+    sections.push({ h: STAT_BOX_H, draw: (y) => this.statRow(y, [["Gold", `◆ ${vm.gold}`, THEME.goldBright], ["Round", vm.round, 0xffffff]]) });
     if (vm.trained) sections.push({ h: 28, draw: (y) => this.drawTrainedRow(y, vm) });
     sections.push({ h: 36, draw: (y) => this.button("⌖ Run Info", PAD, y, INNER, 36, THEME.gold, true, () => this.onRunInfo?.()) });
     sections.push({ h: 38, draw: (y) => this.footer(y) });
@@ -330,13 +331,16 @@ export class SidebarStage {
     this.text(vm.trained ?? "", PAD + INNER - 12, y + 7, 13, THEME.good, { anchor: 1 });
   }
 
-  private statRow(y: number, cells: [string, string, number][]): void {
+  // Gold / Round read-outs, laid out like the suit-effect boxes (fxBox): a headline-gold label hugging
+  // the top, a big value centred below. The label uses the Fighting-Style headline style (goldBright,
+  // bold) at a larger size.
+  private statRow(y: number, cells: [string, string, number][], h = STAT_BOX_H): void {
     const w = (INNER - 8) / cells.length;
     cells.forEach(([lbl, val, col], i) => {
       const x = PAD + i * (w + 8 / cells.length);
-      this.panel(x, y, w, 34);
-      this.text(lbl, x + 11, y + 8, 9, THEME.parchmentEdge);
-      this.text(val, x + w - 11, y + 16, 15, col, { anchor: 1, bold: true });
+      this.panel(x, y, w, h);
+      this.text(lbl.toUpperCase(), x + w / 2, y + 10, 13, THEME.goldBright, { anchor: 0.5, bold: true });
+      this.text(val, x + w / 2, y + h - 17, 19, col, { anchor: 0.5, anchorY: 0.5, bold: true });
     });
   }
 

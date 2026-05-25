@@ -26,14 +26,15 @@ test("the on-felt combat controls are interactive (Auto button fires via real po
   await page.waitForTimeout(400);
   expect(await page.evaluate(() => (window as unknown as Win).__game.getState().run.combat?.subphase)).toBe("defend");
 
-  // Real-pointer click on the Pixi "Auto" button. Felt is 480×360, the canvas is width-driven contain,
-  // so screen = canvasOrigin + feltCoord × (canvasWidth / 480). Auto sits on the bottom strip:
-  // stripY = 360−24 = 336 (centre +9); x0 = 85, label 150 wide, Auto 52 wide → centre ≈ 261.
+  // Real-pointer click on the Pixi "Auto Block" button. Felt is 480×360, the canvas is width-driven
+  // contain, so screen = canvasOrigin + feltCoord × (canvasWidth / 480). Auto Block now lives in the
+  // defend pop-up banner ABOVE the hand: panel x=75 w=330, buttons by=222 h=24; Auto Block is the left
+  // button (x=85 w=150) → centre ≈ (160, 234).
   const before = await page.evaluate(() => (window as unknown as Win).__game.getState().selected.length);
   const rect = await page.locator(".pixi-host canvas").first().boundingBox();
   if (!rect) throw new Error("felt canvas has no box");
   const scale = rect.width / 480;
-  await page.mouse.click(rect.x + 261 * scale, rect.y + (336 + 9) * scale);
+  await page.mouse.click(rect.x + 160 * scale, rect.y + 234 * scale);
   await page.waitForTimeout(200);
   const after = await page.evaluate(() => (window as unknown as Win).__game.getState().selected.length);
 

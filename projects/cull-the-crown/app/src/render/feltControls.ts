@@ -172,19 +172,12 @@ export class FeltControls {
       vm.wildcards.forEach((wc, i) => this.wildRow(wc, baseY - i * (rowH + gap), rowH));
     }
 
-    // 4. Bottom strip — Sort + idle hint in play, the block prompt in defend.
-    const stripY = this.stageH - 24;
+    // 4. Defend → a prominent "pop-up" block prompt ABOVE the hand (auto-block + manual confirm).
+    //    Play → the Sort bar + idle hint along the bottom strip.
     if (vm.defend) {
-      const autoW = 52,
-        blockW = 96,
-        gap = 6,
-        labelW = 150;
-      const totalW = labelW + autoW + blockW + gap * 2;
-      const x0 = (this.stageW - totalW) / 2;
-      this.text(`⚔ Block ${vm.incoming} · thrown ${vm.thrown}`, x0, stripY + 9, 10, vm.blockEnough ? THEME.good : 0xffffff, { anchorY: 0.5, bold: true });
-      this.button("Auto", x0 + labelW, stripY, autoW, 18, THEME.gold, true, () => this.onAuto?.());
-      this.button(`Block ${vm.thrown}/${vm.incoming}`, x0 + labelW + autoW + gap, stripY, blockW, 18, THEME.good, vm.blockEnough, () => this.onBlock?.());
+      this.drawDefendBanner(vm);
     } else {
+      const stripY = this.stageH - 24;
       const sortLabelW = 36,
         btnW = 58,
         gap = 5;
@@ -199,6 +192,29 @@ export class FeltControls {
         this.text("drag up to play · tap to build a combo · hover to inspect", x + 14, stripY + 9, 8, THEME.frameDim, { anchorY: 0.5 });
       }
     }
+  }
+
+  // The defend prompt, raised into a card-free band just above the hand so the block + auto-block option
+  // is front-and-centre when the royal strikes (drag cards up to throw them onto the block, or one-tap
+  // Auto Block to let the engine pick the smallest covering subset).
+  private drawDefendBanner(vm: FeltControlsVM): void {
+    const w = 330,
+      h = 78;
+    const x = (this.stageW - w) / 2;
+    const handTop = this.stageH - 64 - 31; // HAND_Y − CARD_H/2
+    const y = handTop - 10 - h;
+    const g = new Graphics();
+    g.roundRect(x, y, w, h, 10).fill({ color: 0x1c1020, alpha: 0.97 }).stroke({ width: 2.5, color: THEME.blood });
+    this.view.addChild(g);
+    this.text("⚔ DEFEND", x + w / 2, y + 14, 14, shade(THEME.blood, 0.6), { anchor: 0.5, anchorY: 0.5, bold: true });
+    this.text(`Block ${vm.incoming}  ·  thrown ${vm.thrown}`, x + w / 2, y + 35, 11, vm.blockEnough ? THEME.good : 0xffffff, { anchor: 0.5, anchorY: 0.5, bold: true });
+    const bw = 150,
+      bh = 24,
+      gap = 10;
+    const bx = x + (w - (bw * 2 + gap)) / 2;
+    const by = y + h - bh - 9;
+    this.button("⚡ Auto Block", bx, by, bw, bh, THEME.gold, true, () => this.onAuto?.());
+    this.button(`Block ${vm.thrown}/${vm.incoming}`, bx + bw + gap, by, bw, bh, THEME.good, vm.blockEnough, () => this.onBlock?.());
   }
 
   // One wildcard's "★ Wild N → ♥ ♦ ♣ ♠" row, centred. The chosen suit is filled; the rest are framed.
