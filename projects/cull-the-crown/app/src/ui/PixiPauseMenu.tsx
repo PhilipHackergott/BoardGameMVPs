@@ -5,7 +5,7 @@ import PixiCompendium from "./PixiCompendium";
 import PixiSettings from "./PixiSettings";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -59,7 +59,7 @@ function PixiPauseModal({ onCompendium, onSettings }: { onCompendium: () => void
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -84,7 +84,7 @@ function PixiPauseModal({ onCompendium, onSettings }: { onCompendium: () => void
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

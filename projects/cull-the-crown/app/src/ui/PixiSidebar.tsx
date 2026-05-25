@@ -3,7 +3,7 @@ import { Application } from "pixi.js";
 import { useGame } from "./store";
 import { audio, music, sfx } from "../audio/chiptune";
 import { FxCol, SidebarStage, SidebarVM, SIDEBAR_H, SIDEBAR_W } from "../render/sidebarStage";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 import { currentHandMax, enemyIntent, previewPlay, styleOf } from "../engine/index";
 import { FIGHTING_STYLE_NAME, FIGHTING_STYLE_PER_LEVEL, Suit } from "../engine/types";
 import { GLYPH } from "./suits";
@@ -85,7 +85,7 @@ export default function PixiSidebar() {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -129,7 +129,7 @@ export default function PixiSidebar() {
       stageRef.current = null;
       if (stage) {
         stage.destroy();
-        stage.app.destroy(true, { children: true });
+        releaseApp(stage.app);
       }
     };
   }, []);

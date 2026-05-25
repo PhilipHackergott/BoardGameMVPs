@@ -12,9 +12,28 @@
 // just means it's garbage-collected normally — but it's noisy and trips error assertions. Guard the
 // global pool once at startup so a missing bucket is skipped instead of throwing.
 
-import { TexturePool } from "pixi.js";
+import { Application, TexturePool } from "pixi.js";
 
 let patched = false;
+
+// Tear down a Pixi Application AND release its WebGL context immediately. Browsers cap live WebGL
+// contexts (~16); the felt + sidebar + every full-window modal each hold one, so opening/closing
+// modals across a long session (or a test run) leaks contexts until the oldest are force-lost and
+// the felt's render breaks. app.destroy() alone doesn't free the GL context promptly — explicitly
+// lose it so the count never creeps up.
+export function releaseApp(app: Application): void {
+  const gl = (app.renderer as unknown as { gl?: WebGLRenderingContext } | undefined)?.gl;
+  try {
+    app.destroy(true, { children: true });
+  } catch {
+    /* already destroyed */
+  }
+  try {
+    gl?.getExtension?.("WEBGL_lose_context")?.loseContext();
+  } catch {
+    /* no extension / context already gone */
+  }
+}
 
 export function applyPixiFixes(): void {
   if (patched) return;

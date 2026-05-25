@@ -4,7 +4,7 @@ import { audio, music, SONG_INFO, SCREENS, SCREEN_LABEL, type SongId } from "../
 import { useGame } from "./store";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -114,7 +114,7 @@ export default function PixiSettings({ onClose }: { onClose: () => void }) {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -144,7 +144,7 @@ export default function PixiSettings({ onClose }: { onClose: () => void }) {
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

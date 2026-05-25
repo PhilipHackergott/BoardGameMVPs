@@ -6,7 +6,7 @@ import { CombatStage, STAGE_H, STAGE_W } from "../render/combatStage";
 import { ShopItemVM, ShopVM } from "../render/shopStage";
 import { HudHeldVM, HudJokerVM, HudTip, HudVM } from "../render/hudLayer";
 import { FeltControlsVM } from "../render/feltControls";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 import { contentMeta, discountedPrice, edictById, heldMax, jokerById, makeCardFromTemplate, maxSlots, tarotById } from "../engine/index";
 import { PACK_LABEL, PACK_PICKS, SIZE_LABEL, LOOSE_TIP_TYPE, TYPE_CHIP, RARITY_CHIP } from "./packMeta";
 import { placeBeside, AnchorRect, Placed } from "./tipPlace";
@@ -189,7 +189,7 @@ export default function PixiBoard() {
       });
       await loadFonts();
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -370,7 +370,7 @@ export default function PixiBoard() {
       stageRef.current = null;
       if (stage) {
         stage.destroy();
-        stage.app.destroy(true, { children: true });
+        releaseApp(stage.app);
       }
     };
   }, []);

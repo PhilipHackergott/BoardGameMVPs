@@ -5,7 +5,7 @@ import { DECK_LIBRARY, STAKE_IDS, STAKE_INFO, deckById } from "../engine/index";
 import { sfx } from "../audio/chiptune";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -171,7 +171,7 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -204,7 +204,7 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

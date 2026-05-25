@@ -5,7 +5,7 @@ import { sfx } from "../audio/chiptune";
 import { wonReward } from "../engine/index";
 import { ModalStage } from "../render/ui/modalStage";
 import { THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -148,7 +148,7 @@ function GateModal(props: GateProps) {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -173,7 +173,7 @@ function GateModal(props: GateProps) {
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

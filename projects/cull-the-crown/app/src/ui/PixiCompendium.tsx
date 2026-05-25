@@ -17,7 +17,7 @@ import {
 import { ModalStage } from "../render/ui/modalStage";
 import { STYLE_ART_SLUG } from "../render/sidebarStage";
 import { THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -190,7 +190,7 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
     void (async () => {
       await app.init({ resizeTo: window, backgroundAlpha: 0, antialias: false, roundPixels: true, resolution: Math.min(3, Math.max(2, Math.round(window.devicePixelRatio || 2))), autoDensity: true });
       try { await Promise.all([document.fonts.load("12px 'Silkscreen'"), document.fonts.load("16px 'Press Start 2P'")]); } catch { /* fallback */ }
-      if (cancelled) { app.destroy(true, { children: true }); return; }
+      if (cancelled) { releaseApp(app); return; }
       const host = hostRef.current;
       if (host) {
         host.appendChild(app.canvas);
@@ -209,7 +209,7 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
       window.removeEventListener("keydown", onKey);
       const m = modalRef.current;
       modalRef.current = null;
-      if (m) { m.destroy(); m.app.destroy(true, { children: true }); }
+      if (m) { m.destroy(); releaseApp(m.app); }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

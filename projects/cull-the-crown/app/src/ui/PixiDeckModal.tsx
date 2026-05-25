@@ -7,7 +7,7 @@ import { sfx } from "../audio/chiptune";
 import { ModalStage } from "../render/ui/modalStage";
 import { buildCardFace } from "../render/cardFace";
 import { SUIT_GLYPH, suitInkColor, THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -179,7 +179,7 @@ function DeckModalApp() {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -210,7 +210,7 @@ function DeckModalApp() {
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

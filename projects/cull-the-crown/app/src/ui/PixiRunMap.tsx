@@ -16,7 +16,7 @@ import { Suit, SUIT_NAME, Tier, FightingStyleId } from "../engine/types";
 import { ModalStage } from "../render/ui/modalStage";
 import { STYLE_ART_SLUG } from "../render/sidebarStage";
 import { SUIT_COLOR, THEME } from "../render/theme";
-import { applyPixiFixes } from "../render/pixiFixes";
+import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
@@ -199,7 +199,7 @@ function RunMapModal() {
         /* system font fallback */
       }
       if (cancelled) {
-        app.destroy(true, { children: true });
+        releaseApp(app);
         return;
       }
       const host = hostRef.current;
@@ -224,7 +224,7 @@ function RunMapModal() {
       modalRef.current = null;
       if (m) {
         m.destroy();
-        m.app.destroy(true, { children: true });
+        releaseApp(m.app);
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
