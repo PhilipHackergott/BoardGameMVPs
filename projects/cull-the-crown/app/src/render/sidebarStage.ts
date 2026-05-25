@@ -184,7 +184,7 @@ export class SidebarStage {
     const suit = vm.royalSuit ?? "S";
     const accent = SUIT_COLOR[suit];
     const royalH = 116 + (vm.decrees?.length ?? 0) * 18;
-    const styleH = 226;
+    const styleH = 250; // taller effect boxes (see fxBox) need more panel height before Play/Clear
 
     // Lay the sections out top→bottom, distributing the leftover height as even gaps so the
     // chrome fills the whole sidebar instead of clustering at the top.
@@ -287,7 +287,7 @@ export class SidebarStage {
     const fx = vm.effects ?? { damage: 0, shield: 0, draw: 0, heal: 0 };
     const st = vm.fx ?? { damage: "none" as FxCol, shield: "none" as FxCol, draw: "none" as FxCol, heal: "none" as FxCol };
     const boxW = (INNER - 18) / 2;
-    const boxH = 44;
+    const boxH = 54; // taller so the big number isn't crammed against the bottom border
     const by0 = y + 92;
     const fxData: [string, number, number, FxCol][] = [
       ["♣ DAMAGE", fx.damage, SUIT_COLOR.C, st.damage],
@@ -318,8 +318,10 @@ export class SidebarStage {
     const g = new Graphics();
     g.roundRect(x, y, w, h, 5).fill({ color: 0x130d20, alpha: zero ? 0.5 : 0.95 }).stroke({ width: 1.5, color: border });
     this.root.addChild(g);
-    this.text(label, x + w / 2, y + 8, 9, zero ? THEME.frameDim : suitCol, { anchor: 0.5 });
-    this.text(`${val}`, x + w / 2, y + 20, 21, numCol, { anchor: 0.5, bold: true });
+    // label hugs the top; the big number is vertically centred in the space below it with clear
+    // padding to the bottom border (anchorY 0.5 → it never crowds the edge as digits grow)
+    this.text(label, x + w / 2, y + 9, 11, zero ? THEME.frameDim : suitCol, { anchor: 0.5 });
+    this.text(`${val}`, x + w / 2, y + 36, 22, numCol, { anchor: 0.5, anchorY: 0.5, bold: true });
   }
 
   private drawTrainedRow(y: number, vm: SidebarVM): void {
