@@ -9,15 +9,35 @@ import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
-// The New Run / Continue setup, migrated onto the Pixi modal kit. Tabs + deck & stake carousels +
-// position dots + a stake ladder, all drawn on a ModalStage. The one thing canvas can't do — typed
-// text — is handled by a real DOM <input> positioned over the canvas where the seed field sits, shown
-// only when "Seeded" is on. ✕ / click-outside = Back.
+// The New Run / Continue setup, on the Pixi modal kit, laid out the Balatro way: NO title bar — three
+// tabs at the top with a ▼ pointer over the active one; a deck "card" flanked by FULL-HEIGHT ‹ / ›
+// gallery arrows; a stake ladder beside the deck showing the current rung; and the deck/stake blurbs
+// on light parchment boxes so the prose reads off the dark panel. The one thing canvas can't do —
+// typed text — is a real DOM <input> over the canvas where the seed field sits (Seeded on only). The
+// stake row is its own gallery with full-height arrows too. ✕ / click-outside / Esc = Back.
 
-const PANEL_W = 600;
-const PANEL_H = 460;
+const PANEL_W = 620;
+const PANEL_H = 440;
 const PAD = 20;
-const HEADER = 50;
+
+// content-relative layout (the modal is headerless, so content begins at the top pad)
+const TABS_Y = 24;
+const TAB_H = 34;
+const DECK_Y = 72;
+const CARD_W = 100;
+const CARD_H = 140;
+const ARROW_W = 36;
+const CARD_X = ARROW_W + 10; // 46
+const LADDER_X = CARD_X + CARD_W + 12; // 158
+const LADDER_W = 22;
+const INFO_X = LADDER_X + LADDER_W + 14; // 194
+const STAKE_Y = DECK_Y + CARD_H + 16; // 228
+const STAKE_H = 60;
+const FORM_Y = STAKE_Y + STAKE_H + 14; // 302
+const PLAY_Y = FORM_Y + 44; // 346
+
+const INK_BODY = 0x3a2a18; // dark body text on parchment
+const INK_MUTE = 0x6a5238; // muted dark on parchment (secondary / locked)
 
 // STAKE_INFO.color is a CSS hex string → a Pixi colour int.
 function hexNum(c: string): number {
@@ -62,100 +82,116 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
 
     m.show({
       title: "New Run",
+      header: false, // Balatro-style: the tab row is the top of the panel, no title band
       panelW: PANEL_W,
       panelH: PANEL_H,
       build: (mm) => {
         const w = mm.width;
-        // --- tabs ---
+        const rightArrowX = w - ARROW_W;
+
+        // --- tabs + the ▼ "currently selected" pointer above the active one ---
         const tw = (w - 12) / 3;
-        (["new", "continue", "challenges"] as Tab[]).forEach((id, i) => {
+        const tabs: Tab[] = ["new", "continue", "challenges"];
+        tabs.forEach((id, i) => {
           const label = id === "new" ? "New Run" : id === "continue" ? "Continue" : "Challenges";
           const on = tab === id;
           const enabled = id === "new" || (id === "continue" && canContinue);
-          mm.button(label, i * (tw + 6), 2, tw, 30, on ? THEME.gold : THEME.frameDim, enabled, () => setTab(id), 12);
+          mm.button(label, i * (tw + 6), TABS_Y, tw, TAB_H, on ? THEME.gold : THEME.frameDim, enabled, () => setTab(id), 13);
         });
+        const activeIdx = tabs.indexOf(tab);
+        mm.text("▼", activeIdx * (tw + 6) + tw / 2, 4, 16, THEME.goldBright, { anchor: 0.5 });
 
         if (tab === "continue") {
           if (!saved) {
-            mm.text("No run in progress.", w / 2, 150, 13, THEME.parchmentEdge, { anchor: 0.5 });
+            mm.text("No run in progress.", w / 2, DECK_Y + 60, 15, THEME.parchmentEdge, { anchor: 0.5 });
             return;
           }
-          mm.rect(0, 50, w, 200, 0x1c1430, { alpha: 0.9, radius: 10, stroke: THEME.gold });
-          mm.sprite(`/art/decks/${saved.deckId}.svg`, 24, 70, 96, 134);
-          mm.text(deckById(saved.deckId)?.name ?? "Run in progress", 140, 72, 16, THEME.goldBright, { bold: true });
-          mm.text(`Royal   ${saved.royal} / ${saved.total}`, 140, 108, 13, 0xffffff);
-          mm.text(`Gold    ◆ ${saved.gold}`, 140, 134, 13, THEME.goldBright);
-          mm.text(`Seed    ${saved.seed || "—"}`, 140, 160, 12, THEME.parchmentEdge);
-          mm.button("CONTINUE  ▸", 0, 270, w, 40, THEME.good, true, () => {
+          mm.rect(0, DECK_Y, CARD_W, CARD_H, 0x241836, { radius: 10, stroke: THEME.gold });
+          mm.sprite(`/art/decks/${saved.deckId}.svg`, 5, DECK_Y + 5, CARD_W - 10, CARD_H - 10);
+          const ix = CARD_W + 16;
+          const iw = w - ix;
+          mm.rect(ix, DECK_Y, iw, CARD_H, THEME.parchment, { radius: 8, stroke: THEME.gold });
+          mm.text(deckById(saved.deckId)?.name ?? "Run in progress", ix + 14, DECK_Y + 14, 17, THEME.ink, { bold: true, wrap: iw - 28 });
+          mm.text(`Royal   ${saved.royal} / ${saved.total}`, ix + 14, DECK_Y + 48, 14, INK_BODY);
+          mm.text(`Gold    ◆ ${saved.gold}`, ix + 14, DECK_Y + 76, 14, INK_BODY);
+          mm.text(`Seed    ${saved.seed || "—"}`, ix + 14, DECK_Y + 104, 13, INK_MUTE);
+          mm.button("CONTINUE  ▸", 0, DECK_Y + CARD_H + 22, w, 46, THEME.good, true, () => {
             sfx.buy();
             useGame.getState().continueRun();
-          }, 15);
+          }, 17);
           return;
         }
         if (tab === "challenges") {
-          mm.text("No challenges yet — coming in a later update.", w / 2, 150, 12, THEME.parchmentEdge, { anchor: 0.5 });
+          mm.text("No challenges yet —", w / 2, DECK_Y + 54, 15, THEME.parchmentEdge, { anchor: 0.5 });
+          mm.text("coming in a later update.", w / 2, DECK_Y + 84, 15, THEME.parchmentEdge, { anchor: 0.5 });
           return;
         }
 
-        // --- NEW: deck carousel ---
-        const cardW = 92;
-        const cardH = 128;
-        const cardX = 40;
-        const cardY = 50;
-        mm.button("‹", 0, cardY + cardH / 2 - 20, 28, 40, THEME.gold, true, () => {
+        // --- NEW: deck gallery (full-height ‹ / › arrows flank the card row) ---
+        mm.button("‹", 0, DECK_Y, ARROW_W, CARD_H, THEME.gold, true, () => {
           sfx.leaf();
           setDeckIdx((i) => (i - 1 + DECK_LIBRARY.length) % DECK_LIBRARY.length);
-        }, 18);
-        // deck card (art with a card-back fallback frame behind)
-        mm.rect(cardX, cardY, cardW, cardH, deckUnlocked ? 0x241836 : 0x140a1e, { radius: 8, stroke: deckUnlocked ? THEME.gold : THEME.frameDim });
-        mm.sprite(`/art/decks/${deck.id}.svg`, cardX + 4, cardY + 4, cardW - 8, cardH - 8);
-        if (!deckUnlocked) mm.text("🔒", cardX + cardW / 2, cardY + cardH / 2, 28, THEME.frameDim, { anchor: 0.5, anchorY: 0.5 });
-        // info to the right
-        const ix = cardX + cardW + 18;
-        const iw = w - ix - 16;
-        mm.text(deck.name, ix, cardY + 4, 16, deckUnlocked ? THEME.goldBright : THEME.frameDim, { bold: true, wrap: iw });
+        }, 30);
+        // deck card (art with a framed back behind)
+        mm.rect(CARD_X, DECK_Y, CARD_W, CARD_H, deckUnlocked ? 0x241836 : 0x140a1e, { radius: 10, stroke: deckUnlocked ? THEME.gold : THEME.frameDim });
+        mm.sprite(`/art/decks/${deck.id}.svg`, CARD_X + 5, DECK_Y + 5, CARD_W - 10, CARD_H - 10);
+        if (!deckUnlocked) mm.text("🔒", CARD_X + CARD_W / 2, DECK_Y + CARD_H / 2, 30, THEME.frameDim, { anchor: 0.5, anchorY: 0.5 });
+
+        // stake ladder beside the deck — a level meter of the eight stakes, current rung ringed (#2)
+        const n = STAKE_IDS.length;
+        const lgap = 3;
+        const chipH = (CARD_H - (n - 1) * lgap) / n;
+        for (let i = 0; i < n; i++) {
+          const si = STAKE_INFO[STAKE_IDS[i]];
+          const yy = DECK_Y + (n - 1 - i) * (chipH + lgap); // lowest stake at the bottom — climb upward
+          const locked = i > maxStake;
+          const isCur = i === stakeIdx;
+          mm.rect(LADDER_X, yy, LADDER_W, chipH, locked ? 0x241836 : hexNum(si.color), {
+            radius: 4,
+            stroke: isCur ? THEME.goldBright : locked ? THEME.frameDim : THEME.ink,
+            alpha: locked ? 0.4 : i <= stakeIdx ? 1 : 0.5,
+          });
+          if (!locked) mm.hit(LADDER_X, yy, LADDER_W, chipH, () => setStakeIdx(i));
+        }
+
+        // deck blurb on a light parchment box (#4)
+        const infoW = rightArrowX - INFO_X - 10;
+        mm.rect(INFO_X, DECK_Y, infoW, CARD_H, THEME.parchment, { radius: 8, stroke: deckUnlocked ? THEME.parchmentEdge : THEME.frameDim });
+        mm.text(deck.name, INFO_X + 14, DECK_Y + 12, 17, deckUnlocked ? THEME.ink : INK_MUTE, { bold: true, wrap: infoW - 28 });
         if (deckUnlocked) {
-          let ly = cardY + 32;
+          let ly = DECK_Y + 42;
           for (const t of deck.text) {
-            mm.text(`• ${t}`, ix, ly, 11, THEME.parchmentLite, { wrap: iw });
-            ly += 22;
+            mm.text(`• ${t}`, INFO_X + 14, ly, 13, INK_BODY, { wrap: infoW - 28 });
+            ly += 24;
           }
         } else {
-          mm.text(`Win a run with ${deckById(deck.unlock)?.name ?? "another deck"} to unlock.`, ix, cardY + 34, 11, THEME.parchmentEdge, { wrap: iw });
+          mm.text(`Win a run with ${deckById(deck.unlock)?.name ?? "another deck"} to unlock.`, INFO_X + 14, DECK_Y + 44, 13, INK_MUTE, { wrap: infoW - 28 });
         }
-        mm.button("›", w - 28, cardY + cardH / 2 - 20, 28, 40, THEME.gold, true, () => {
+        mm.button("›", rightArrowX, DECK_Y, ARROW_W, CARD_H, THEME.gold, true, () => {
           sfx.leaf();
           setDeckIdx((i) => (i + 1) % DECK_LIBRARY.length);
-        }, 18);
+        }, 30);
 
-        // position dots
-        const dots = DECK_LIBRARY.length;
-        const dotW = 8;
-        const dotsW = dots * (dotW + 4) - 4;
-        DECK_LIBRARY.forEach((_, i) => {
-          mm.rect((w - dotsW) / 2 + i * (dotW + 4), cardY + cardH + 10, dotW, dotW, i === deckIdx ? THEME.gold : THEME.frameDim, { radius: 4 });
-        });
-
-        // --- stake carousel ---
-        const sy = cardY + cardH + 32;
-        mm.rect(0, sy, w, 52, 0x1c1430, { alpha: 0.85, radius: 8, stroke: hexNum(stake.color) });
-        mm.button("‹", 8, sy + 11, 26, 30, THEME.gold, stakeIdx > 0, () => {
+        // --- stake gallery (full-height ‹ / › arrows; blurb on parchment) ---
+        mm.button("‹", 0, STAKE_Y, ARROW_W, STAKE_H, THEME.gold, stakeIdx > 0, () => {
           sfx.leaf();
           setStakeIdx((i) => Math.max(0, i - 1));
-        }, 16);
-        mm.rect(44, sy + 14, 24, 24, hexNum(stake.color), { radius: 6, stroke: THEME.ink });
-        mm.text(`Stake — ${stake.name}`, 80, sy + 10, 13, hexNum(stake.color), { bold: true });
-        mm.text(stake.text, 80, sy + 30, 10, THEME.parchmentEdge, { wrap: w - 80 - 40 });
-        mm.button("›", w - 34, sy + 11, 26, 30, THEME.gold, stakeIdx < maxStake, () => {
+        }, 28);
+        const boxX = CARD_X;
+        const boxW = rightArrowX - boxX - 10;
+        mm.rect(boxX, STAKE_Y, boxW, STAKE_H, THEME.parchment, { radius: 8, stroke: hexNum(stake.color) });
+        mm.rect(boxX + 14, STAKE_Y + (STAKE_H - 28) / 2, 28, 28, hexNum(stake.color), { radius: 6, stroke: THEME.ink });
+        mm.text(`Stake — ${stake.name}`, boxX + 54, STAKE_Y + 12, 15, THEME.ink, { bold: true });
+        mm.text(stake.text, boxX + 54, STAKE_Y + 36, 12, INK_BODY, { wrap: boxW - 54 - 14 });
+        mm.button("›", rightArrowX, STAKE_Y, ARROW_W, STAKE_H, THEME.gold, stakeIdx < maxStake, () => {
           sfx.leaf();
           setStakeIdx((i) => Math.min(maxStake, i + 1));
-        }, 16);
+        }, 28);
 
         // --- seeded toggle + PLAY (the seed <input> is a DOM overlay, see render) ---
-        const fy = sy + 64;
-        mm.button(seeded ? "✓ Seeded Run" : "Seeded Run", 0, fy, 170, 32, seeded ? THEME.good : THEME.frameDim, true, () => setSeeded((s) => !s));
-        if (!seeded) mm.text("(random seed)", 184, fy + 10, 11, THEME.parchmentEdge);
-        mm.button("PLAY  ▸", 0, fy + 42, w, 38, THEME.good, deckUnlocked, play, 16);
+        mm.button(seeded ? "✓ Seeded Run" : "Seeded Run", 0, FORM_Y, 180, 34, seeded ? THEME.good : THEME.frameDim, true, () => setSeeded((s) => !s), 13);
+        if (!seeded) mm.text("(random seed)", 196, FORM_Y + 11, 12, THEME.parchmentEdge);
+        mm.button("PLAY  ▸", 0, PLAY_Y, w, 46, THEME.good, deckUnlocked, play, 18);
       },
     });
   };
@@ -217,13 +253,14 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
   }, [tab, deckIdx, stakeIdx, seeded, seed]);
 
   // The seed text field: a real DOM <input> positioned over the canvas where the Pixi layout reserves
-  // it (canvas can't take typed text). Shown only on the New tab with Seeded on.
+  // it (canvas can't take typed text). Shown only on the New tab with Seeded on. Mirrors the in-build
+  // coords: content origin is (px+PAD, py+PAD) now the modal is headerless; the field sits beside the
+  // toggle at content (196, FORM_Y).
   const showSeed = tab === "new" && seeded;
   const px = (window.innerWidth - PANEL_W) / 2;
   const py = (window.innerHeight - PANEL_H) / 2;
-  // mirror the in-build layout: stake row sy = 50 + 128 + 32 = 210; fy = sy + 64 = 274; field beside toggle
-  const seedLeft = px + PAD + 184;
-  const seedTop = py + HEADER + 274;
+  const seedLeft = px + PAD + 196;
+  const seedTop = py + PAD + FORM_Y + 1;
   return (
     <div ref={hostRef} className="pixi-modal-host">
       {showSeed && (
@@ -238,7 +275,7 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
             left: seedLeft,
             top: seedTop,
             width: 220,
-            height: 30,
+            height: 32,
             zIndex: 9001,
             boxSizing: "border-box",
             padding: "0 10px",
@@ -246,7 +283,7 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
             border: "2px solid #8a6a2a",
             borderRadius: 6,
             color: "#ffe9a0",
-            font: "13px 'Silkscreen', monospace",
+            font: "14px 'Silkscreen', monospace",
             outline: "none",
           }}
         />

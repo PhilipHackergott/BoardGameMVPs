@@ -36,6 +36,8 @@ export interface ModalContent {
   build: (m: ModalStage) => void;
   dismissable?: boolean; // default true — ✕ + click-outside close; false for mandatory gates
   accent?: number; // panel frame + title tint (default gold)
+  header?: boolean; // default true — draw the title band; false = no band, content starts at the top pad
+
 }
 
 const PAD = 20;
@@ -321,10 +323,13 @@ export class ModalStage {
     const panel = new Graphics();
     panel.roundRect(px - 3, py - 3, c.panelW + 6, c.panelH + 6, 16).fill(THEME.ink);
     panel.roundRect(px, py, c.panelW, c.panelH, 14).fill({ color: 0x140a1e }).stroke({ width: 3, color: accent });
-    // header band
-    panel.roundRect(px + 6, py + 6, c.panelW - 12, HEADER_H - 8, 9).fill({ color: shade(accent, -0.62) }).stroke({ width: 2, color: shade(accent, -0.2) });
+    const hasHeader = c.header !== false;
+    if (hasHeader) {
+      // header band
+      panel.roundRect(px + 6, py + 6, c.panelW - 12, HEADER_H - 8, 9).fill({ color: shade(accent, -0.62) }).stroke({ width: 2, color: shade(accent, -0.2) });
+    }
     this.root.addChild(panel);
-    this.wig.build(this.root, c.title, px + c.panelW / 2, py + 6 + (HEADER_H - 8) / 2, 19, accentBright, { font: TITLE_FONT, anchor: 0.5, anchorY: 0.5, bold: true });
+    if (hasHeader) this.wig.build(this.root, c.title, px + c.panelW / 2, py + 6 + (HEADER_H - 8) / 2, 19, accentBright, { font: TITLE_FONT, anchor: 0.5, anchorY: 0.5, bold: true });
 
     // close ✕ (top-right of the panel) — omitted for mandatory (non-dismissable) modals
     if (c.dismissable !== false) {
@@ -339,9 +344,9 @@ export class ModalStage {
       this.hits.push({ x: xx, y: xy, w: xw, h: xw, fn: () => this.onClose?.(), hover: true });
     }
 
-    // content area
+    // content area — starts below the header band, or at the top pad when headerless
     this.cx = px + PAD;
-    this.cy = py + HEADER_H;
+    this.cy = py + (hasHeader ? HEADER_H : PAD);
     this.innerW = c.panelW - PAD * 2;
     c.build(this);
   }

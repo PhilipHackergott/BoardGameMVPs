@@ -13,16 +13,17 @@ test("PixiRunSetup: mounts, seed input, PLAY starts a run", async ({ page }: { p
   await page.waitForTimeout(400);
   await page.screenshot({ path: "screenshots/zz-setup.png" });
 
-  const geo = await page.evaluate(() => ({ px: (window.innerWidth - 600) / 2, py: (window.innerHeight - 460) / 2 }));
-  // Seeded toggle: content (0,274,170,32) → centre ≈ (85,290); screen = px+20+85, py+50+290
-  await page.mouse.click(geo.px + 105, geo.py + 340);
+  // headerless panel 620×440; content origin (px+20, py+20)
+  const geo = await page.evaluate(() => ({ px: (window.innerWidth - 620) / 2, py: (window.innerHeight - 440) / 2 }));
+  // Seeded toggle: content (0,302,180,34) → centre ≈ (90,319); screen = px+20+90, py+20+319
+  await page.mouse.click(geo.px + 110, geo.py + 339);
   await page.waitForTimeout(200);
   await expect(page.locator("input[aria-label='Seed']")).toBeVisible(); // DOM seed field appears
   await page.locator("input[aria-label='Seed']").fill("hello");
   await page.screenshot({ path: "screenshots/zz-setup-seeded.png" });
 
-  // PLAY: content (0, 316, w, 38) → centre ≈ (w/2, 335); screen = px+20+280, py+50+335
-  await page.mouse.click(geo.px + 300, geo.py + 385);
+  // PLAY: content (0, 346, w, 46) → centre ≈ (w/2, 369); screen = px+20+290, py+20+369
+  await page.mouse.click(geo.px + 310, geo.py + 389);
   await page.waitForTimeout(300);
   const phase = await page.evaluate(() => (window as unknown as Win).__game.getState().run.phase);
   expect(phase).toBe("combat"); // PLAY started the run
