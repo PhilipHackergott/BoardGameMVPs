@@ -10,7 +10,6 @@ import TooltipLayer from "./TooltipLayer";
 import { Tooltip } from "./tooltip";
 import PixiCombatGate from "./PixiCombatGate";
 import PixiDeckModal from "./PixiDeckModal";
-import DeckPeek from "./DeckPeek";
 import PixiPackModal from "./PixiPackModal";
 import PixiRunMap from "./PixiRunMap";
 import HelpOverlay from "./HelpOverlay";
@@ -156,7 +155,6 @@ export default function App() {
       <PixiCombatGate />
       <PixiPackModal />
       <PixiDeckModal />
-      <DeckPeek />
       <PixiRunMap />
       {paused && <PixiPauseMenu />}
       {help && <HelpOverlay onClose={() => setHelp(false)} />}

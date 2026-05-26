@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
 import { audio, music, sfx } from "../audio/chiptune";
@@ -75,10 +75,17 @@ function buildVM(): SidebarVM {
 export default function PixiSidebar() {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<SidebarStage | null>(null);
+  const [gen, setGen] = useState(0); // remount key — heals a lost WebGL context (mirrors PixiBoard)
 
   useEffect(() => {
     let cancelled = false;
     const app = new Application();
+    const onCtxLost = (e: Event) => {
+      e.preventDefault();
+      window.setTimeout(() => {
+        if (!cancelled) setGen((g) => g + 1);
+      }, 0);
+    };
     void (async () => {
       await app.init({ width: SIDEBAR_W, height: SIDEBAR_H, backgroundAlpha: 0, antialias: false, roundPixels: true, resolution: 3, autoDensity: false, textureGCActive: false, renderableGCActive: false });
       try {
@@ -99,6 +106,7 @@ export default function PixiSidebar() {
         app.canvas.style.height = "auto";
         app.canvas.style.display = "block";
         app.canvas.style.imageRendering = "pixelated";
+        app.canvas.addEventListener("webglcontextlost", onCtxLost, false);
       }
       const stage = new SidebarStage(app);
       stage.onPlay = () => useGame.getState().playCards();
@@ -127,6 +135,11 @@ export default function PixiSidebar() {
     return () => {
       cancelled = true;
       unsub();
+      try {
+        app.canvas?.removeEventListener("webglcontextlost", onCtxLost);
+      } catch {
+        /* canvas already gone */
+      }
       const stage = stageRef.current;
       stageRef.current = null;
       if (stage) {
@@ -134,7 +147,7 @@ export default function PixiSidebar() {
         releaseApp(stage.app);
       }
     };
-  }, []);
+  }, [gen]);
 
   return <div className="pixi-sidebar-host" ref={hostRef} />;
 }

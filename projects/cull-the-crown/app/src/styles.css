@@ -430,86 +430,93 @@ button:focus-visible {
 }
 
 /* Deck peek — the "remaining cards" table that appears mid-board on deck hover. */
+@keyframes peekFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .deck-peek {
-  position: fixed;
+  /* absolute → centred on the battle field (.combat-field is position:relative), not the whole viewport */
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 44;
   pointer-events: none;
-  padding: 20px;
+  padding: 17px;
   background: rgba(11, 6, 16, 0.96);
   border: 3px solid var(--frame);
-  border-radius: 20px;
-  box-shadow: 0 0 0 4px #000, 0 0 0 8px #3a2a18, 0 20px 52px rgba(0, 0, 0, 0.72);
-  animation: gateIn 0.14s ease;
+  border-radius: 17px;
+  box-shadow: 0 0 0 3px #000, 0 0 0 7px #3a2a18, 0 18px 46px rgba(0, 0, 0, 0.72);
+  /* opacity-only fade — it must NOT animate transform, or the keyframe overrides translate(-50%,-50%)
+     and the panel snaps to centre after appearing (the "jump") */
+  animation: peekFade 0.12s ease;
   font-family: "Press Start 2P", monospace;
   image-rendering: pixelated;
 }
 .dp-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 .dp-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: stretch;
 }
 /* left label cell: suit glyph + running total in a rounded pill (and the header's empty spacer) */
 .dp-rowlabel {
   flex: none;
-  width: 118px;
+  width: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  border-radius: 14px;
+  gap: 8px;
+  border-radius: 12px;
   background: rgba(0, 0, 0, 0.34);
 }
 .dp-head .dp-rowlabel {
   background: none;
 }
 .dp-suit-glyph {
-  font-size: 1.85rem;
+  font-size: 1.55rem;
   line-height: 1;
 }
 .dp-suit-total {
-  min-width: 48px;
-  padding: 9px 0;
+  min-width: 40px;
+  padding: 7px 0;
   text-align: center;
-  font-size: 1.12rem;
+  font-size: 0.95rem;
   color: #fff;
   background: rgba(0, 0, 0, 0.4);
-  border-radius: 11px;
+  border-radius: 9px;
 }
 /* rank header: rank name over its column total, stacked — both on light rounded pills (Balatro) */
 .dp-rank {
   flex: none;
-  width: 56px;
+  width: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 .dp-rank-name {
   width: 100%;
   text-align: center;
-  font-size: 1.06rem;
+  font-size: 0.9rem;
   color: var(--ink);
   background: var(--parchment);
-  border-radius: 10px 10px 4px 4px;
-  padding: 6px 0;
+  border-radius: 9px 9px 3px 3px;
+  padding: 5px 0;
 }
 .dp-rank-total {
   width: 100%;
   text-align: center;
-  font-size: 0.96rem;
+  font-size: 0.82rem;
   color: var(--gold-bright);
   background: rgba(250, 240, 205, 0.16);
   border: 1px solid rgba(250, 240, 205, 0.2);
-  border-radius: 4px 4px 10px 10px;
-  padding: 6px 0;
+  border-radius: 3px 3px 9px 9px;
+  padding: 5px 0;
 }
 .dp-rank-total.zero {
   color: var(--frame-dim, #8a6a2a);
@@ -518,9 +525,9 @@ button:focus-visible {
 /* count cells: white on the suit-coloured band, dim when none remain */
 .dp-cell {
   flex: none;
-  width: 56px;
+  width: 48px;
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   line-height: 2.0;
   color: #fff;
   font-weight: 700;
@@ -533,8 +540,8 @@ button:focus-visible {
 .dp-row.dp-suit-H,
 .dp-row.dp-suit-C,
 .dp-row.dp-suit-D {
-  border-radius: 14px;
-  padding: 4px 0;
+  border-radius: 12px;
+  padding: 3px 0;
 }
 .dp-suit-S {
   background: linear-gradient(#34306e, #25224e);

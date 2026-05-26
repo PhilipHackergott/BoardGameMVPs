@@ -1,6 +1,7 @@
 import { useGame } from "./store";
 import PixiBoard from "./PixiBoard";
 import PixiSidebar from "./PixiSidebar";
+import DeckPeek from "./DeckPeek";
 
 // The felt screen — ONE persistent stage for both the fight and the market (Balatro's single canvas).
 // <PixiBoard/> stays mounted across combat↔shop (same tree position), so the felt never resets; the
@@ -16,6 +17,7 @@ export default function FeltScreen() {
       <PixiSidebar />
       <div className="combat-field">
         <PixiBoard />
+        <DeckPeek />
       </div>
     </div>
   );

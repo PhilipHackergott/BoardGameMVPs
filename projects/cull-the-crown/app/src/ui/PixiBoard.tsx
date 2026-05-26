@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Application } from "pixi.js";
 import { useGame } from "./store";
 import { sfx } from "../audio/chiptune";
@@ -38,6 +38,10 @@ export default function PixiBoard() {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<CombatStage | null>(null);
   const lastFx = useRef(0);
+  // Bumped to remount the felt if its WebGL context is ever lost (browsers cap live contexts; opening
+  // modals across a long session can evict the felt's — without this it stays a black screen). The
+  // store is the source of truth, so a remount re-syncs the live combat with no state loss.
+  const [gen, setGen] = useState(0);
 
   function syncFromState(): void {
     const stage = stageRef.current;
@@ -144,6 +148,14 @@ export default function PixiBoard() {
   useEffect(() => {
     let cancelled = false;
     const app = new Application();
+    // If the GL context is lost, keep the canvas (preventDefault) and remount on the next tick so a
+    // fresh context replaces it — heals the "black felt after a modal" report instead of staying dead.
+    const onCtxLost = (e: Event) => {
+      e.preventDefault();
+      window.setTimeout(() => {
+        if (!cancelled) setGen((g) => g + 1);
+      }, 0);
+    };
 
     void (async () => {
       await app.init({
@@ -169,6 +181,7 @@ export default function PixiBoard() {
         app.canvas.style.height = "auto";
         app.canvas.style.display = "block";
         app.canvas.style.imageRendering = "pixelated";
+        app.canvas.addEventListener("webglcontextlost", onCtxLost, false);
       }
       const stage = new CombatStage(app);
       // ---- combat intents ----
@@ -342,6 +355,11 @@ export default function PixiBoard() {
     return () => {
       cancelled = true;
       unsub();
+      try {
+        app.canvas?.removeEventListener("webglcontextlost", onCtxLost);
+      } catch {
+        /* canvas already gone */
+      }
       useTooltip.getState().hide(TIP); // clear any felt tooltip when the board unmounts
       const stage = stageRef.current;
       stageRef.current = null;
@@ -350,7 +368,7 @@ export default function PixiBoard() {
         releaseApp(stage.app);
       }
     };
-  }, []);
+  }, [gen]);
 
   return <div className="pixi-host" ref={hostRef} />;
 }
