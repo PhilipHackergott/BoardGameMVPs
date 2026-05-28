@@ -284,6 +284,10 @@ export class CardNode {
   }
 
   destroy(): void {
+    // Detach from the parent layer FIRST — Pixi v8 won't remove a destroyed container from its parent,
+    // and a destroyed-but-attached node throws on every subsequent render of that layer (reads .geometry
+    // off null). That's what blanks the felt after combat→shop, when exiting hand cards are destroyed.
+    this.view.parent?.removeChild(this.view);
     this.view.destroy({ children: true });
   }
 }

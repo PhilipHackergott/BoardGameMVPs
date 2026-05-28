@@ -310,6 +310,7 @@ class ShopNode {
   }
 
   destroy(): void {
+    this.view.parent?.removeChild(this.view);
     this.view.destroy({ children: true });
   }
 }
@@ -346,6 +347,7 @@ class ShopButton {
       .stroke({ width: 2, color: this.enabled ? this.accent : THEME.frameDim });
   }
   destroy(): void {
+    this.view.parent?.removeChild(this.view);
     this.view.destroy({ children: true });
   }
 }
@@ -401,6 +403,7 @@ class CoinButton {
     }
   }
   destroy(): void {
+    this.view.parent?.removeChild(this.view);
     this.view.destroy({ children: true });
   }
 }

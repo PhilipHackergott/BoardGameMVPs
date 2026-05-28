@@ -69,6 +69,9 @@ export class Pops {
       const t = p.age - p.delay;
       if (t < 0) continue; // still delayed
       if (t >= p.life) {
+        // remove from the layer FIRST — a destroyed-but-still-attached Text node throws on subsequent
+        // renders (Pixi v8 doesn't detach on destroy), which silently blanks the felt.
+        p.text.parent?.removeChild(p.text);
         p.text.destroy();
         this.items.splice(i, 1);
         continue;
@@ -85,7 +88,10 @@ export class Pops {
   }
 
   clear(): void {
-    for (const p of this.items) p.text.destroy();
+    for (const p of this.items) {
+      p.text.parent?.removeChild(p.text);
+      p.text.destroy();
+    }
     this.items = [];
   }
 }

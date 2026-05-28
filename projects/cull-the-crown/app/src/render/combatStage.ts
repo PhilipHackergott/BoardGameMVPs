@@ -126,7 +126,6 @@ export class CombatStage {
   private discardPile = new Graphics();
   private deckStack = new Container(); // the draw pile = a real stack of the deck's card-back models
   private deckSprites: Sprite[] = [];
-  private deckMasks: Graphics[] = []; // a rounded-rect mask per card-back sprite (the SVG art is full-bleed/square)
   private deckBackId?: string; // which deck's back is currently loaded
   private deckSpriteReady = false;
   private destroyed = false;
@@ -304,13 +303,8 @@ export class CombatStage {
       s.anchor.set(0.5);
       s.visible = false;
       s.roundPixels = true;
-      // the deck-back SVGs are full-bleed (square) pixel art → clip each to a rounded card silhouette
-      const m = new Graphics();
-      m.roundRect(-CARD_W / 2, -CARD_H / 2, CARD_W, CARD_H, 7).fill(0xffffff);
-      s.mask = m;
       this.deckSprites.push(s);
-      this.deckMasks.push(m);
-      this.deckStack.addChild(m, s);
+      this.deckStack.addChild(s);
     }
     // deckPile (fallback edges) → deckStack (real backs) → discard stack → discard face → counts
     this.pileLayer.addChild(this.deckPile, this.deckStack, this.discardPile, this.discardFace, this.deckText, this.discardText);
@@ -394,16 +388,10 @@ export class CombatStage {
       s.visible = on;
       if (on) {
         // tidy 2.5D stack: each card-back leans at a slightly different angle + small jittered offset
-        const px = DECK_X + i * dx + Math.sin(i * 21.42) * 1.0;
-        const py = PILE_Y + i * dy + Math.cos(i * 13.77) * 0.6;
-        const rot = Math.sin(i * 8.13 + 1.7) * 0.022;
-        s.position.set(px, py);
+        s.position.set(DECK_X + i * dx + Math.sin(i * 21.42) * 1.0, PILE_Y + i * dy + Math.cos(i * 13.77) * 0.6);
         s.width = w;
         s.height = h;
-        s.rotation = rot;
-        const m = this.deckMasks[i]; // keep the rounded-corner mask aligned with its sprite
-        m.position.set(px, py);
-        m.rotation = rot;
+        s.rotation = Math.sin(i * 8.13 + 1.7) * 0.022;
       }
     });
     this.deckPile.clear();

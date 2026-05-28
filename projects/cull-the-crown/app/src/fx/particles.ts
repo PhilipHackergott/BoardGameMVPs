@@ -69,7 +69,10 @@ export class Particles {
     // shed the oldest if a burst storm pushed us past the ceiling
     if (this.items.length > MAX_PARTICLES) {
       const excess = this.items.splice(0, this.items.length - MAX_PARTICLES);
-      for (const p of excess) p.g.destroy();
+      for (const p of excess) {
+        p.g.parent?.removeChild(p.g);
+        p.g.destroy();
+      }
     }
   }
 
@@ -78,6 +81,9 @@ export class Particles {
       const p = this.items[i];
       p.life -= dt;
       if (p.life <= 0) {
+        // remove from the layer FIRST — Pixi v8 won't detach on destroy, and a destroyed-but-attached
+        // Graphics throws on every subsequent render of the layer (null geometry → blank felt).
+        p.g.parent?.removeChild(p.g);
         p.g.destroy();
         this.items.splice(i, 1);
         continue;
@@ -93,7 +99,10 @@ export class Particles {
   }
 
   clear(): void {
-    for (const p of this.items) p.g.destroy();
+    for (const p of this.items) {
+      p.g.parent?.removeChild(p.g);
+      p.g.destroy();
+    }
     this.items = [];
   }
 }

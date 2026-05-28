@@ -268,6 +268,9 @@ export class StyleFxLayer {
       el.age += dt;
       el.step(el.g, clamp01(el.age / el.dur));
       if (el.age >= el.dur) {
+        // Detach from the layer before destroy — a destroyed-but-still-parented Graphics throws on
+        // every subsequent render (null geometry); that's what blanks the felt after combat→shop.
+        el.g.parent?.removeChild(el.g);
         el.g.destroy();
         this.elems.splice(i, 1);
       }
@@ -277,7 +280,10 @@ export class StyleFxLayer {
   /** Cancel + remove any in-flight effects (e.g. when a new turn supersedes the last). Keeps the
    *  layer; just clears its transient children so overlapping turns can't pile up Graphics. */
   reset(): void {
-    for (const el of this.elems) el.g.destroy();
+    for (const el of this.elems) {
+      el.g.parent?.removeChild(el.g);
+      el.g.destroy();
+    }
     this.elems = [];
     this.timers = [];
   }

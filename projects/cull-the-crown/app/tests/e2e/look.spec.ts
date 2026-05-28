@@ -145,7 +145,7 @@ test("capture the look: tutorial, title, settings, combat, cascade, defend, gate
   await page.screenshot({ path: "screenshots/08-felled-gate.png" });
   await page.evaluate(() => window.__game.getState().dispatch({ type: "advance" })); // = the gate's "Claim"
   await page.waitForFunction(() => window.__game.getState().run.phase === "shop", { timeout: 8000 });
-  await page.waitForTimeout(300);
+  await page.waitForTimeout(900); // let the shop-tray slide-up settle (≈385ms) before capturing
   await page.screenshot({ path: "screenshots/06-shop.png" });
 
   const phase = await page.evaluate(() => window.__game.getState().run.phase);
