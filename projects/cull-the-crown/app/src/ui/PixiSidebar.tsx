@@ -88,6 +88,13 @@ export default function PixiSidebar() {
     };
     void (async () => {
       await app.init({ width: SIDEBAR_W, height: SIDEBAR_H, backgroundAlpha: 0, antialias: false, roundPixels: true, resolution: 3, autoDensity: false, textureGCActive: false, renderableGCActive: false });
+      // Defensive: a single bad-frame throw (Pixi v8 batcher) must not permanently blank the sidebar.
+      const origRender = app.renderer.render.bind(app.renderer);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (app.renderer as any).render = (...args: unknown[]) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        try { return (origRender as any)(...args); } catch { /* skip this frame; next tick recovers */ }
+      };
       try {
         await Promise.all([document.fonts.load("12px 'Silkscreen'"), document.fonts.load("16px 'Press Start 2P'")]);
       } catch {

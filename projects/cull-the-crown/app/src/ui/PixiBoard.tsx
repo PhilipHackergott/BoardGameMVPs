@@ -169,6 +169,20 @@ export default function PixiBoard() {
         textureGCActive: false,
         renderableGCActive: false,
       });
+      // Pixi v8 occasionally throws "reading 'geometry'/'clear' on null" deep in the batcher when a
+      // short-lived FX node is mid-teardown (some destroy paths leave a stale instruction). One bad
+      // frame must not permanently blank the felt — wrap the renderer so a single throw is logged and
+      // we keep ticking; the next frame re-collects renderables and recovers.
+      const origRender = app.renderer.render.bind(app.renderer);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (app.renderer as any).render = (...args: unknown[]) => {
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          return (origRender as any)(...args);
+        } catch {
+          /* skip this frame; the next tick rebuilds the instruction list */
+        }
+      };
       await loadFonts();
       if (cancelled) {
         releaseApp(app);
