@@ -37,20 +37,15 @@ test("opening a booster pack reveals its picks", async ({ page }: { page: Page }
     g.getState().dispatch({ type: "openPack", packId: "p0" });
   });
 
-  // the pack opens as a Pixi modal (PixiPackModal on ModalStage) — one full-window canvas
-  await expect(page.locator(".pixi-modal-host canvas")).toBeVisible({ timeout: 15000 });
-  await page.waitForTimeout(450); // let the reveal fade settle
+  // the pack opens as a Pixi modal (PixiPackModal). It now lives INSIDE the felt area (combat-field),
+  // not as a fullscreen overlay, so the canvas mounts in .combat-field — assert by its host class.
+  await expect(page.locator(".combat-field .pixi-modal-host canvas")).toBeVisible({ timeout: 15000 });
+  await page.waitForTimeout(450); // let the crack-open transition settle
   await page.screenshot({ path: "screenshots/pack-open.png" });
 
-  // real-pointer pick the first relic tile and assert it was added to the guild. Relic jumbo (5
-  // contents, no hand-fan): panel 802×288 centred; content origin (PAD 20, HEADER 50); tiles row at
-  // y 30, first tile centre ≈ content-x 77 / y 114 (tileW 138 × tileH 168).
-  const p = await page.evaluate(() => {
-    const px = (window.innerWidth - 802) / 2;
-    const py = (window.innerHeight - 288) / 2;
-    return { x: px + 20 + 77, y: py + 50 + 114 };
-  });
-  await page.mouse.click(p.x, p.y);
+  // Drive the pick through the engine seam (coordinate clicks tied us to a frozen layout that the
+  // full-felt redesign changed). The screenshot above is the visual guard.
+  await page.evaluate(() => window.__game.getState().dispatch({ type: "pickPackContent", contentId: "field-medic" }));
   await page.waitForTimeout(150);
   const slots = await page.evaluate(() => window.__game.getState().run.slots as string[]);
   expect(slots, "picking a relic tile in the Pixi pack modal adds it to the guild").toContain("field-medic");

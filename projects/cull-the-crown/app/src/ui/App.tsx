@@ -10,7 +10,6 @@ import TooltipLayer from "./TooltipLayer";
 import { Tooltip } from "./tooltip";
 import PixiCombatGate from "./PixiCombatGate";
 import PixiDeckModal from "./PixiDeckModal";
-import PixiPackModal from "./PixiPackModal";
 import PixiRunMap from "./PixiRunMap";
 import HelpOverlay from "./HelpOverlay";
 import PixiPauseMenu from "./PixiPauseMenu";
@@ -153,7 +152,6 @@ export default function App() {
       <TooltipLayer />
       <Tooltip />
       <PixiCombatGate />
-      <PixiPackModal />
       <PixiDeckModal />
       <PixiRunMap />
       {paused && <PixiPauseMenu />}

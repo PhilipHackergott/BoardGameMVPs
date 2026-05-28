@@ -23,7 +23,9 @@ test("the on-felt combat controls are interactive (Auto button fires via real po
     const g = (window as unknown as Win).__game.getState();
     for (let i = 0; i < 8 && g.run.combat?.subphase !== "defend"; i++) g.yieldTurn();
   });
-  await page.waitForTimeout(400);
+  // The defend banner is intentionally held for ~1.3s after the play so the strike animation lands
+  // first; wait past that delay before the click so the Auto Block button is on screen.
+  await page.waitForTimeout(1600);
   expect(await page.evaluate(() => (window as unknown as Win).__game.getState().run.combat?.subphase)).toBe("defend");
 
   // Real-pointer click on the Pixi "Auto Block" button. Felt is 480×360, the canvas is width-driven

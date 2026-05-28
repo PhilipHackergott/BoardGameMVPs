@@ -12,10 +12,11 @@ import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 
 applyPixiFixes();
 
-// The pack-opening modal, migrated onto the Pixi modal kit. A bought pack enters `shop.openPack`; this
-// reveals its contents on a ModalStage with a quick fade-in. Joker/Relic/Card packs: tap a tile to keep
-// it. Tarot & Spectral packs open over a fan of your deck's cards (run.hand) — a targeting consumable
-// arms, then you tap a fan card to apply it; non-targeting ones apply on tap. ✕ / click-outside = skip.
+// The pack-opening modal — a FULL-FELT takeover (the sidebar stays visible/interactive, the felt area
+// is replaced). A bought pack enters `shop.openPack`; this reveals its contents on a ModalStage with a
+// "crack open" scale-in transition. Joker/Relic/Card packs: tap a tile to keep it. Tarot & Spectral
+// packs open over a fan of your deck's cards (the dealt 8-card hand) — a targeting consumable arms,
+// then you tap a fan card to apply it; non-targeting ones apply on tap. ✕ / click-outside = skip.
 
 const RARITY_ACCENT: Record<string, number> = { common: THEME.frameDim, uncommon: 0x5fb0e0, rare: 0xf2c14e };
 
@@ -119,13 +120,20 @@ function PackModalApp() {
     const hand = run.hand;
     const armedNow = armedRef.current;
 
-    const tileW = 138;
-    const tileH = 168;
-    const gap = 14;
-    const n = pack.contentIds.length;
-    const fanH = isHandPack ? 132 : 0;
-    const panelW = Math.min(980, Math.max(440, n * (tileW + gap) - gap + 56));
-    const panelH = 120 + fanH + tileH;
+    // FULL-FELT panel: fill the bounded canvas (which is the felt area in CSS — the sidebar is a
+    // separate column). Pad in so the panel breathes against the edges of the screen.
+    const canvasW = m.app.screen.width;
+    const canvasH = m.app.screen.height;
+    const panelW = Math.max(400, canvasW - 48);
+    const panelH = Math.max(360, canvasH - 48);
+
+    // Card / tile sizes scale with the panel — "normal sized" cards (no longer the cramped 46px fan).
+    const tileW = Math.min(176, Math.max(132, Math.floor(panelW / Math.max(4, pack.contentIds.length + 0.6))));
+    const tileH = Math.round(tileW * 1.22);
+    const gap = Math.round(tileW * 0.1);
+    const fanCardW = 84; // matches the "normal" felt-hand size, scaled up from the old 46
+    const fanCardH = Math.round((fanCardW * 58) / 40);
+    const fanH = isHandPack ? fanCardH + 28 : 0;
 
     m.show({
       title: `${PACK_LABEL[pack.kind]}`,
@@ -135,45 +143,45 @@ function PackModalApp() {
       build: (mm) => {
         const w = mm.width;
         const sub = [SIZE_LABEL[pack.size], `choose ${pack.picksRemaining} of ${pack.contentIds.length}`].filter(Boolean).join(" · ");
-        mm.text(sub, w / 2, 6, 11, THEME.parchmentEdge, { anchor: 0.5 });
+        mm.text(sub, w / 2, 10, 13, THEME.parchmentEdge, { anchor: 0.5 });
 
-        let rowY = 30;
-        // tarot/spectral: a fan of the deck's cards (run.hand); arm a targeting consumable then tap one
+        let rowY = 44;
         if (isHandPack) {
-          mm.text(armedNow ? "▾ apply to a card" : "cards drawn from your deck", w / 2, rowY, 10, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
-          const fy = rowY + 60;
-          const fw = 46;
+          mm.text(armedNow ? "▾ pick a card to apply to" : "cards drawn from your deck", w / 2, rowY, 12, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
+          const fy = rowY + 24 + fanCardH / 2;
           const mid = (hand.length - 1) / 2;
-          if (hand.length === 0) mm.text("Your deck is empty.", w / 2, fy, 11, THEME.frameDim, { anchor: 0.5 });
+          if (hand.length === 0) mm.text("Your deck is empty.", w / 2, fy, 13, THEME.frameDim, { anchor: 0.5 });
           hand.forEach((c: Card, i) => {
-            const spread = Math.min(fw + 6, (w - 80) / Math.max(1, hand.length));
+            const spread = Math.min(fanCardW + 14, (w - 80) / Math.max(1, hand.length));
             const cx = w / 2 + (i - mid) * spread;
-            const face = buildCardFace(c, fw);
-            face.rotation = (i - mid) * 0.06;
-            face.y = Math.abs(i - mid) * 4;
+            const face = buildCardFace(c, fanCardW);
+            face.rotation = (i - mid) * 0.05;
+            face.y = Math.abs(i - mid) * 5;
             if (armedNow) {
               const ring = new Graphics();
-              ring.roundRect(-fw / 2 - 3, -34 - 3, fw + 6, 68 + 6, 7).stroke({ width: 2, color: THEME.violet });
+              ring.roundRect(-fanCardW / 2 - 3, -fanCardH / 2 - 3, fanCardW + 6, fanCardH + 6, 9).stroke({ width: 2.5, color: THEME.violet });
               face.addChildAt(ring, 0);
             }
             mm.node(face, cx, fy);
-            if (armedNow) mm.hit(cx - fw / 2, fy - 34, fw, 68, () => apply(armedNow, c.id));
+            if (armedNow) mm.hit(cx - fanCardW / 2, fy - fanCardH / 2, fanCardW, fanCardH, () => apply(armedNow, c.id));
           });
-          rowY += fanH + 14;
+          rowY += fanH + 24;
         }
 
-        // the pickable contents
+        // the pickable contents — laid out big and centred across the remaining vertical space
+        const n = pack.contentIds.length;
         const totalW = n * (tileW + gap) - gap;
         const x0 = (w - totalW) / 2 + tileW / 2;
+        const tilesY = Math.max(rowY, Math.floor((panelH - tileH) / 2) - 8);
         pack.contentIds.forEach((cid, i) => {
           const tx = x0 + i * (tileW + gap);
           const tile = buildTile(pack.kind, cid, tileW, tileH);
-          mm.node(tile, tx, rowY);
+          mm.node(tile, tx, tilesY);
           const targets = isHandPack && !!tarotById(cid)?.target;
           if (targets) {
-            mm.text(armedNow === cid ? "↑ pick a card" : "tap, then a card", tx, rowY + tileH - 14, 8, armedNow === cid ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
+            mm.text(armedNow === cid ? "↑ pick a card from the hand" : "tap, then a card", tx, tilesY + tileH - 14, 10, armedNow === cid ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
           }
-          mm.hit(tx - tileW / 2, rowY, tileW, tileH, () => {
+          mm.hit(tx - tileW / 2, tilesY, tileW, tileH, () => {
             if (isHandPack && tarotById(cid)?.target) setArmed((cur) => (cur === cid ? null : cid));
             else apply(cid);
           });
@@ -186,7 +194,10 @@ function PackModalApp() {
     let cancelled = false;
     const app = new Application();
     void (async () => {
-      await app.init({ resizeTo: window, backgroundAlpha: 0, antialias: false, roundPixels: true, resolution: Math.min(3, Math.max(2, Math.round(window.devicePixelRatio || 2))), autoDensity: true });
+      const host = hostRef.current;
+      // Bind the canvas to the FELT host (the .combat-field div) so the pack take-over covers the felt
+      // area only — the sidebar column stays untouched.
+      await app.init({ resizeTo: host ?? window, backgroundAlpha: 0, antialias: false, roundPixels: true, resolution: Math.min(3, Math.max(2, Math.round(window.devicePixelRatio || 2))), autoDensity: true });
       try {
         await Promise.all([document.fonts.load("12px 'Silkscreen'"), document.fonts.load("16px 'Press Start 2P'")]);
       } catch {
@@ -196,30 +207,41 @@ function PackModalApp() {
         releaseApp(app);
         return;
       }
-      const host = hostRef.current;
       if (host) {
         host.appendChild(app.canvas);
         const cv = app.canvas;
-        cv.style.position = "fixed";
+        cv.style.position = "absolute";
         cv.style.inset = "0";
-        cv.style.width = "100vw";
-        cv.style.height = "100vh";
-        cv.style.zIndex = "9000";
+        cv.style.width = "100%";
+        cv.style.height = "100%";
+        cv.style.zIndex = "60"; // above the felt + DeckPeek (44), below any global tooltip (9500)
         cv.style.imageRendering = "pixelated";
       }
       const modal = new ModalStage(app);
       modal.onClose = close;
       modalRef.current = modal;
       rebuild();
-      // quick reveal: the whole modal fades + scales in (stands in for the DOM crack-open burst)
+      // Crack-open transition — scale + fade so the pack feels like it's bursting onto the felt.
       app.stage.alpha = 0;
+      app.stage.scale.set(0.86);
+      app.stage.position.set(app.screen.width * 0.07, app.screen.height * 0.07);
       const start = performance.now();
-      const fade = () => {
-        const p = Math.min(1, (performance.now() - start) / 220);
-        app.stage.alpha = p;
-        if (p >= 1) app.ticker.remove(fade);
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3); // ease-out cubic
+      const animate = () => {
+        const t = Math.min(1, (performance.now() - start) / 320);
+        const k = ease(t);
+        app.stage.alpha = k;
+        const s = 0.86 + 0.14 * k;
+        app.stage.scale.set(s);
+        const off = (1 - s) * 0.5;
+        app.stage.position.set(app.screen.width * off, app.screen.height * off);
+        if (t >= 1) {
+          app.stage.position.set(0, 0);
+          app.stage.scale.set(1);
+          app.ticker.remove(animate);
+        }
       };
-      app.ticker.add(fade);
+      app.ticker.add(animate);
     })();
     return () => {
       cancelled = true;
