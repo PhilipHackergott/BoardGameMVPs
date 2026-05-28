@@ -184,16 +184,26 @@ export default function PixiBoard() {
       });
       // Pixi v8 occasionally throws "reading 'geometry'/'clear' on null" deep in the batcher when a
       // short-lived FX node is mid-teardown (some destroy paths leave a stale instruction). One bad
-      // frame must not permanently blank the felt — wrap the renderer so a single throw is logged and
-      // we keep ticking; the next frame re-collects renderables and recovers.
+      // frame must not permanently blank the felt. Two layers of defence:
+      //   1. wrap the renderer so a single throw is swallowed (next tick re-collects instructions);
+      //   2. if the failures don't clear on their own (the scene-tree corruption persists), bump `gen`
+      //      to fully remount the felt — the store is the source of truth so combat state survives.
       const origRender = app.renderer.render.bind(app.renderer);
+      let failStreak = 0;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (app.renderer as any).render = (...args: unknown[]) => {
         try {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          return (origRender as any)(...args);
-        } catch {
-          /* skip this frame; the next tick rebuilds the instruction list */
+          const r = (origRender as any)(...args);
+          if (failStreak !== 0) failStreak = 0;
+          return r;
+        } catch (e) {
+          failStreak += 1;
+          // ~20 frames ≈ 1/3 of a second of consecutive failures = the scene is stuck, remount it.
+          if (failStreak === 20) {
+            console.warn("[felt] render kept throwing, remounting:", (e as Error)?.message ?? e);
+            window.setTimeout(() => { if (!cancelled) setGen((g) => g + 1); }, 0);
+          }
         }
       };
       await loadFonts();
