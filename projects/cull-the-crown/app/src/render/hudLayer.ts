@@ -74,6 +74,10 @@ export class HudLayer {
   private texCache = new Map<string, Texture | null>(); // url -> texture (null = load failed)
   private gen = 0; // bumped each rebuild so stale async loads are ignored
   private destroyed = false;
+  private jokerCount = 0; // tracked so pulseJokers() knows how many tiles to flash
+  // expanding gold rings on each joker tile when a play resolves — "your jokers contributed"
+  private pulses: { x: number; y: number; age: number; dur: number; g: Graphics }[] = [];
+  private pulseTick = (t: { deltaMS: number }) => this.updatePulses(t.deltaMS / 1000);
 
   constructor(app: Application, stageW: number, stageH: number) {
     this.app = app;
@@ -81,6 +85,7 @@ export class HudLayer {
     this.stageH = stageH;
     app.stage.on("pointerdown", this.onDown);
     app.stage.on("globalpointermove", this.onMove);
+    app.ticker.add(this.pulseTick);
   }
 
   private onDown = (e: { global: { x: number; y: number } }) => {
@@ -143,6 +148,7 @@ export class HudLayer {
     band.roundRect(8, 2, this.stageW - 16, TOP_Y + TILE_H + 14, 8).fill({ color: THEME.ink, alpha: 0.42 });
     this.view.addChild(band);
 
+    this.jokerCount = vm.jokers.length;
     // --- jokers, left ---
     vm.jokers.forEach((j, i) => {
       const x = EDGE + i * (TILE_W + GAP);
@@ -237,8 +243,44 @@ export class HudLayer {
     }
   }
 
+  /** Pulse a brief gold ring on every joker tile — "your jokers contributed to that play". Fired by
+   *  CombatStage.handleEvent on "play" so the HUD reads as active rather than decorative. */
+  pulseJokers(): void {
+    for (let i = 0; i < this.jokerCount; i++) {
+      const cx = EDGE + i * (TILE_W + GAP) + TILE_W / 2;
+      const cy = TOP_Y + TILE_H / 2;
+      const g = new Graphics();
+      this.view.addChild(g);
+      this.pulses.push({ x: cx, y: cy, age: 0, dur: 0.55, g });
+    }
+  }
+
+  private updatePulses(dt: number): void {
+    for (let i = this.pulses.length - 1; i >= 0; i--) {
+      const p = this.pulses[i];
+      p.age += dt;
+      const t = p.age / p.dur;
+      if (t >= 1) {
+        p.g.parent?.removeChild(p.g);
+        p.g.destroy();
+        this.pulses.splice(i, 1);
+        continue;
+      }
+      const r = TILE_W * 0.55 + t * 10; // ring expands outward
+      const a = (1 - t) * 0.85; // fade out
+      p.g.clear();
+      p.g.roundRect(p.x - r, p.y - r * 1.2, r * 2, r * 2.4, 6).stroke({ width: 2.5, color: THEME.goldBright, alpha: a });
+    }
+  }
+
   destroy(): void {
     this.destroyed = true;
+    this.app.ticker.remove(this.pulseTick);
+    for (const p of this.pulses) {
+      p.g.parent?.removeChild(p.g);
+      p.g.destroy();
+    }
+    this.pulses = [];
     this.app.stage.off("pointerdown", this.onDown);
     this.app.stage.off("globalpointermove", this.onMove);
     this.view.destroy({ children: true });

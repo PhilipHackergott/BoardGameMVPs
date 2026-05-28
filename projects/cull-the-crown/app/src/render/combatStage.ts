@@ -736,6 +736,7 @@ export class CombatStage {
       this.timers.length = 0;
       this.styleFx.reset();
     }
+    if (kind === "play") this.hud.pulseJokers(); // visible "your jokers fired" feedback on the HUD band
     if (kind === "play" && res) {
       if (res.damage > 0) {
         // the fighting-style attack animation: originates from the played cards (centre play row),

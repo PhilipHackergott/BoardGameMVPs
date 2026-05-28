@@ -378,11 +378,16 @@ function creditLimit(run: RunState): number {
   return run.slots.reduce((a, id) => a + (jokerById(id)?.creditBonus ?? 0), 0);
 }
 
-/** Tarot & Spectral packs are opened over a "hand" — up to 8 cards drawn from the deck (Balatro's
+/** Tarot & Spectral packs are opened over a "hand" — 8 cards drawn from the deck (Balatro's
  *  booster flow). Their consumables apply to that hand immediately (targeted tarots enchant a chosen
  *  card; hand-wide spectrals reshape the lot). On close the hand is folded back into the deck. */
 function packDrawsHand(kind: PackKind): boolean {
   return kind === "tarot" || kind === "spectral";
+}
+/** Tarot/Spectral/Style packs apply their pick on the spot rather than dropping it into the pouch.
+ *  Style (Drill) picks have no target — they level up the chosen fighting style immediately. */
+function packPickApplies(kind: PackKind): boolean {
+  return kind === "tarot" || kind === "spectral" || kind === "style";
 }
 function endPackHand(run: RunState): void {
   if (run.hand.length) {
@@ -404,10 +409,18 @@ function doOpenPack(run: RunState, packId: string): void {
   shop.packs = shop.packs.filter((p) => p.id !== packId);
   shop.openPack = pack; // enter the pick UI
   if (packDrawsHand(pack.kind)) {
-    // draw a fan of up to 8 cards from the top of the deck to apply the pack's cards onto
-    const n = Math.min(8, run.deck.length);
-    run.hand = run.deck.slice(0, n);
-    run.deck = run.deck.slice(n);
+    // Fold the player's leftover (post-combat) hand back into the deck FIRST so it isn't lost; then
+    // ALWAYS deal a full 8-card hand for the modify-card pick to apply onto. If the draw pile is
+    // short, top it up from the used/table piles so the surface is consistently 8 cards.
+    run.deck = [...run.hand, ...run.deck];
+    run.hand = [];
+    const all = [...run.deck, ...run.discard, ...run.table];
+    const n = Math.min(8, all.length);
+    run.hand = all.slice(0, n);
+    const taken = new Set(run.hand.map((c) => c.id));
+    run.deck = run.deck.filter((c) => !taken.has(c.id));
+    run.discard = run.discard.filter((c) => !taken.has(c.id));
+    run.table = run.table.filter((c) => !taken.has(c.id));
   }
   run.notice = null;
 }
@@ -416,9 +429,10 @@ function doPickPackContent(run: RunState, contentId: string, targetCardId?: stri
   const shop = run.shop!;
   const pack = shop.openPack;
   if (!pack || !pack.contentIds.includes(contentId)) return;
-  // Tarot/Spectral packs apply their card to the drawn hand right here (not into the pouch).
+  // Modify-card/style picks apply on the spot (tarots+spectrals onto the drawn 8-hand; drills onto
+  // the run's style levels). Card/Relic picks add to deck / guild via grantContent.
   let ok: boolean;
-  if (packDrawsHand(pack.kind)) {
+  if (packPickApplies(pack.kind)) {
     const t = tarotById(contentId);
     ok = t ? t.apply(run, targetCardId) : false;
   } else {

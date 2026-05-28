@@ -38,6 +38,11 @@ export default function PixiBoard() {
   const hostRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<CombatStage | null>(null);
   const lastFx = useRef(0);
+  // After a play that triggers a counter-strike, the engine flips subphase→"defend" immediately, but
+  // visually the strike animation needs to land FIRST. We suppress the defend banner until this
+  // timestamp passes, then re-sync controls so the banner pops up after the hit reads.
+  const defendBannerAfter = useRef(0);
+  const defendBannerTimer = useRef<number | null>(null);
   // Bumped to remount the felt if its WebGL context is ever lost (browsers cap live contexts; opening
   // modals across a long session can evict the felt's — without this it stays a black screen). The
   // store is the source of truth, so a remount re-syncs the live combat with no state loss.
@@ -50,9 +55,14 @@ export default function PixiBoard() {
     if (!run.combat) return;
     const e = run.combat.enemy;
     const lastCard = run.discard[run.discard.length - 1] ?? run.table[run.table.length - 1] ?? null;
+    // In shop, the next fight's combat is already staged (freshCombat), but the player's hand from
+    // the just-won fight LINGERS until the next deal — visually the felt must NOT show it, or you get
+    // "ghost cards" hovering at the bottom of the shop screen. Pass an empty hand to the stage so
+    // those CardNodes animate out / destroy cleanly.
+    const inShop = run.phase === "shop";
     stage.sync({
-      hand: run.hand,
-      selectedIds: useGame.getState().selected,
+      hand: inShop ? [] : run.hand,
+      selectedIds: inShop ? [] : useGame.getState().selected,
       subphase: run.combat.subphase,
       incoming: run.combat.incoming,
       deckCount: run.deck.length,
@@ -123,7 +133,10 @@ export default function PixiBoard() {
     const combat = run.combat;
     if (!combat) return { show: false, defend: false, incoming: 0, thrown: 0, blockEnough: false, block: 0, hasSelection: false, hasHover: false, pendingLabel: null, wildcards: [] };
     const selected = g.selected;
-    const defend = combat.subphase === "defend";
+    // Engine flips subphase→defend the instant a play ends in a counter-strike, but the felt's strike
+    // animation plays over the next ~1.3s — suppress the defend banner until that animation lands so
+    // the player sees the hit BEFORE the prompt pops up.
+    const defend = combat.subphase === "defend" && performance.now() >= defendBannerAfter.current;
     const thrown = run.hand.filter((c) => selected.includes(c.id)).reduce((a, c) => a + c.value, 0);
     const hasHover = !!g.hoverId && run.hand.some((c) => c.id === g.hoverId);
     const wildcards = defend
@@ -358,6 +371,15 @@ export default function PixiBoard() {
         lastFx.current = ev.id;
         if (ev.kind === "jester") sfx.jester();
         stage.setExitMode(ev.kind === "play" ? "toEnemy" : "toDiscard");
+        // Hold the defend banner offstage until the strike animation lands (~1.3s after the play).
+        if ((ev.kind === "play" || ev.kind === "yield") && (ev.strike ?? 0) > 0) {
+          defendBannerAfter.current = performance.now() + 1300;
+          if (defendBannerTimer.current) window.clearTimeout(defendBannerTimer.current);
+          defendBannerTimer.current = window.setTimeout(() => {
+            defendBannerTimer.current = null;
+            if (stageRef.current) stageRef.current.syncControls(buildControlsVM());
+          }, 1320);
+        }
         syncFromState();
         const playMeta = ev.style ? { style: ev.style, mounted: !!ev.mounted, value: ev.comboValue ?? 0 } : undefined;
         stage.handleEvent(ev.kind, ev.result, ev.killed, ev.strike, playMeta, ev.blocked);
@@ -369,6 +391,10 @@ export default function PixiBoard() {
     return () => {
       cancelled = true;
       unsub();
+      if (defendBannerTimer.current) {
+        window.clearTimeout(defendBannerTimer.current);
+        defendBannerTimer.current = null;
+      }
       try {
         app.canvas?.removeEventListener("webglcontextlost", onCtxLost);
       } catch {
