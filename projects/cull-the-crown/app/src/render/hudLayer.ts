@@ -9,6 +9,8 @@
 
 import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { PIXEL_FONT, THEME } from "./theme";
+import { STYLE_ART_SLUG } from "./sidebarStage";
+import { FightingStyleId } from "../engine/types";
 
 export interface HudJokerVM {
   id: string;
@@ -162,7 +164,13 @@ export class HudLayer {
         const x = this.stageW - EDGE - TILE_W - i * (TILE_W + GAP);
         const tip: HudTip = { name: hh.name, text: hh.text, type: "tarot" };
         const sprite = this.tile(x, TOP_Y, hh.name, undefined, THEME.violet);
-        need.push({ sprite, urls: [`/art/tarots/${hh.tarotId}.svg`, `/art/spectrals/${hh.tarotId}.svg`] });
+        // Drill (style-upgrade) held items are derived from FIGHTING_STYLE_IDS, not standalone tarots,
+        // so they have no /art/tarots/drill-*.svg — fall back to the fighting-style icon under
+        // /art/styles/ so the pouch tile shows a recognisable picture instead of a bare initial.
+        const drillSlug = hh.tarotId.startsWith("drill-") ? STYLE_ART_SLUG[hh.tarotId.slice(6) as FightingStyleId] : undefined;
+        const urls = [`/art/tarots/${hh.tarotId}.svg`, `/art/spectrals/${hh.tarotId}.svg`];
+        if (drillSlug) urls.push(`/art/styles/${drillSlug}.svg`);
+        need.push({ sprite, urls });
         this.hits.push({ x, y: TOP_Y, w: TILE_W, h: TILE_H, tip, onTap: () => this.onUseHeld?.(hh.id, hh.tarotId) });
       });
       this.count(this.stageW - EDGE, TOP_Y + TILE_H + 3, `${vm.held.length}/${vm.heldMax}`, 1);
