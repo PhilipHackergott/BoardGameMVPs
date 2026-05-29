@@ -22,29 +22,32 @@ applyPixiFixes();
 // toggle, big PLAY button, smaller Back button at the bottom.
 const z = (n: number) => n; // no-scale layout (was 1.66×; the larger panel overwhelmed the title screen)
 
-const PANEL_W = 520;
-const PANEL_H = 420; // hugs the content (tabs + deck + stake + form + PLAY + Back), no wasted space
+const PANEL_W = 540;
+const PANEL_H = 472; // tabs + deck + tall description + stake + form + PLAY + Back, w/ breathing room
 const PAD = 20; // must match ModalStage's content-origin pad (the panel is headerless)
 
-// content-relative layout (content begins at the top pad)
+// content-relative layout (content begins at the top pad). The DESCRIPTION box is intentionally
+// TALLER than the deck card image so multi-bullet deck blurbs (Bannerman / Fool's Pouch / Occult)
+// don't clip — the parchment extends below the card art.
 const TABS_Y = 8;
 const TAB_H = 30;
 const DECK_Y = 56;
-const CARD_W = 78;
-const CARD_H = 110;
+const CARD_W = 76;
+const CARD_H = 108;
+const DESC_H = 148; // ↑ taller than CARD_H so the bullets fit
 const ARROW_W = 28;
 const CARD_X = ARROW_W + 8; // 36
-const LADDER_X = CARD_X + CARD_W + 8; // 122
+const LADDER_X = CARD_X + CARD_W + 8; // 120
 const LADDER_W = 18;
-const INFO_X = LADDER_X + LADDER_W + 10; // 150
-const STAKE_Y = DECK_Y + CARD_H + 16; // 182
-const STAKE_H = 52;
-const FORM_Y = STAKE_Y + STAKE_H + 18; // 252
+const INFO_X = LADDER_X + LADDER_W + 10; // 148
+const STAKE_Y = DECK_Y + DESC_H + 14; // 218 (gap below the taller description box)
+const STAKE_H = 50;
+const FORM_Y = STAKE_Y + STAKE_H + 16; // 284
 const TOGGLE_W = 140;
-const PLAY_Y = FORM_Y + 42; // 294
-const PLAY_H = 46;
-const BACK_Y = PLAY_Y + PLAY_H + 12; // 352
-const BACK_H = 32;
+const PLAY_Y = FORM_Y + 40; // 324
+const PLAY_H = 44;
+const BACK_Y = PLAY_Y + PLAY_H + 10; // 378
+const BACK_H = 30;
 
 const INK_BODY = 0x3a2a18; // dark body text on parchment
 const INK_MUTE = 0x6a5238; // muted dark on parchment (secondary / locked)

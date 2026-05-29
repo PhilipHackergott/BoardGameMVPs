@@ -52,6 +52,7 @@ export default function PixiPackModal() {
 }
 
 const TIP = Symbol("pack-pick");
+const PAD = 20; // matches ModalStage.PAD — content origin offset inside an implied panel
 
 interface FloatCard {
   view: Container;
@@ -179,10 +180,11 @@ function PackModalApp() {
       .catch(() => {});
   };
 
-  // The pickable "tile" — actually just the content's natural art at its native size, with a name
-  // label below. No surrounding box — the icon/card IS the affordance. Effect text is a tooltip on
-  // hover (routed via ModalStage.onHover → the shared tooltip surface).
-  // Returns the cluster + the natural width of the "thing" (used for hit-box + spacing).
+  // The pickable "tile" — playing-card-sized art with the name below. Tarot/Spectral/Style/Relic
+  // render in a portrait-card shape (the size of a playing card but slightly more vertical) so the
+  // pack-reveal reads as "pick a card from the spread" the way Balatro does.
+  const TILE_W = 50;
+  const TILE_H = 78; // playing-card size (44×62) but slightly more vertical for tarot reveal feel
   const buildTile = (kind: PackKind, cid: string): { view: Container; w: number; h: number } => {
     const meta = contentMeta(kind, cid);
     const accent = meta.rarity ? RARITY_ACCENT[meta.rarity] ?? THEME.gold : THEME.gold;
@@ -195,21 +197,22 @@ function PackModalApp() {
       c.addChild(face);
       artW = CARD_W; artH = CARD_H;
     } else {
-      // Tarot / Spectral / Style / Relic — render only the SVG art at its natural size (≈ 60px square)
-      // anchored so its centre is the cluster's origin. A faint initial sits behind in case the SVG
-      // hasn't loaded yet; once the texture arrives, loadArt drops the sprite on top.
+      // Tarot / Spectral / Style / Relic — portrait card frame with the art inside.
+      const frame = new Graphics();
+      frame.roundRect(-TILE_W / 2, -TILE_H / 2, TILE_W, TILE_H, 5).fill({ color: 0x140a1e }).stroke({ width: 1.5, color: accent });
+      c.addChild(frame);
       const badge = new Container();
-      const initial = new Text({ text: (meta.name[0] ?? "?").toUpperCase(), style: { fill: accent, fontSize: 28, fontFamily: PIXEL_FONT, fontWeight: "700" } });
+      const initial = new Text({ text: (meta.name[0] ?? "?").toUpperCase(), style: { fill: accent, fontSize: 20, fontFamily: PIXEL_FONT, fontWeight: "700" } });
       initial.anchor.set(0.5);
       badge.addChild(initial);
       const url = artUrl(kind, cid);
-      if (url) loadArt(url, badge, 64, 64);
+      if (url) loadArt(url, badge, TILE_W - 12, TILE_H - 12);
       c.addChild(badge);
-      artW = 64; artH = 64;
+      artW = TILE_W; artH = TILE_H;
     }
-    const name = new Text({ text: meta.name, style: { fill: THEME.goldBright, fontSize: 12, fontFamily: PIXEL_FONT, fontWeight: "700", align: "center", wordWrap: true, wordWrapWidth: Math.max(96, artW + 36) } });
+    const name = new Text({ text: meta.name, style: { fill: THEME.goldBright, fontSize: 11, fontFamily: PIXEL_FONT, fontWeight: "700", align: "center", wordWrap: true, wordWrapWidth: Math.max(96, artW + 36) } });
     name.anchor.set(0.5, 0);
-    name.position.set(0, artH / 2 + 8);
+    name.position.set(0, artH / 2 + 6);
     c.addChild(name);
     return { view: c, w: artW, h: artH };
   };
@@ -224,18 +227,17 @@ function PackModalApp() {
     const hand = run.hand;
     const armedNow = armedRef.current;
 
-    // FLOATING reveal — no full-felt takeover. The implied panel is a centred slice of the canvas,
-    // big enough for the hand fan + picks + Skip button but small enough that the shop tray, sidebar,
-    // and plasma background stay visible behind. Bare mode means no backdrop / no panel frame.
+    // FULL-canvas panel so we can centre everything against the felt area (not against a smaller
+    // implied panel inside it). Bare mode still suppresses the panel frame; modalStage paints a
+    // dim backdrop so the picks stand out from the shop tray behind.
     const canvasW = m.app.screen.width;
     const canvasH = m.app.screen.height;
-    const panelW = Math.min(canvasW - 32, Math.max(420, Math.floor(canvasW * 0.72)));
-    const panelH = Math.min(canvasH - 32, Math.max(280, Math.floor(canvasH * 0.7)));
+    const panelW = canvasW;
+    const panelH = canvasH;
 
-    // Hand cards: render at the FELT'S normal size (CARD_W) — readable + same as in combat.
+    // Hand cards: FELT-normal size (so they read as "your cards"). Hand-pack only.
     const fanCardW = CARD_W;
     const fanCardH = CARD_H;
-    const fanH = isHandPack ? fanCardH + 28 : 0;
 
     floatCards.current = [];
     pickTiles.current = [];
@@ -247,21 +249,26 @@ function PackModalApp() {
       bare: true,
       accent: armedNow ? THEME.violet : THEME.gold,
       build: (mm) => {
-        const w = mm.width;
-        // Pack title at the top (bare mode means no header band, so we draw our own)
-        mm.text(PACK_LABEL[pack.kind], w / 2, 0, 18, THEME.goldBright, { anchor: 0.5, bold: true });
-        const sub = [SIZE_LABEL[pack.size], `choose ${pack.picksRemaining} of ${pack.contentIds.length}`].filter(Boolean).join(" · ");
-        mm.text(sub, w / 2, 26, 12, THEME.parchmentEdge, { anchor: 0.5 });
+        // Use the FULL canvas for positioning so things sit visually at the middle of the felt area,
+        // not the middle of a smaller "panel". mm.width is panelW − 2·PAD, so adjust by adding back.
+        const innerW = mm.width + PAD * 2;
+        const cx = innerW / 2 - PAD; // offset so x=cx ends up at the canvas centre
 
-        let rowY = 56;
+        // --- title block ---
+        mm.text(PACK_LABEL[pack.kind], cx, 4, 18, THEME.goldBright, { anchor: 0.5, bold: true });
+        const sub = [SIZE_LABEL[pack.size], `choose ${pack.picksRemaining} of ${pack.contentIds.length}`].filter(Boolean).join(" · ");
+        mm.text(sub, cx, 30, 12, THEME.parchmentEdge, { anchor: 0.5 });
+
+        // --- hand (hand-packs only): centred horizontally, slightly above the vertical centre ---
+        // Slightly-above-centre = canvasH * 0.34; vertical centre would be 0.5.
+        const handY = isHandPack ? Math.floor(canvasH * 0.34) - PAD : 0;
         if (isHandPack) {
-          mm.text(armedNow ? "▾ pick a card to apply to" : "cards drawn from your deck", w / 2, rowY, 12, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
-          const fy = rowY + 24 + fanCardH / 2;
+          mm.text(armedNow ? "▾ pick a card to apply to" : "cards drawn from your deck", cx, handY - fanCardH / 2 - 14, 11, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
           const mid = (hand.length - 1) / 2;
-          if (hand.length === 0) mm.text("Your deck is empty.", w / 2, fy, 13, THEME.frameDim, { anchor: 0.5 });
+          if (hand.length === 0) mm.text("Your deck is empty.", cx, handY, 13, THEME.frameDim, { anchor: 0.5 });
           hand.forEach((c: Card, i) => {
-            const spread = Math.min(fanCardW + 12, (w - 80) / Math.max(1, hand.length));
-            const cx = w / 2 + (i - mid) * spread;
+            const spread = Math.min(fanCardW + 10, (innerW - 80) / Math.max(1, hand.length));
+            const cxi = cx + (i - mid) * spread;
             const baseRot = (i - mid) * 0.04;
             const arcY = Math.abs(i - mid) * 3;
             const face = buildCardFace(c, fanCardW) as Container & { _cardId?: string };
@@ -272,60 +279,61 @@ function PackModalApp() {
               ring.roundRect(-fanCardW / 2 - 3, -fanCardH / 2 - 3, fanCardW + 6, fanCardH + 6, 9).stroke({ width: 2.5, color: THEME.violet });
               face.addChildAt(ring, 0);
             }
-            mm.node(face, cx, fy + arcY);
-            const baseY = fy + arcY;
-            floatCards.current.push({ view: face, baseX: cx, baseY, baseRot, phase: i * 0.55 });
+            mm.node(face, cxi, handY + arcY);
+            const baseY = handY + arcY;
+            floatCards.current.push({ view: face, baseX: cxi, baseY, baseRot, phase: i * 0.55 });
             if (armedNow) {
               const cardTip = { title: `${rankLabel(c.value)} of ${suitName(c.suit)}`, text: `Apply the chosen ${pack.kind} to this card.` };
-              mm.hit(cx - fanCardW / 2, baseY - fanCardH / 2, fanCardW, fanCardH, () => apply(armedNow, c.id), cardTip);
+              // Hand-card hit-box is EXACTLY the card rect (no expansion) so a tile click below doesn't
+              // bleed up into the hand. Without this the armed tarot couldn't be applied → user bug.
+              mm.hit(cxi - fanCardW / 2, baseY - fanCardH / 2, fanCardW, fanCardH, () => apply(armedNow, c.id), cardTip);
             }
           });
-          rowY += fanH + 32;
         }
 
-        // Pickable contents — no surrounding box. Tarot/Spectral/Style icons at natural size + name
-        // label; card-pack picks render the card face. Tooltip on hover provides the effect text.
+        // --- pick tiles: centred horizontally, BELOW the hand (or mid-screen for non-hand packs) ---
         const n = pack.contentIds.length;
-        // Lay out by intrinsic width plus a comfortable gap (icons are smaller than the old tiles).
-        const baseW = pack.kind === "card" ? CARD_W : 64;
-        const slotW = Math.max(baseW + 56, 120); // hit-box wider than the art so hover/click is easy
+        // Card packs use the felt-card size; everything else uses TILE_W/H from buildTile.
+        const usingCardSize = pack.kind === "card";
+        const tileW = usingCardSize ? CARD_W : 50;
+        const tileH = usingCardSize ? CARD_H : 78;
+        const slotW = tileW + 26; // gap between tiles
         const totalW = n * slotW;
-        const x0 = (w - totalW) / 2 + slotW / 2;
-        const tilesY = Math.max(rowY + (pack.kind === "card" ? CARD_H / 2 : 32), Math.floor((panelH - (pack.kind === "card" ? CARD_H : 96)) / 2) - 8);
+        const tilesX0 = cx - totalW / 2 + slotW / 2;
+        const tilesY = isHandPack
+          ? handY + fanCardH / 2 + 30 + tileH / 2 // below the hand row
+          : Math.floor(canvasH * 0.5) - PAD; // mid-screen for joker/card/style packs
         pack.contentIds.forEach((cid, i) => {
-          const tx = x0 + i * slotW;
+          const tx = tilesX0 + i * slotW;
           const { view, w: tw, h: th } = buildTile(pack.kind, cid);
           mm.node(view, tx, tilesY);
           pickTiles.current.push({ cid, view, baseX: tx, baseY: tilesY });
           const targets = isHandPack && !!tarotById(cid)?.target;
           const armedHere = armedNow === cid;
           if (targets) {
-            mm.text(armedHere ? "↑ pick a card from the hand" : "tap, then a card", tx, tilesY + th / 2 + 38, 10, armedHere ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
+            mm.text(armedHere ? "↑ pick a card from the hand" : "tap, then a card", tx, tilesY + th / 2 + 24, 10, armedHere ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
           }
-          // a violet ring around the armed pick so it's clear which one is "live"
           if (armedHere) {
             const ring = new Graphics();
             ring.roundRect(-tw / 2 - 6, -th / 2 - 6, tw + 12, th + 12, 8).stroke({ width: 2.5, color: THEME.violet });
             view.addChildAt(ring, 0);
           }
-          // Hover tooltip — name + effect text routed to the shared tooltip surface
           const meta = contentMeta(pack.kind, cid);
           const tipType = pack.kind === "relic" ? "joker" : pack.kind === "card" ? "card" : pack.kind;
           const tip = { title: meta.name, text: meta.text, type: tipType, rarity: meta.rarity };
-          // Generous hit-box around the art so the tooltip & click are forgiving.
-          const hitW = Math.max(tw + 24, slotW - 12);
-          const hitH = th + 56;
-          mm.hit(tx - hitW / 2, tilesY - hitH * 0.45, hitW, hitH, () => {
+          // Hit-box hugs the tile (with a tiny pad for hover ease) — NO upward expansion so a hand-card
+          // sitting above never gets blocked by a tile's hit area.
+          mm.hit(tx - tw / 2 - 4, tilesY - th / 2 - 4, tw + 8, th + 36, () => {
             if (isHandPack && tarotById(cid)?.target) setArmed((cur) => (cur === cid ? null : cid));
             else apply(cid);
           }, tip);
         });
 
-        // Skip button — bare mode has no ✕, this is the deliberate way out (Balatro pack-screen style).
+        // Skip button — bare mode has no ✕, this is the deliberate way out.
         const skipW = 120;
         const skipH = 34;
-        const skipX = (w - skipW) / 2;
-        const skipY = panelH - skipH - 8;
+        const skipX = cx - skipW / 2;
+        const skipY = canvasH - skipH - 24 - PAD;
         mm.button("Skip ▸", skipX, skipY, skipW, skipH, THEME.frameDim, true, close, 13);
       },
     });

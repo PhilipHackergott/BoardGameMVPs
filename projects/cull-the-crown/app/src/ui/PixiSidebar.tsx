@@ -4,7 +4,7 @@ import { useGame } from "./store";
 import { audio, music, sfx } from "../audio/chiptune";
 import { FxCol, SidebarStage, SidebarVM, SIDEBAR_H, SIDEBAR_W } from "../render/sidebarStage";
 import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
-import { currentHandMax, enemyIntent, previewPlay, styleOf } from "../engine/index";
+import { currentHandMax, edictById, enemyIntent, previewPlay, styleOf } from "../engine/index";
 import { FIGHTING_STYLE_NAME, FIGHTING_STYLE_PER_LEVEL, Suit } from "../engine/types";
 import { GLYPH } from "./suits";
 
@@ -20,7 +20,11 @@ function buildVM(): SidebarVM {
   const s = useGame.getState();
   const run = s.run;
   const round = `${Math.min(run.enemyIndex + 1, run.castle.length)}/${run.castle.length}`;
-  if (run.phase === "shop" || !run.combat) return { mode: "shop", gold: run.gold, round };
+  const edicts = (run.edicts ?? []).flatMap((id: string) => {
+    const e = edictById(id);
+    return e ? [{ id, name: e.name }] : [];
+  });
+  if (run.phase === "shop" || !run.combat) return { mode: "shop", gold: run.gold, round, edicts };
 
   const combat = run.combat;
   const defend = combat.subphase === "defend";
@@ -69,6 +73,7 @@ function buildVM(): SidebarVM {
     trained,
     canPlay: selected.length > 0 && preview.valid,
     hasSelection: selected.length > 0,
+    edicts,
   };
 }
 

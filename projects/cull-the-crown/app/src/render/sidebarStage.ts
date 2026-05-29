@@ -66,6 +66,7 @@ export interface SidebarVM {
   trained?: string;
   canPlay?: boolean;
   hasSelection?: boolean;
+  edicts?: { id: string; name: string }[]; // bought edicts — shown as a row of pips/labels at the bottom
 }
 
 const SUIT_NAME_FULL: Record<Suit, string> = { H: "Hearts", D: "Diamonds", C: "Clubs", S: "Spades" };
@@ -178,6 +179,8 @@ export class SidebarStage {
     this.statRow(PAD + 92, [["Gold", `◆ ${vm.gold}`, THEME.goldBright], ["Round", vm.round, 0xffffff]]);
     this.button("⌖ Run Info", PAD, PAD + 152, INNER, 36, THEME.gold, true, () => this.onRunInfo?.());
     this.footer(PAD + 200);
+    // Bought edicts pinned to the bottom-left (overflowing upward over the chrome above if many).
+    this.drawEdictsRow(SIDEBAR_H - 8, vm);
   }
 
   private drawCombat(): void {
@@ -205,6 +208,8 @@ export class SidebarStage {
       s.draw(y);
       y += s.h + gap;
     }
+    // Bought edicts overlay at the bottom-left — drawn LAST so they sit on top of the footer if many.
+    this.drawEdictsRow(SIDEBAR_H - 8, vm);
   }
 
   private drawRoyalPanel(y: number, royalH: number, vm: SidebarVM, suit: Suit, accent: number): void {
@@ -329,6 +334,27 @@ export class SidebarStage {
     this.panel(PAD, y, INNER, 26);
     this.text("Trained", PAD + 12, y + 8, 11, THEME.parchmentEdge);
     this.text(vm.trained ?? "", PAD + INNER - 12, y + 7, 13, THEME.good, { anchor: 1 });
+  }
+
+  // Bought edicts — a vertical stack of pill labels at the BOTTOM of the sidebar. New ones push up
+  // from the bottom; if the list grows past the available height, older pills overlap the chrome
+  // above (the user's "slightly overlay them if the sidebar overflows" rule).
+  private drawEdictsRow(bottomY: number, vm: SidebarVM): void {
+    const list = vm.edicts ?? [];
+    if (list.length === 0) return;
+    const rowH = 18;
+    const gap = 3;
+    const pad = 8;
+    list.forEach((e, i) => {
+      // i=0 is the FIRST acquired and ends up at the top of the stack; the latest sits at the bottom.
+      const idxFromBottom = list.length - 1 - i;
+      const yy = bottomY - rowH - idxFromBottom * (rowH + gap);
+      const g = new Graphics();
+      g.roundRect(PAD, yy, INNER, rowH, 5).fill({ color: 0x231a36, alpha: 0.95 }).stroke({ width: 1, color: THEME.gold });
+      this.root.addChild(g);
+      this.text("⚜", PAD + pad, yy + 4, 10, THEME.gold);
+      this.text(e.name, PAD + pad + 14, yy + 4, 10, THEME.goldBright, { wrap: INNER - pad * 2 - 14 });
+    });
   }
 
   // Gold / Round read-outs, laid out like the suit-effect boxes (fxBox): a headline-gold label hugging

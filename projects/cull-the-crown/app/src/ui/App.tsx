@@ -23,7 +23,17 @@ import { eventById, previewPlay } from "../engine/index";
 export default function App() {
   const phase = useGame((s) => s.run.phase);
   const paused = useGame((s) => s.paused);
+  const notice = useGame((s) => s.run.notice);
   const [help, setHelp] = useState(false);
+
+  // Auto-dismiss the top-of-screen toast after 5 s so old notices don't linger on the felt forever.
+  useEffect(() => {
+    if (!notice) return;
+    const t = window.setTimeout(() => {
+      useGame.setState((s) => (s.run.notice === notice ? { run: { ...s.run, notice: null } } : {}));
+    }, 5000);
+    return () => window.clearTimeout(t);
+  }, [notice]);
 
   // A soft generic click on every button press (layered under any specific sound for that button).
   // Capture phase so modals that stopPropagation on their content (settings/pause/menu panels) still

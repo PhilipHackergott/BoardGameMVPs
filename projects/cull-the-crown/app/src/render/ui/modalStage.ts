@@ -314,12 +314,14 @@ export class ModalStage {
     const sh = this.app.screen.height;
     const bare = !!c.bare;
 
-    // dimmed backdrop (skipped entirely in bare mode — the content floats on whatever's behind).
-    // The modal canvas's app.stage already captures every pointer event (eventMode: static +
-    // hitArea: contains-all), so no invisible "pointer trap" rect is needed for bare mode.
-    if (!bare) {
+    // dimmed backdrop — always drawn so the modal content stands out from whatever's behind. `bare`
+    // mode just suppresses the panel chrome (frame/header/✕); the backdrop still dims the underlying
+    // layer (use `backdropAlpha: 0` to opt out entirely). app.stage's hitArea captures all pointer
+    // events already, so the backdrop isn't needed as a "pointer trap".
+    const bdAlpha = c.backdropAlpha ?? (bare ? 0.55 : 0.72);
+    if (bdAlpha > 0) {
       const bd = new Graphics();
-      bd.rect(0, 0, sw, sh).fill({ color: 0x000000, alpha: c.backdropAlpha ?? 0.72 });
+      bd.rect(0, 0, sw, sh).fill({ color: 0x000000, alpha: bdAlpha });
       this.root.addChild(bd);
     }
 
