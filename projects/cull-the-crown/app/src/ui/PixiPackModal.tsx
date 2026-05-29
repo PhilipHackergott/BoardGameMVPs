@@ -224,12 +224,13 @@ function PackModalApp() {
     const hand = run.hand;
     const armedNow = armedRef.current;
 
-    // FULL-FELT panel: fill the bounded canvas (which is the felt area in CSS — the sidebar is a
-    // separate column). Pad in so the panel breathes against the edges of the screen.
+    // FLOATING reveal — no full-felt takeover. The implied panel is a centred slice of the canvas,
+    // big enough for the hand fan + picks + Skip button but small enough that the shop tray, sidebar,
+    // and plasma background stay visible behind. Bare mode means no backdrop / no panel frame.
     const canvasW = m.app.screen.width;
     const canvasH = m.app.screen.height;
-    const panelW = Math.max(400, canvasW - 48);
-    const panelH = Math.max(360, canvasH - 48);
+    const panelW = Math.min(canvasW - 32, Math.max(420, Math.floor(canvasW * 0.72)));
+    const panelH = Math.min(canvasH - 32, Math.max(280, Math.floor(canvasH * 0.7)));
 
     // Hand cards: render at the FELT'S normal size (CARD_W) — readable + same as in combat.
     const fanCardW = CARD_W;
@@ -243,13 +244,16 @@ function PackModalApp() {
       title: `${PACK_LABEL[pack.kind]}`,
       panelW,
       panelH,
+      bare: true,
       accent: armedNow ? THEME.violet : THEME.gold,
       build: (mm) => {
         const w = mm.width;
+        // Pack title at the top (bare mode means no header band, so we draw our own)
+        mm.text(PACK_LABEL[pack.kind], w / 2, 0, 18, THEME.goldBright, { anchor: 0.5, bold: true });
         const sub = [SIZE_LABEL[pack.size], `choose ${pack.picksRemaining} of ${pack.contentIds.length}`].filter(Boolean).join(" · ");
-        mm.text(sub, w / 2, 10, 13, THEME.parchmentEdge, { anchor: 0.5 });
+        mm.text(sub, w / 2, 26, 12, THEME.parchmentEdge, { anchor: 0.5 });
 
-        let rowY = 44;
+        let rowY = 56;
         if (isHandPack) {
           mm.text(armedNow ? "▾ pick a card to apply to" : "cards drawn from your deck", w / 2, rowY, 12, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
           const fy = rowY + 24 + fanCardH / 2;
@@ -316,6 +320,13 @@ function PackModalApp() {
             else apply(cid);
           }, tip);
         });
+
+        // Skip button — bare mode has no ✕, this is the deliberate way out (Balatro pack-screen style).
+        const skipW = 120;
+        const skipH = 34;
+        const skipX = (w - skipW) / 2;
+        const skipY = panelH - skipH - 8;
+        mm.button("Skip ▸", skipX, skipY, skipW, skipH, THEME.frameDim, true, close, 13);
       },
     });
   };

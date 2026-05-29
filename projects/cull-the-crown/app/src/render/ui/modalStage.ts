@@ -37,7 +37,12 @@ export interface ModalContent {
   dismissable?: boolean; // default true — ✕ + click-outside close; false for mandatory gates
   accent?: number; // panel frame + title tint (default gold)
   header?: boolean; // default true — draw the title band; false = no band, content starts at the top pad
-
+  // "bare" mode: NO backdrop, NO panel frame, NO title band — the build's content floats over whatever
+  // the canvas sits on (the pack-reveal style: cards drift above the still-visible shop tray). Click
+  // outside the implied panel area still dismisses if `dismissable !== false`.
+  bare?: boolean;
+  // 0..1 darken behind the panel (overrides the default 0.72). Ignored in `bare` mode.
+  backdropAlpha?: number;
 }
 
 const PAD = 20;
@@ -307,11 +312,16 @@ export class ModalStage {
     if (!c) return;
     const sw = this.app.screen.width;
     const sh = this.app.screen.height;
+    const bare = !!c.bare;
 
-    // dimmed backdrop
-    const bd = new Graphics();
-    bd.rect(0, 0, sw, sh).fill({ color: 0x000000, alpha: 0.72 });
-    this.root.addChild(bd);
+    // dimmed backdrop (skipped entirely in bare mode — the content floats on whatever's behind).
+    // The modal canvas's app.stage already captures every pointer event (eventMode: static +
+    // hitArea: contains-all), so no invisible "pointer trap" rect is needed for bare mode.
+    if (!bare) {
+      const bd = new Graphics();
+      bd.rect(0, 0, sw, sh).fill({ color: 0x000000, alpha: c.backdropAlpha ?? 0.72 });
+      this.root.addChild(bd);
+    }
 
     // centered panel
     this.panelX = Math.round((sw - c.panelW) / 2);
@@ -320,19 +330,21 @@ export class ModalStage {
     const py = this.panelY;
     const accent = c.accent ?? THEME.gold;
     const accentBright = shade(accent, 0.5);
-    const panel = new Graphics();
-    panel.roundRect(px - 3, py - 3, c.panelW + 6, c.panelH + 6, 16).fill(THEME.ink);
-    panel.roundRect(px, py, c.panelW, c.panelH, 14).fill({ color: 0x140a1e }).stroke({ width: 3, color: accent });
-    const hasHeader = c.header !== false;
-    if (hasHeader) {
-      // header band
-      panel.roundRect(px + 6, py + 6, c.panelW - 12, HEADER_H - 8, 9).fill({ color: shade(accent, -0.62) }).stroke({ width: 2, color: shade(accent, -0.2) });
+    const hasHeader = !bare && c.header !== false;
+    if (!bare) {
+      const panel = new Graphics();
+      panel.roundRect(px - 3, py - 3, c.panelW + 6, c.panelH + 6, 16).fill(THEME.ink);
+      panel.roundRect(px, py, c.panelW, c.panelH, 14).fill({ color: 0x140a1e }).stroke({ width: 3, color: accent });
+      if (hasHeader) {
+        // header band
+        panel.roundRect(px + 6, py + 6, c.panelW - 12, HEADER_H - 8, 9).fill({ color: shade(accent, -0.62) }).stroke({ width: 2, color: shade(accent, -0.2) });
+      }
+      this.root.addChild(panel);
+      if (hasHeader) this.wig.build(this.root, c.title, px + c.panelW / 2, py + 6 + (HEADER_H - 8) / 2, 19, accentBright, { font: TITLE_FONT, anchor: 0.5, anchorY: 0.5, bold: true });
     }
-    this.root.addChild(panel);
-    if (hasHeader) this.wig.build(this.root, c.title, px + c.panelW / 2, py + 6 + (HEADER_H - 8) / 2, 19, accentBright, { font: TITLE_FONT, anchor: 0.5, anchorY: 0.5, bold: true });
 
-    // close ✕ (top-right of the panel) — omitted for mandatory (non-dismissable) modals
-    if (c.dismissable !== false) {
+    // close ✕ (top-right of the panel) — omitted for mandatory (non-dismissable) modals or bare mode
+    if (!bare && c.dismissable !== false) {
       const xw = 30;
       const xx = px + c.panelW - xw - 8;
       const xy = py + 10;

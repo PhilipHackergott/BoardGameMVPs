@@ -17,30 +17,34 @@ applyPixiFixes();
 // thing canvas can't do — typed text — is a real DOM <input> over the canvas (Seeded on only). The stake
 // row is its own gallery with full-height arrows too. ✕ / click-outside / Esc = Back.
 
-const S = 1.66; // size-up factor (~66% larger than the first Pixi pass)
-const z = (n: number) => Math.round(n * S);
+// Compact Balatro-style panel — small centred modal, NOT a full-screen takeover. Mirrors the reference
+// run-setup screenshot: 3 tabs, deck card with side arrows + name + description, stake row, seeded
+// toggle, big PLAY button, smaller Back button at the bottom.
+const z = (n: number) => n; // no-scale layout (was 1.66×; the larger panel overwhelmed the title screen)
 
-const PANEL_W = 1028;
-const PANEL_H = 700;
+const PANEL_W = 520;
+const PANEL_H = 420; // hugs the content (tabs + deck + stake + form + PLAY + Back), no wasted space
 const PAD = 20; // must match ModalStage's content-origin pad (the panel is headerless)
 
-// content-relative layout (content begins at the top pad), all scaled by S
-const TABS_Y = z(24);
-const TAB_H = z(34);
-const DECK_Y = z(72);
-const CARD_W = z(100);
-const CARD_H = z(140);
-const ARROW_W = z(36);
-const CARD_X = ARROW_W + z(10);
-const LADDER_X = CARD_X + CARD_W + z(12);
-const LADDER_W = z(26);
-const INFO_X = LADDER_X + LADDER_W + z(14);
-const STAKE_Y = DECK_Y + CARD_H + z(16);
-const STAKE_H = z(60);
-const FORM_Y = STAKE_Y + STAKE_H + z(16);
-const TOGGLE_W = z(180);
-const PLAY_Y = FORM_Y + z(46);
-const PLAY_H = z(46);
+// content-relative layout (content begins at the top pad)
+const TABS_Y = 8;
+const TAB_H = 30;
+const DECK_Y = 56;
+const CARD_W = 78;
+const CARD_H = 110;
+const ARROW_W = 28;
+const CARD_X = ARROW_W + 8; // 36
+const LADDER_X = CARD_X + CARD_W + 8; // 122
+const LADDER_W = 18;
+const INFO_X = LADDER_X + LADDER_W + 10; // 150
+const STAKE_Y = DECK_Y + CARD_H + 16; // 182
+const STAKE_H = 52;
+const FORM_Y = STAKE_Y + STAKE_H + 18; // 252
+const TOGGLE_W = 140;
+const PLAY_Y = FORM_Y + 42; // 294
+const PLAY_H = 46;
+const BACK_Y = PLAY_Y + PLAY_H + 12; // 352
+const BACK_H = 32;
 
 const INK_BODY = 0x3a2a18; // dark body text on parchment
 const INK_MUTE = 0x6a5238; // muted dark on parchment (secondary / locked)
@@ -202,10 +206,12 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
           setStakeIdx((i) => Math.min(maxStake, i + 1));
         }, z(28));
 
-        // --- seeded toggle + PLAY (the seed <input> is a DOM overlay, see render) ---
-        mm.button(seeded ? "✓ Seeded Run" : "Seeded Run", 0, FORM_Y, TOGGLE_W, z(34), seeded ? THEME.good : THEME.frameDim, true, () => setSeeded((s) => !s), z(13));
-        if (!seeded) mm.text("(random seed)", TOGGLE_W + z(16), FORM_Y + z(11), z(12), THEME.parchmentEdge);
-        mm.button("PLAY  ▸", 0, PLAY_Y, w, PLAY_H, THEME.good, deckUnlocked, play, z(18));
+        // --- seeded toggle + PLAY + Back (Balatro layout: toggle row, big PLAY, smaller orange Back) ---
+        mm.button(seeded ? "✓ Seeded Run" : "Seeded Run", 0, FORM_Y, TOGGLE_W, 30, seeded ? THEME.good : THEME.frameDim, true, () => setSeeded((s) => !s), 12);
+        if (!seeded) mm.text("(random seed)", TOGGLE_W + 12, FORM_Y + 9, 11, THEME.parchmentEdge);
+        mm.button("PLAY  ▸", 0, PLAY_Y, w, PLAY_H, THEME.good, deckUnlocked, play, 17);
+        // Back button — explicit dismissal (mirrors the reference; ✕ is still there too).
+        mm.button("Back", 0, BACK_Y, w, BACK_H, THEME.frameDim, true, onClose, 12);
       },
     });
   };
@@ -274,8 +280,8 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
   const showSeed = tab === "new" && seeded;
   const px = (window.innerWidth - PANEL_W) / 2;
   const py = (window.innerHeight - PANEL_H) / 2;
-  const seedLeft = px + PAD + TOGGLE_W + z(16);
-  const seedTop = py + PAD + FORM_Y + z(1);
+  const seedLeft = px + PAD + TOGGLE_W + 12;
+  const seedTop = py + PAD + FORM_Y - 2;
   return (
     <div ref={hostRef} className="pixi-modal-host">
       {showSeed && (
@@ -289,16 +295,16 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
             position: "fixed",
             left: seedLeft,
             top: seedTop,
-            width: z(220),
-            height: z(34),
+            width: 180,
+            height: 30,
             zIndex: 9001,
             boxSizing: "border-box",
-            padding: "0 12px",
+            padding: "0 10px",
             background: "#140a1e",
             border: "2px solid #8a6a2a",
             borderRadius: 6,
             color: "#ffe9a0",
-            font: `${z(14)}px 'Silkscreen', monospace`,
+            font: "12px 'Silkscreen', monospace",
             outline: "none",
           }}
         />
