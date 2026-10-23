@@ -1,12 +1,55 @@
 # Cull the Crown — Tarot Adaptations (Balatro → Kingslayer)
 
+> **STATUS: all 22 arcana + 6 Drills + 1 bonus tarot (Conjuration) wired & playable ✅**
+> (`content.TAROT_LIBRARY` — 23 standalone + 6 drills = 29 entries). Tarots are **held
+> consumables** (`RunState.held`, used in **combat or while a pack is open** — UI rule: pouch is
+> view-only in the bare shop). Sprites: `app/public/art/tarots/*.svg` (original pixel art).
+>
 > A design catalogue adapting **all 22 Balatro Tarot cards** to Cull the Crown, for the "Balatro
 > Patch." The major-arcana names are classical/public-domain, so we keep them for flavour; the
-> **effects** are translated into CtC's systems. **No Balatro art ships** — sprites are original
-> pixel art (see `cull the crown tarot illustrations/`).
->
-> Tarots are **held consumables** (`RunState.held`, used in shop OR combat) — the system already
-> exists (`content.TAROT_LIBRARY`, `Tarot.apply`); this reworks the *library* to the full arcana.
+> **effects** are translated into CtC's systems.
+
+## Current TAROT_LIBRARY (engine source of truth)
+
+29 entries in `app/src/engine/content.ts → TAROT_LIBRARY`:
+
+| # | id | Name | Section |
+|---|----|------|---------|
+| 1 | `the-hierophant` | The Hierophant | Enhancer (Honed) |
+| 2 | `the-empress` | The Empress | Enhancer (Keen) |
+| 3 | `the-magician` | The Magician | Enhancer (Charmed) |
+| 4 | `the-lovers` | The Lovers | Enhancer (Wildcard) |
+| 5 | `the-chariot` | The Chariot | Enhancer (Steel) |
+| 6 | `justice` | Justice | Enhancer (Glass) |
+| 7 | `the-devil` | The Devil | Enhancer (Minted) |
+| 8 | `the-tower` | The Tower | Enhancer (Stoneskin) |
+| 9 | `the-star` | The Star | Suit → Diamonds |
+| 10 | `the-moon` | The Moon | Suit → Clubs |
+| 11 | `the-sun` | The Sun | Suit → Hearts |
+| 12 | `the-world` | The World | Suit → Spades |
+| 13 | `the-high-priestess` | The High Priestess | Up to 2 random Drills |
+| 14 | `the-fool` | The Fool | Conjure a random Tarot |
+| 15 | `the-emperor` | The Emperor | Up to 2 random Tarots |
+| 16 | `the-hermit` | The Hermit | Double gold (max +20) |
+| 17 | `temperance` | Temperance | Gold = guild sell-value (max 50) |
+| 18 | `judgement` | Judgement | Random joker joins guild |
+| 19 | `wheel-of-fortune` | Wheel of Fortune | Random joker joins guild |
+| 20 | `strength` | Strength | +1 rank to chosen card (max 10) |
+| 21 | `the-hanged-man` | The Hanged Man | Destroy chosen card |
+| 22 | `death` | Death | Transform chosen card → random fresh card |
+| 23 | `conjuration` | Conjuration | Conjure a fresh card into the deck (**not in Balatro — CtC original**) |
+| 24 | `drill-twoHanded` | Two-Handed Drill | +1 Two-Handed style level |
+| 25 | `drill-swordShield` | Sword & Shield Drill | +1 Sword & Shield style level |
+| 26 | `drill-spear` | Spear Drill | +1 Spear style level |
+| 27 | `drill-dualWield` | Dual Wielding Drill | +1 Dual Wielding style level |
+| 28 | `drill-mage` | Mage Drill | +1 Mage style level |
+| 29 | `drill-mounted` | Mounted Drill | +1 Mounted style level |
+
+Notes on what shipped vs the original design below:
+- Enhancers/suit-converters apply to **one** chosen card (the design said "up to 2/3" — single-target was simpler and reads cleaner in the picker UI).
+- The Fool **conjures a random Tarot** (the "last-used Tarot" idea was dropped — no use-history tracking).
+- Wheel of Fortune **grants a random joker** (the "1-in-4 edition" variant deferred — Aura/Hex spectrals cover editions).
+- **Conjuration** is a CtC-original tarot not in Balatro's arcana.
 
 ## How the four kinds translate
 1. **Enhancers** (apply a card modifier) → apply a **Sigil** to selected deck cards. Balatro's

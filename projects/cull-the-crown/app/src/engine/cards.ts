@@ -25,9 +25,13 @@ export function buildSuitedDeck(suits: Suit[]): Card[] {
 }
 
 export const TIER_STATS: Record<Tier, { health: number; attack: number }> = {
-  jack: { health: 20, attack: 10 },
-  queen: { health: 30, attack: 15 },
-  king: { health: 40, attack: 20 },
+  // Doubled HP (per design directive). Tuned across multi-epoch playtests so a moderately skilled
+  // player can plausibly clear a run: jacks easy (the warmup tier), queens the mid-game test,
+  // kings the climactic wall — but reachable. Without shop AI most playtest runs reached the
+  // final-king fight at 60-70% completion, so kings are tuned tight, not unwinnable.
+  jack: { health: 40, attack: 7 },
+  queen: { health: 56, attack: 9 },
+  king: { health: 68, attack: 11 },
 };
 
 function makeEnemy(tier: Tier, suit: Suit): Enemy {

@@ -1,0 +1,287 @@
+/* ============================================================================
+   Food Chain Magnate — concept-art design system (implements 05-game-design-doc.md)
+   "1950s corporate fast-food boom, clean infographic."
+   These tokens + components are the first cut of the real UI design system, not
+   throwaway: at build M2 they distill into art-direction.md + the shared primitives.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;600;700&family=Pacifico&family=Inter:wght@400;600;800&family=Roboto+Mono:wght@500;700&display=swap');
+
+:root{
+  /* --- palette --- */
+  --cream:#F4E9D0; --cream-2:#EADDBF; --cream-3:#E0D0AC;
+  --ink:#2B2118; --ink-soft:#6B5E4C;
+  --chrome:#C2C7CC; --chrome-dark:#8A9298;
+  --turquoise:#1FAE9C; --turquoise-d:#16887A;
+  --cherry:#D6342C; --cherry-d:#A8241E;
+  --mustard:#E8B23A; --mustard-d:#C8902A;
+  --navy:#1F3A4D; --navy-2:#152A38;
+
+  /* company accents (seat 1-4) */
+  --co-1:#D6342C; --co-2:#1FAE9C; --co-3:#E8B23A; --co-4:#7A5C9E;
+
+  /* product colors */
+  --burger:#B5651D; --pizza:#C8472B; --soda:#3E7CB1; --lemon:#E8C53A; --beer:#C68A2E;
+
+  /* spacing */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  /* radii */
+  --r1:4px; --r2:8px; --r3:14px;
+  /* hard mid-century shadow */
+  --shadow:3px 3px 0 rgba(43,33,24,.14);
+  --shadow-lg:6px 6px 0 rgba(43,33,24,.18);
+  --stroke:2px solid var(--chrome-dark);
+
+  --font-display:'Anton','Oswald','Impact',sans-serif;
+  --font-script:'Pacifico',cursive;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'Roboto Mono',ui-monospace,'SFMono-Regular',Consolas,monospace;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:var(--font-body); color:var(--ink); line-height:1.45;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 31px, rgba(43,33,24,.04) 31px 32px),
+    repeating-linear-gradient(90deg, transparent 0 31px, rgba(43,33,24,.04) 31px 32px),
+    var(--cream);
+}
+
+/* ---- presentation frame (concept gallery chrome) ---- */
+.frame{max-width:1180px;margin:0 auto;padding:var(--s6) var(--s5)}
+.frame > h1.caption{font-family:var(--font-display);font-size:1.5rem;letter-spacing:.5px;margin:0 0 2px}
+.frame > p.sub{color:var(--ink-soft);margin:0 0 var(--s5);font-size:.95rem}
+.screen{
+  background:var(--cream); border:3px solid var(--ink); border-radius:var(--r3);
+  box-shadow:var(--shadow-lg); overflow:hidden;
+}
+.backlink{display:inline-block;margin-bottom:var(--s4);font-weight:600;color:var(--navy);text-decoration:none}
+.backlink:hover{text-decoration:underline}
+.note{font-size:.8rem;color:var(--ink-soft);margin-top:var(--s4);font-style:italic}
+
+/* ---- type helpers ---- */
+.display{font-family:var(--font-display);letter-spacing:.5px;line-height:1}
+.script{font-family:var(--font-script)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--ink-soft)}
+
+/* ---- panel ---- */
+.panel{background:var(--cream-2);border:var(--stroke);border-radius:var(--r3);box-shadow:var(--shadow)}
+.panel > .panel-tt{
+  font-family:var(--font-display);font-size:1.05rem;letter-spacing:.5px;
+  padding:var(--s2) var(--s4);border-bottom:var(--stroke);background:var(--cream-3);
+  display:flex;align-items:center;justify-content:space-between;border-radius:11px 11px 0 0;
+}
+.panel > .panel-tt .accent{height:3px;background:var(--turquoise)}
+.panel .panel-body{padding:var(--s4)}
+
+/* ---- buttons ---- */
+.btn{
+  font-family:var(--font-display);letter-spacing:.6px;font-size:1rem;
+  border:2px solid var(--ink); border-radius:var(--r2); padding:10px 18px;
+  background:var(--chrome); color:var(--ink); cursor:pointer;
+  box-shadow:var(--shadow); transition:transform .05s, box-shadow .05s;
+}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:var(--shadow-lg)}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.btn.primary{background:var(--turquoise);color:#fff}
+.btn.danger{background:var(--cherry);color:#fff}
+.btn.big{font-size:1.4rem;padding:14px 28px;width:100%}
+
+/* ---- chips / badges ---- */
+.chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;
+  padding:2px 9px;border-radius:999px;border:1.5px solid var(--ink);background:#fff;
+}
+.chip.money{font-family:var(--font-mono);background:#FFF6E0;border-color:var(--mustard-d)}
+.chip.salary{background:#FFEFEF;border-color:var(--cherry-d);color:var(--cherry-d)}
+.chip.free{background:#E7FBF6;border-color:var(--turquoise-d);color:var(--turquoise-d)}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block;border:1.5px solid var(--ink)}
+
+/* product glyph swatch */
+.prod{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:.78rem}
+.prod .sw{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--ink);display:inline-block}
+.sw.burger{background:var(--burger)} .sw.pizza{background:var(--pizza)}
+.sw.soda{background:var(--soda)} .sw.lemon{background:var(--lemon)} .sw.beer{background:var(--beer)}
+
+/* ============================================================
+   EMPLOYEE CARD — the ONE model (ID-badge / corporate baseball card)
+   ============================================================ */
+.emp-card{
+  width:188px;background:var(--cream);border:2px solid var(--ink);border-radius:var(--r2);
+  box-shadow:var(--shadow);overflow:hidden;position:relative;font-size:.8rem;
+}
+.emp-card .band{
+  font-family:var(--font-display);letter-spacing:.4px;color:#fff;
+  padding:7px var(--s3) 6px;font-size:.95rem;display:flex;justify-content:space-between;align-items:center;
+}
+.emp-card .band .tier{font-size:.6rem;opacity:.85;font-family:var(--font-body);font-weight:800;
+  background:rgba(255,255,255,.22);padding:1px 6px;border-radius:999px;letter-spacing:.5px}
+/* track colors */
+.t-mgmt .band{background:var(--navy)} .t-recruit .band{background:#7A5C9E}
+.t-train .band{background:#557A2E} .t-kitchen .band{background:var(--burger)}
+.t-buy .band{background:var(--soda)} .t-market .band{background:var(--cherry)}
+.t-price .band{background:var(--turquoise-d)} .t-sales .band{background:var(--mustard-d)}
+.emp-card .body{padding:var(--s3);display:flex;gap:var(--s3)}
+.emp-card .bust{
+  width:46px;height:46px;flex:none;border-radius:6px;border:1.5px solid var(--ink);
+  background:var(--cream-3);display:grid;place-items:center;
+}
+.emp-card .meta{flex:1;min-width:0}
+.emp-card .ability{margin:6px 0 0;color:var(--ink-soft);font-size:.74rem;min-height:2.2em}
+.emp-card .foot{
+  border-top:1.5px dashed var(--chrome-dark);padding:7px var(--s3);
+  display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--cream-2);
+}
+.emp-card .slots{display:flex;gap:3px}
+.emp-card .slots .sl{width:13px;height:13px;border:1.5px solid var(--ink);border-radius:2px;background:#fff}
+.emp-card .train{font-size:.7rem;font-weight:700;color:var(--ink-soft)}
+.emp-card .wm{position:absolute;right:-8px;bottom:-10px;font-size:3.2rem;opacity:.07}
+.emp-card.beached{filter:grayscale(.6) opacity(.7)}
+.emp-card.sel{outline:3px solid var(--turquoise);outline-offset:1px}
+
+/* ---- card slot (drop target) ---- */
+.slot{
+  width:188px;height:96px;border:2px dashed var(--chrome-dark);border-radius:var(--r2);
+  display:grid;place-items:center;color:var(--ink-soft);font-weight:600;font-size:.8rem;
+  background:rgba(255,255,255,.35);text-align:center;
+}
+.slot.legal{border-color:var(--turquoise);background:#E7FBF6;color:var(--turquoise-d)}
+.slot.illegal{border-color:var(--cherry);background:#FDEBEA;color:var(--cherry-d)}
+
+/* ============================================================
+   MILESTONE TILE
+   ============================================================ */
+.milestone{
+  width:172px;border:2px solid var(--ink);border-radius:var(--r2);background:#fff;
+  box-shadow:var(--shadow);padding:var(--s3);position:relative;font-size:.76rem;
+}
+.milestone .mname{font-family:var(--font-display);font-size:.92rem;line-height:1.05;margin-bottom:4px}
+.milestone .meff{color:var(--ink-soft)}
+.milestone .seal{position:absolute;top:8px;right:8px;width:22px;height:22px;border-radius:50%;
+  border:2px solid var(--mustard-d);color:var(--mustard-d);display:grid;place-items:center;font-size:.7rem;font-weight:800}
+.milestone.claimed{background:#E7FBF6;border-color:var(--turquoise)}
+.milestone.locked{filter:grayscale(.7);opacity:.65}
+
+/* ============================================================
+   BANK CLOCK + PHASE RAIL + STANDINGS  (the status crown)
+   ============================================================ */
+.bankclock{display:flex;align-items:center;gap:var(--s3)}
+.bankclock .gauge{width:230px;height:20px;border:2px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden;position:relative}
+.bankclock .fill{height:100%;background:linear-gradient(90deg,var(--cherry),var(--mustard),var(--turquoise))}
+.bankclock .breaks{font-size:.7rem;font-weight:800;letter-spacing:1px}
+.bankclock .amt{font-family:var(--font-mono);font-weight:700}
+
+.phaserail{display:flex;gap:0;align-items:stretch;border:2px solid var(--ink);border-radius:var(--r2);overflow:hidden;background:#fff}
+.phaserail .ph{padding:5px 10px;font-size:.72rem;font-weight:700;border-right:1.5px solid var(--chrome);color:var(--ink-soft);white-space:nowrap}
+.phaserail .ph:last-child{border-right:0}
+.phaserail .ph.done{background:var(--cream-3);color:var(--ink)}
+.phaserail .ph.active{background:var(--turquoise);color:#fff;font-family:var(--font-display);letter-spacing:.4px}
+
+.standings{display:flex;flex-direction:column;gap:6px}
+.standings .row{display:flex;align-items:center;gap:8px;font-size:.82rem;padding:4px 8px;border-radius:var(--r1);background:#fff;border:1.5px solid var(--chrome)}
+.standings .row.lead{border-color:var(--mustard-d);background:#FFF6E0}
+.standings .row .nm{flex:1;font-weight:700}
+.standings .row .ca{font-family:var(--font-mono);font-weight:700}
+.crest{width:18px;height:18px;border:2px solid var(--ink);display:inline-grid;place-items:center;font-size:.6rem;font-weight:900;color:#fff}
+.crest.c1{background:var(--co-1)} .crest.c2{background:var(--co-2);border-radius:50%}
+.crest.c3{background:var(--co-3);clip-path:polygon(50% 0,100% 100%,0 100%)} .crest.c4{background:var(--co-4)}
+
+/* turn order track */
+.turntrack{display:flex;gap:5px;align-items:center}
+.turntrack .seat{width:24px;height:24px;border:2px solid var(--ink);display:grid;place-items:center}
+.turntrack .seat.now{outline:3px solid var(--mustard);outline-offset:1px}
+
+/* ============================================================
+   "WHY" PANEL (Dinnertime explainer)
+   ============================================================ */
+.why .houseline{display:flex;align-items:center;gap:8px;margin-bottom:var(--s3);font-weight:700}
+.why .cand{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;
+  padding:8px 10px;border:1.5px solid var(--chrome);border-radius:var(--r1);margin-bottom:6px;background:#fff;font-size:.85rem}
+.why .cand.win{border:2px solid var(--turquoise);background:#E7FBF6}
+.why .cand.win .score{color:var(--turquoise-d)}
+.why .cand .score{font-family:var(--font-mono);font-weight:700}
+.why .calc{font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft)}
+.why .payout{margin-top:var(--s3);padding-top:var(--s3);border-top:2px solid var(--ink);font-family:var(--font-mono)}
+
+/* generic layout helpers */
+.row{display:flex} .col{display:flex;flex-direction:column}
+.gap2{gap:var(--s2)} .gap3{gap:var(--s3)} .gap4{gap:var(--s4)} .gap5{gap:var(--s5)}
+.wrap{flex-wrap:wrap} .center{align-items:center} .between{justify-content:space-between}
+.grid{display:grid;gap:var(--s4)}
+
+/* ============================================================================
+   GOOGIE / ATOMIC-AGE ILLUSTRATION KIT (reusable decoration components)
+   Pure CSS + inline-SVG friendly. Tin-toy diner meets Googie signage.
+   ========================================================================== */
+
+/* --- halftone dot field (overlay; set color via parent or inline) --- */
+.halftone{background-image:radial-gradient(currentColor 1.4px, transparent 1.6px);
+  background-size:9px 9px;pointer-events:none}
+.halftone.dim{opacity:.10} .halftone.faint{opacity:.06}
+
+/* --- candy-stripe "ribbon" band (mid-century diagonal accent strip) --- */
+.ribbon{height:14px;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  background:repeating-linear-gradient(45deg,
+    var(--cherry) 0 14px, var(--cream) 14px 28px,
+    var(--turquoise) 28px 42px, var(--cream) 42px 56px,
+    var(--mustard) 56px 70px, var(--cream) 70px 84px)}
+.ribbon.thin{height:8px}
+
+/* --- zig-zag chevron divider (true triangles via conic tiles) --- */
+.chevron{height:16px;
+  background:
+    conic-gradient(from 135deg at 50% 0, var(--cherry) 0 90deg, transparent 0) 0 0/22px 16px repeat-x;
+  filter:drop-shadow(0 2px 0 rgba(43,33,24,.18))}
+
+/* --- atomic sunburst (radial rays; clip to a circle) --- */
+.sunburst{border-radius:50%;
+  background:repeating-conic-gradient(var(--mustard) 0 7deg, transparent 7deg 14deg)}
+.sunburst.turq{background:repeating-conic-gradient(var(--turquoise) 0 7deg, transparent 7deg 14deg)}
+.sunburst.cherry{background:repeating-conic-gradient(var(--cherry) 0 7deg, transparent 7deg 14deg)}
+
+/* --- 4-point atomic sparkle / starburst chip --- */
+.atomic-star{aspect-ratio:1;background:var(--mustard);border:0;
+  clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
+.atomic-star.cherry{background:var(--cherry)} .atomic-star.turq{background:var(--turquoise)}
+
+/* --- starburst tile field (very subtle atomic wallpaper) --- */
+.starfield{background-image:
+    radial-gradient(circle at 15% 25%, rgba(232,178,58,.10) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(31,174,156,.10) 0 2px, transparent 3px),
+    radial-gradient(circle at 45% 85%, rgba(214,52,44,.08) 0 2px, transparent 3px);
+  background-size:120px 120px,160px 160px,140px 140px}
+
+/* --- chrome bezel (atomic frame around a HUD widget) --- */
+.bezel{position:relative;padding:6px 10px;border:2px solid var(--ink);border-radius:999px;
+  background:linear-gradient(180deg,#fff,var(--chrome) 55%,var(--chrome-dark));
+  box-shadow:inset 0 1px 0 #fff, var(--shadow)}
+
+/* ============================================================================
+   LINE-BREAK / SIZING FIXES (placed late so they win) — let text breathe
+   ========================================================================== */
+.btn{white-space:nowrap;min-width:max-content}
+.btn.big{white-space:normal}                 /* big menu buttons carry a sub-line */
+.btn.big > .sub{white-space:nowrap}
+.chip{white-space:nowrap}
+.panel > .panel-tt{white-space:nowrap;gap:8px}
+.emp-card .band{white-space:nowrap;gap:6px}
+.emp-card .band .tier{white-space:nowrap;flex:none}
+.node .nb{white-space:nowrap;gap:6px}
+.phaserail .ph{white-space:nowrap}
+.standings .row .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.milestone .mname{hyphens:none}
+.crest{flex:none} .seat{flex:none}
+.bankclock .amt,.bankclock .breaks{white-space:nowrap}
+.demand-big{flex-wrap:wrap}
+
+/* --- employee-card tin-toy detail (global; ID-badge feel) --- */
+.emp-card .band{background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1.4px);background-size:6px 6px;position:relative}
+.emp-card .band::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:repeating-linear-gradient(45deg, rgba(255,255,255,.6) 0 5px, rgba(0,0,0,.18) 5px 10px)}
+.emp-card .bust{position:relative}
+.emp-card .bust::after{content:"★";position:absolute;right:-6px;bottom:-6px;width:16px;height:16px;
+  display:grid;place-items:center;font-size:9px;color:#fff;background:var(--cherry);
+  border:1.5px solid var(--ink);border-radius:50%;box-shadow:var(--shadow)}     /* company seal */
+.emp-card{background-image:radial-gradient(var(--cream-3) 0.5px, transparent 0.6px);background-size:8px 8px}

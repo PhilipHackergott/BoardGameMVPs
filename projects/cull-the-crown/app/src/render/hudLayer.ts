@@ -11,6 +11,7 @@ import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from 
 import { PIXEL_FONT, THEME } from "./theme";
 import { STYLE_ART_SLUG } from "./sidebarStage";
 import { FightingStyleId } from "../engine/types";
+import { EDITION_INFO } from "../engine/index";
 
 export interface HudJokerVM {
   id: string;
@@ -27,6 +28,7 @@ export interface HudHeldVM {
   tarotId: string;
   name: string;
   text: string;
+  usable: boolean; // false in shop without a pack open — pouch is view-only there
 }
 export interface HudTip {
   name: string;
@@ -152,9 +154,12 @@ export class HudLayer {
     // --- jokers, left ---
     vm.jokers.forEach((j, i) => {
       const x = EDGE + i * (TILE_W + GAP);
+      const ed = j.edition && (j.edition in EDITION_INFO) ? EDITION_INFO[j.edition as keyof typeof EDITION_INFO] : null;
       const tip: HudTip = {
-        name: j.edition ? `${j.name} (${j.edition})` : j.name,
-        text: j.sellable ? `${j.text} · Click to sell ◆${j.sellValue}` : j.text,
+        name: ed ? `${j.name} (${ed.name})` : j.name,
+        // Every enhancement gets its own explanation block so the tooltip explains both the joker
+        // and any edition (prismatic/burnished/haloed/shadow) layered onto it.
+        text: [j.text, ed ? `${ed.name} — ${ed.text}` : "", j.sellable ? `Click to sell ◆${j.sellValue}` : ""].filter(Boolean).join("\n\n"),
         type: "joker",
         rarity: j.rarity,
       };
@@ -168,16 +173,17 @@ export class HudLayer {
     if (vm.showPouch) {
       vm.held.forEach((hh, i) => {
         const x = this.stageW - EDGE - TILE_W - i * (TILE_W + GAP);
-        const tip: HudTip = { name: hh.name, text: hh.text, type: "tarot" };
-        const sprite = this.tile(x, TOP_Y, hh.name, undefined, THEME.violet);
-        // Drill (style-upgrade) held items are derived from FIGHTING_STYLE_IDS, not standalone tarots,
-        // so they have no /art/tarots/drill-*.svg — fall back to the fighting-style icon under
-        // /art/styles/ so the pouch tile shows a recognisable picture instead of a bare initial.
+        const tipNote = hh.usable ? "" : "\n\n(Held — usable only in combat, on a card in your hand.)";
+        const tip: HudTip = { name: hh.name, text: hh.text + tipNote, type: "tarot" };
+        // Dim non-usable tiles (in the shop with no pack open the pouch is view-only); the player
+        // can still hover for the tooltip but tapping does nothing.
+        const sprite = this.tile(x, TOP_Y, hh.name, undefined, hh.usable ? THEME.violet : THEME.frameDim);
+        if (!hh.usable) sprite.alpha = 0.55;
         const drillSlug = hh.tarotId.startsWith("drill-") ? STYLE_ART_SLUG[hh.tarotId.slice(6) as FightingStyleId] : undefined;
         const urls = [`/art/tarots/${hh.tarotId}.svg`, `/art/spectrals/${hh.tarotId}.svg`];
         if (drillSlug) urls.push(`/art/styles/${drillSlug}.svg`);
         need.push({ sprite, urls });
-        this.hits.push({ x, y: TOP_Y, w: TILE_W, h: TILE_H, tip, onTap: () => this.onUseHeld?.(hh.id, hh.tarotId) });
+        this.hits.push({ x, y: TOP_Y, w: TILE_W, h: TILE_H, tip, onTap: hh.usable ? () => this.onUseHeld?.(hh.id, hh.tarotId) : undefined });
       });
       this.count(this.stageW - EDGE, TOP_Y + TILE_H + 3, `${vm.held.length}/${vm.heldMax}`, 1);
     }

@@ -53,3 +53,12 @@ desktop.ini
 
 # Factory runtime lock (a drainer/operator holds this transiently)
 registry/queue.lock
+.claude/scheduled_tasks.lock
+
+# Playwright run artifacts
+test-results/
+playwright-report/
+
+# Späti lives in its own standalone private repo (github.com/libratech), not in this
+# monorepo — it is a nested git repo in place at projects/spaeti/. Work on it there.
+projects/spaeti/

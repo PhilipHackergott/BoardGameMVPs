@@ -75,5 +75,27 @@ qa-playtester reads this before testing.
   bank the generalizable lessons while fresh; just don't mark the project shipped. **Evidence:** this
   cycle (roomies at the build gate). **Now checked by default? y** (when a rework yields cross-project lessons).
 
+## Confirmed (Cull the Crown — Wave 8 sweep harness)
+- **Pattern — parallel deck×stake sweep with `workers > 1`.** Each Playwright worker = its own
+  browser context = its own WebGL-context budget, so unlike the WebGL-heavy *visual* e2e suite
+  (which must be `workers: 1`), the **playtest sweep** harness can safely fan out 2-4 workers.
+  Speed-up is ~Nx for the sweep. Cap at `min(4, cores − 2)` — past that the page-setup budget
+  thrashes ("Test timeout while setting up page"). **Use a separate `playwright.sweep.config.ts`**
+  so the visual suite stays serial. **Evidence:** cull-the-crown `playwright.sweep.config.ts` +
+  `tests/playtest/sweep.spec.ts`. **Now checked by default? y** (for any balance-pass round on
+  a fast-enough game).
+- **Practice — tag harvestable per-test data with a grep-able prefix.** When sweep tests need to
+  emit structured per-run data and you want to aggregate later, **`console.log("PLAYTEST_RESULT
+  " + JSON.stringify(r))`** and pipe through `grep "PLAYTEST_RESULT" | node analyze.cjs`. Don't
+  rely on Playwright reporters to preserve every log line — the **`line` reporter drops parallel
+  workers' logs** under TTY overwrites; switch to `list` or `json`. The `package.json` is `"type":
+  "module"` by default in most factory projects, so the analyzer should be `.cjs`. **Evidence:**
+  cull-the-crown sweep session. **Now checked by default? y.**
+- **Recurring defect — cancelled-sweep zombies block re-runs.** Repeatedly killing a Playwright
+  sweep mid-run (because something's mistuned) leaves dozens of zombie Chromium processes that
+  exhaust the host's page-setup budget on the next attempt. **Reap chrome** between sweeps
+  (`Stop-Process -Name chrome -Force` / `pkill -f chromium-browser`). Wire into a pretest hook so
+  it's automatic. **Evidence:** this cycle's sweep retries. **Now checked by default? y.**
+
 ## Template for a confirmed lesson
 - **Heuristic / recurring defect:** **Evidence (project):** **Now checked by default? (y/n):**

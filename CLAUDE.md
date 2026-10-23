@@ -1,8 +1,12 @@
 # BoardGameMVPs — Factory Operating Manual
 
-This repository **is** a software factory. Its job: turn board games into playable
+This repository **is** a software factory. Its job: turn game concepts into playable
 digital MVPs (web-first, then wrapped for desktop/mobile) through a 5-stage pipeline
-with a human approval gate between every stage.
+with a human approval gate between every stage. Two intake tracks feed the same pipeline:
+
+- **Board-game adaptations** (the original charter): digitize an existing tabletop game.
+- **Original video-game concepts** (the second track): a green-field idea with no rulebook to
+  adapt. Same stages, same gates — but a few things differ; see "The original-concept track" below.
 
 You (Claude) are the factory operator. This file tells you how to run it. Read it
 fully before acting on any factory command.
@@ -77,6 +81,34 @@ transition or gate decision, update the project state first, then the registry e
    branch into `main`. Parallel consoles use **git worktrees** — one branch per worktree — so
    different titles advance simultaneously without clobbering each other. Full rules:
    `docs/git-and-branching.md`. (Per the standing rule, push to a shared remote only when asked.)
+
+## The original-concept track
+
+Original video-game concepts run through the **same five stages and the same gates**, but with
+these differences (a board-game adaptation ignores this section):
+
+1. **`source: "user-concept"`** in `project-state.json`. There is no BGG entry and no rulebook —
+   *we* are the designer, so the design risk is on us, not on faithfulness to a source.
+2. **Discovery** scores the adapted rubric (an original concept is born-digital, so "digital fit"
+   is a given; the load-bearing axes are scope, design clarity, visual feasibility, and demand).
+   Mark the brief with the concept note. See `docs/01-discovery.md`.
+3. **Analysis** compares against **competitor *video games*** (Steam/itch comps, genre interest),
+   not BGG stats. IP is usually *clean by design* (original IP), but still recorded; real-world
+   brands become generic stand-ins.
+4. **A Game Design Document precedes/anchors specification.** Because there's no rulebook, an
+   original concept produces a **`game-design-document.md`** (art direction, narrative/structure,
+   core loop, the systems' nuts & bolts) — the "rulebook we write ourselves." It is the design
+   foundation the `/spec` stage turns into `03-mvp-spec.md` + `04-build-plan.md`. Treat it as an
+   artifact of the design step between analysis and spec (it can be produced inline at the same
+   gate as the user directs).
+5. **The rendering substrate is not assumed to be Pixi-2D.** Original concepts may be **3D**
+   (React Three Fiber) or 2D (Pixi/DOM) — decided per concept and recorded in `stack`. The
+   engine/UI/render split still holds. See `docs/stack-and-conventions.md` → "3D concepts".
+6. **The asset reality still applies.** The factory's zero-asset model (synth audio, code-drawn
+   art) means a stylized look (CC0 packs + procedural geometry for 3D; SVG/CSS/pixel for 2D) is in
+   scope; photoreal / bespoke character animation is not.
+
+Everything else — gates, the registry, git discipline, the build target — is identical.
 
 ## Running a command
 

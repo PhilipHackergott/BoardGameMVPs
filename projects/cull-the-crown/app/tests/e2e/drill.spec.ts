@@ -3,26 +3,21 @@ import { test, expect, Page } from "@playwright/test";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Win = { __game: { getState: () => any } };
 
-// Plant a drill into held, then REAL-CLICK its HUD pouch tile (top-right of the felt) and assert that
-// styleLevels actually bumps — i.e. the click path through HudLayer → PixiBoard → store dispatch works.
-// Drill held items have no /art/tarots/drill-*.svg, so the HUD falls back to the fighting-style icon;
-// this also guards that the click target stays clickable (not just an invisible blank tile).
-test("clicking a fighting-style drill in the HUD pouch bumps styleLevels", async ({ page }: { page: Page }) => {
+// Plant a drill into held DURING COMBAT, then REAL-CLICK its HUD pouch tile and assert that
+// styleLevels bumps — the click path through HudLayer → PixiBoard → store dispatch works in the
+// contexts where the pouch is usable (combat or while a pack is open). The pouch is intentionally
+// view-only on the bare shop page, so we exercise it mid-fight here.
+test("clicking a fighting-style drill in the HUD pouch bumps styleLevels (combat context)", async ({ page }: { page: Page }) => {
   await page.goto("/");
   const close = page.getByRole("button", { name: "Close" });
   if (await close.isVisible().catch(() => false)) await close.click();
   await page.evaluate(() => {
     const g = (window as unknown as Win).__game.getState();
     g.newRun("drill-click");
-    g.setDebug(true);
-    g.dispatch({ type: "debugDefeat" });
   });
-  await page.waitForTimeout(1500);
-  await page.evaluate(() => (window as unknown as Win).__game.getState().dispatch({ type: "advance" })); // → shop
-  await page.locator(".pixi-host canvas").waitFor();
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(800);
 
-  // Plant a drill directly into held so we can test the click path (independent of shop-buy seeding).
+  // Plant a drill into held WHILE in combat (where the pouch is usable).
   await page.evaluate(() => {
     const g = (window as unknown as Win).__game.getState();
     g.run.held.push({ id: "drill-x", tarotId: "drill-spear" });

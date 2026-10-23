@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TCG Circuit — Pixel-Art Style Target (GBA-era, high-res)</title>
+<style>
+  :root{--bg:#14102a;--panel:#1f1838;--ink:#f4e9cf;--muted:#b6a8d8;--gold:#f4c430;--line:#3a2f60}
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#241b46,#14102a);color:var(--ink);
+       font-family:'Trebuchet MS',system-ui,sans-serif;line-height:1.5}
+  header{padding:32px 24px 14px;text-align:center;border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:26px;letter-spacing:1px;color:#ffe9a0}
+  .sub{color:var(--muted);font-style:italic;margin-top:6px}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 28px;
+        box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .card h2{margin:0 0 4px;font-size:18px;color:#ffd86b}
+  .card p{margin:0 0 14px;color:var(--muted);font-size:14px}
+  canvas{display:block;image-rendering:pixelated;border-radius:8px;background:#0f0c22;border:1px solid var(--line)}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .swatches{display:flex;gap:14px;flex-wrap:wrap}
+  .ramp{font-size:12px;color:var(--muted)}
+  .ramp b{display:block;color:var(--ink);margin-bottom:4px}
+  .chips{display:flex}
+  .chip{width:22px;height:22px}
+  .note{font-size:13px;color:var(--muted)}
+  a{color:#9ad0ff}
+  code{background:#160f2c;padding:1px 6px;border-radius:5px;color:#ffd86b}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pixel-Art Style Target — high-res, GBA era</h1>
+  <div class="sub">The finish/texture target for <b>TCG Circuit</b>. References: Golden Sun · Pokémon FRLG/Emerald · Fire Emblem GBA · Advance Wars.</div>
+  <div class="sub">Hand-placed pixels · limited palettes · nearest-neighbour upscale (no blur). These are direction samples, not final assets.</div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>Overworld scene — the look you walk around in</h2>
+    <p>16×16 tiles, integer-scaled. A local-shop corner: warm windows, a hanging sign, the player on the path.</p>
+    <canvas id="scene" width="768" height="528"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Hero sprite &amp; tiles (zoomed — see the pixels)</h2>
+    <p>The protagonist (16×24) gets a 4-direction walk cycle; trees/props are 16-px tiles. Shown large so the pixel grid reads.</p>
+    <div class="row">
+      <canvas id="sprites" width="520" height="320"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>PRISM cards — pixel frames per Affinity</h2>
+    <p>Each Affinity has its own pixel frame + ramp; the art window holds a pixel illustration; rarity adds a palette-cycling foil shimmer (not shown). Gloom &amp; Order follow the same recipe.</p>
+    <canvas id="cards" width="780" height="300"></canvas>
+  </div>
+
+  <div class="card">
+    <h2>Affinity palette ramps</h2>
+    <p>Limited, saturated GBA-style ramps reused across cards, FX and UI. Dithering covers gradients — no smooth alpha washes.</p>
+    <div class="swatches" id="swatches"></div>
+  </div>
+
+  <p class="note">Back to the <a href="index.html">concept-art board</a> · design in
+  <a href="../game-design-document.md">game-design-document.md</a> · all art original (no Magic/Pokémon/Yu-Gi-Oh).</p>
+</div>
+
+<script>
+const PAL = {
+  '.':null,
+  // hero
+  'u':'#3a2a18','f':'#f2c89c','F':'#ffdcb0','e':'#241a30',
+  'j':'#d8442e','J':'#ec6a44','S':'#ffd24a','L':'#33417a','b':'#20182e',
+  // tree
+  't':'#7a4a22','T':'#5c3718','m':'#2e7d34','n':'#43a047','o':'#67c45a',
+  // ember flame  1..4
+  '1':'#b6391f','2':'#e0573f','3':'#ffae4a','4':'#ffe49a',
+  // tide drop  A C D E
+  'A':'#1d5f8c','C':'#2e7fb8','D':'#6fb8e0','E':'#cfeaf8',
+  // verdant leaf  M N O V
+  'M':'#1f6b2a','N':'#3a9e3f','O':'#6fc45a','V':'#bfe8a0'
+};
+
+const PLAYER = [
+  "................",
+  "................",
+  ".....uuuuuu.....",
+  "....uuuuuuuu....",
+  "...uuffffffuu...",
+  "...uffffffffu...",
+  "...uffeffeffu...",
+  "...uffffffffu...",
+  "....ffffffff....",
+  "......ffff......",
+  "..jjjjjjjjjjjj..",
+  "..jjjJJJJJJjjj..",
+  "..jjjjjSSjjjjj..",
+  "..jjjjjjjjjjjj..",
+  "..jjjjjjjjjjjj..",
+  "..jjjjjjjjjjjj..",
+  "..jjjjjjjjjjjj..",
+  "....LLLLLLLL....",
+  "....LLLLLLLL....",
+  "....LLLLLLLL....",
+  "....LLL..LLL....",
+  "....LLL..LLL....",
+  "....bbb..bbb....",
+  "....bbb..bbb...."
+];
+
+const TREE = [
+  "......oooo......",
+  "....oonnnnoo....",
+  "...onnnnnnnno...",
+  "..onnnnnnnnnno..",
+  "..onnmmnnmmnno..",
+  ".onnnnnnnnnnnno.",
+  ".onnnnnnnnnnnno.",
+  ".onnmmnnnnmmnno.",
+  ".onnnnnnnnnnnno.",
+  "..onnnnnnnnnno..",
+  "..onnnnnnnnnno..",
+  "...onnnnnnnno...",
+  "....onnnnnno....",
+  "......tTTt......",
+  "......tTTt......",
+  "......tTTt......",
+  "......tTTt......",
+  "......tTTt......",
+  ".....tTTTTt.....",
+  "....tTTTTTTt...."
+];
+
+const FLAME = [
+  "................",
+  ".......11.......",
+  "......1221......",
+  ".....122221.....",
+  ".....123321.....",
+  "....12333321....",
+  "....12344321....",
+  "....12344321....",
+  "....12333321....",
+  ".....123321.....",
+  ".....122221.....",
+  "......1221......",
+  ".......11.......",
+  "................"
+];
+
+const DROP = [
+  "................",
+  ".......AA.......",
+  "......ACCA......",
+  "......ACCA......",
+  ".....ACCCCA.....",
+  ".....ACDDCA.....",
+  "....ACDDDDCA....",
+  "....ACDEEDCA....",
+  "....ACDDDDCA....",
+  ".....ACDDCA.....",
+  ".....ACCCCA.....",
+  "......ACCA......",
+  "......ACCA......",
+  ".......AA......."
+];
+
+const LEAF = [
+  ".......M........",
+  "......MNM.......",
+  ".....MNNNM......",
+  ".....MNVNNM.....",
+  "....MNNVNNNM....",
+  "....MNNVNNNM....",
+  "....MNNVNNNM....",
+  "....MNNVNNNM....",
+  "....MNNVNNNM....",
+  ".....MNVNNM.....",
+  ".....MNNNM......",
+  "......MNM.......",
+  ".......M........"
+];
+
+function drawSprite(ctx, rows, ox, oy, px){
+  for(let y=0;y<rows.length;y++){
+    const row=rows[y];
+    for(let x=0;x<row.length;x++){
+      const c=PAL[row[x]];
+      if(!c) continue;
+      ctx.fillStyle=c;
+      ctx.fillRect(ox+x*px, oy+y*px, px, px);
+    }
+  }
+}
+// fill in logical pixels
+function mkFill(ctx, ox, oy, px){
+  return (x,y,w,h,c)=>{ ctx.fillStyle=c; ctx.fillRect(ox+x*px, oy+y*px, w*px, h*px); };
+}
+
+// deterministic ground (grass + scattered texture) + path
+function drawGround(ctx, W, H, px){
+  const f=mkFill(ctx,0,0,px);
+  f(0,0,W,H,'#5ea24a');
+  // texture scatter
+  for(let y=0;y<H;y++) for(let x=0;x<W;x++){
+    const r=((x*73856093)^(y*19349663))>>>0;
+    if((r%23)===0){ ctx.fillStyle='#4a8a3c'; ctx.fillRect(x*px,y*px,px,px); }
+    else if((r%29)===0){ ctx.fillStyle='#74b85a'; ctx.fillRect(x*px,y*px,px,px); }
+  }
+}
+function drawPath(ctx, px){
+  const f=mkFill(ctx,0,0,px);
+  // plaza in front of shop + path down to player + a crossing
+  f(34,40,28,72,'#d7b87f');     // vertical band (x34..62)
+  f(0,74,256,18,'#d7b87f');     // horizontal crossing
+  // light/dark dither edges
+  for(let y=40;y<112;y++) for(let x=34;x<62;x++){
+    const r=((x*2654435761)^(y*40503))>>>0;
+    if((r%17)===0){ ctx.fillStyle='#e8cf9b'; ctx.fillRect(x*px,y*px,px,px); }
+    else if((r%19)===0){ ctx.fillStyle='#c2a062'; ctx.fillRect(x*px,y*px,px,px); }
+  }
+}
+
+function drawShop(ctx, ox, oy, px){
+  const f=mkFill(ctx,ox,oy,px);
+  // roof
+  f(8,0,80,4,'#9c3f28');
+  f(4,4,88,12,'#c65a3f');
+  f(4,4,88,3,'#e0795b');
+  f(0,16,96,4,'#6b3f1d');       // eave beam
+  // wall
+  f(4,20,88,44,'#e8d3a8');
+  f(4,20,88,3,'#fff3d8');
+  f(4,58,88,6,'#c9a772');
+  // door
+  f(40,40,16,24,'#6b3f1d'); f(42,42,12,22,'#9c6a38'); f(51,52,2,3,'#3a2410');
+  // windows (warm glow + muntins)
+  for(const wx of [12,64]){
+    f(wx,28,20,16,'#caa24a'); f(wx+2,30,16,12,'#ffe08a');
+    f(wx+9,30,2,12,'#caa24a'); f(wx+2,35,16,2,'#caa24a');
+  }
+  // hanging sign plaque + neon (pink) frame
+  f(36,6,24,14,'#2a2440');
+  f(36,6,24,2,'#ff5fa2'); f(36,18,24,2,'#ff5fa2'); f(36,6,2,14,'#ff5fa2'); f(58,6,2,14,'#ff5fa2');
+  // gold star sparkle on the plaque
+  f(47,9,2,8,'#ffd24a'); f(44,12,8,2,'#ffd24a'); f(46,11,4,4,'#fff3c4');
+}
+
+// ---- scene ----
+(function(){
+  const c=document.getElementById('scene'), ctx=c.getContext('2d');
+  ctx.imageSmoothingEnabled=false;
+  const PX=3, W=256, H=176;
+  drawGround(ctx,W,H,PX);
+  drawPath(ctx,PX);
+  drawShop(ctx, 80*PX, 8*PX, PX);
+  drawSprite(ctx, TREE, 20*PX, 92*PX, PX);
+  drawSprite(ctx, TREE, 212*PX, 104*PX, PX);
+  drawSprite(ctx, PLAYER, 40*PX, 96*PX, PX);   // on the plaza
+})();
+
+// ---- sprite zoom ----
+(function(){
+  const c=document.getElementById('sprites'), ctx=c.getContext('2d');
+  ctx.imageSmoothingEnabled=false;
+  // faint grid behind hero
+  ctx.fillStyle='#171232'; ctx.fillRect(0,0,c.width,c.height);
+  const PX=11, ox=24, oy=16;
+  ctx.strokeStyle='#221a40'; ctx.lineWidth=1;
+  for(let x=0;x<=16;x++){ ctx.beginPath(); ctx.moveTo(ox+x*PX+.5,oy); ctx.lineTo(ox+x*PX+.5,oy+24*PX); ctx.stroke(); }
+  for(let y=0;y<=24;y++){ ctx.beginPath(); ctx.moveTo(ox,oy+y*PX+.5); ctx.lineTo(ox+16*PX,oy+y*PX+.5); ctx.stroke(); }
+  drawSprite(ctx, PLAYER, ox, oy, PX);
+  drawSprite(ctx, TREE, ox+16*PX+40, oy+20, 9);
+  ctx.fillStyle='#b6a8d8'; ctx.font='12px monospace';
+  ctx.fillText('16×24 hero', ox, oy+24*PX+18);
+  ctx.fillText('16×20 tree', ox+16*PX+40, oy+20*9+34);
+})();
+
+// ---- cards ----
+function drawCard(ctx, ox, oy, PX, frame, frameHi, ink, art, motif, name, type, cost, power){
+  const f=mkFill(ctx,ox,oy,PX);
+  // frame
+  f(0,0,48,64,frame);
+  f(0,0,48,2,frameHi); f(0,0,2,64,frameHi);
+  f(46,0,2,64,'#000'); f(0,62,48,2,'#000');
+  // inner
+  f(3,12,42,49,ink);
+  // title bar
+  f(3,3,42,8,frame); f(3,3,42,1,frameHi);
+  // art window
+  f(6,14,36,30,art);
+  drawSprite(ctx, motif, ox+(6+10)*PX, oy+(14+7)*PX, PX);
+  // text bar
+  f(5,46,38,13,'#241a30');
+  // cost gem
+  f(2,2,9,9,frameHi); f(3,3,7,7,frame);
+  ctx.fillStyle='#fff'; ctx.font='bold '+(7*PX/5)+'px monospace'; ctx.textAlign='center';
+  ctx.fillText(cost, ox+6*PX, oy+9*PX);
+  // name + type + power
+  ctx.textAlign='left'; ctx.fillStyle='#f4e9cf'; ctx.font='bold '+(6*PX/5)+'px monospace';
+  ctx.fillText(name, ox+6*PX, oy+50*PX);
+  ctx.fillStyle='#b6a8d8'; ctx.font=(5*PX/5)+'px monospace';
+  ctx.fillText(type, ox+6*PX, oy+56*PX);
+  if(power!==null){
+    f(36,52,8,7,frame); f(36,52,8,1,frameHi);
+    ctx.fillStyle='#fff'; ctx.font='bold '+(6*PX/5)+'px monospace'; ctx.textAlign='center';
+    ctx.fillText(power, ox+40*PX, oy+58*PX); ctx.textAlign='left';
+  }
+}
+(function(){
+  const c=document.getElementById('cards'), ctx=c.getContext('2d');
+  ctx.imageSmoothingEnabled=false;
+  const PX=5;
+  drawCard(ctx, 20, 20, PX, '#d8442e','#ec6a44','#2a1814','#3f201a', FLAME, 'EMBER WHELP','Unit · haste','2','3');
+  drawCard(ctx, 20+48*PX+30, 20, PX, '#2e7fb8','#5fa3c9','#142634','#16344a', DROP, 'TIDAL PULL','Spell · draw 2','3', null);
+  drawCard(ctx, 20+(48*PX+30)*2, 20, PX, '#4a9e4a','#6fc45a','#15301a','#173f1c', LEAF, 'OAK WARDEN','Unit · lifegain','5','6');
+})();
+
+// ---- palette ramps ----
+(function(){
+  const ramps = {
+    'Ember':['#7a1f12','#b6391f','#e0573f','#ffae4a','#ffe49a'],
+    'Tide':['#0f3a5c','#1d5f8c','#2e7fb8','#6fb8e0','#cfeaf8'],
+    'Verdant':['#134a1c','#1f6b2a','#3a9e3f','#6fc45a','#bfe8a0'],
+    'Gloom':['#2a1840','#43295e','#6b4c8a','#9a7cc0','#d3c2ec'],
+    'Order':['#7a5a14','#a8861f','#d8c24a','#f0dc7a','#fff3c4']
+  };
+  const host=document.getElementById('swatches');
+  for(const k in ramps){
+    const d=document.createElement('div'); d.className='ramp';
+    const chips=ramps[k].map(c=>'<span class="chip" style="background:'+c+'"></span>').join('');
+    d.innerHTML='<b>'+k+'</b><div class="chips">'+chips+'</div>';
+    host.appendChild(d);
+  }
+})();
+</script>
+</body>
+</html>

@@ -14,7 +14,7 @@ import { ShopStage, ShopItemVM, ShopVM } from "./shopStage";
 import { HudLayer, HudTip, HudVM } from "./hudLayer";
 import { FeltControls, FeltControlsVM } from "./feltControls";
 import { StyleFxLayer } from "./styleFx";
-import { KILL_FX, PIXEL_FONT, PLASMA_PALETTE, THEME } from "./theme";
+import { KILL_FX, PIXEL_FONT, PLASMA_PALETTE, PLASMA_PALETTE_PACK, THEME } from "./theme";
 
 export interface EnemyVM {
   tier: string;
@@ -62,7 +62,7 @@ export class CombatStage {
   onDeckClick?: () => void;
   onDiscardClick?: () => void;
   onDeckHover?: (over: boolean) => void;
-  onHover?: (id: string | null) => void;
+  onHover?: (id: string | null, rect: { left: number; right: number; top: number; height: number } | null) => void;
   // shop intents (the shop is an overlay layer on this same felt — Balatro's single-stage market)
   onShopBuy?: (vm: ShopItemVM) => void;
   onShopReroll?: () => void;
@@ -203,7 +203,20 @@ export class CombatStage {
         const hid = top ? top.card.id : null;
         if (hid !== this.hoverId) {
           this.hoverId = hid;
-          this.onHover?.(hid);
+          if (top) {
+            // Map the hovered card's stage-space rect into viewport coords so the shared tooltip
+            // surface can place itself beside the card.
+            const rect = this.app.canvas.getBoundingClientRect();
+            const sw = this.app.screen.width;
+            const sh = this.app.screen.height;
+            const cx = rect.left + (top.view.x / sw) * rect.width;
+            const cy = rect.top + (top.view.y / sh) * rect.height;
+            const hw = (CARD_W / 2 / sw) * rect.width;
+            const hh = (CARD_H / 2 / sh) * rect.height;
+            this.onHover?.(hid, { left: cx - hw, right: cx + hw, top: cy - hh, height: hh * 2 });
+          } else {
+            this.onHover?.(null, null);
+          }
         }
         // hovering the draw pile shows the "remaining cards" peek table
         const overDeck = Math.abs(e.global.x - DECK_X) < 18 && Math.abs(e.global.y - PILE_Y) < 30;
@@ -417,6 +430,13 @@ export class CombatStage {
     this.shop?.setShop(vm);
   }
 
+  /** Pack-opening take-over: slide the shop tray down so the picks read against the plasma, and
+   *  swap the plasma to its cooler purple palette (signals "this is the pack screen", Balatro-style). */
+  setShopCovered(covered: boolean): void {
+    this.shop?.setCovered(covered);
+    this.plasma.setPalette(covered ? PLASMA_PALETTE_PACK : PLASMA_PALETTE);
+  }
+
   /** Re-paint the guild/pouch HUD band (cheap — skips internally when nothing visible changed). */
   syncHud(vm: HudVM): void {
     this.hud.syncHud(vm);
@@ -427,7 +447,29 @@ export class CombatStage {
     this.controls.sync(vm);
   }
 
+  private lastSyncSig = "";
   sync(vm: CombatVM): void {
+    // Skip the full sync when nothing visible has changed — without this every store change
+    // (Options modal open/close, sidebar tick, etc.) re-ran the hand-layout pass and visibly
+    // re-positioned cards even when they were nominally identical to their previous targets.
+    const sig = JSON.stringify({
+      h: vm.hand.map((c) => c.id),
+      s: vm.selectedIds,
+      p: vm.subphase,
+      d: vm.deckCount,
+      u: vm.discardCount,
+      i: vm.incoming,
+      e: {
+        t: vm.enemy.tier,
+        d: vm.enemy.damageTaken,
+        s: vm.enemy.shield,
+        im: vm.enemy.immuneSuit,
+        hp: vm.enemy.maxHealth, // include maxHealth so changes to it (decree healthMult, etc.) trigger sync
+      },
+      ld: vm.lastDiscard,
+    });
+    if (sig === this.lastSyncSig) return;
+    this.lastSyncSig = sig;
     this.subphase = vm.subphase;
     // The royal panel (tier / HP / immunity / decrees) lives in the Pixi sidebar now; the felt only
     // tracks the player's accumulated block, which drives the "BLOCK n" pop when a strike is soaked.
@@ -443,9 +485,9 @@ export class CombatStage {
     this.setText(this.discardText, `USED ${vm.discardCount}`);
     // the face-up top of the used pile is the REAL card model (buildCardFace), not a glyph
     const last = vm.lastDiscard;
-    const sig = last ? `${last.suit ?? "★"}|${last.value}|${last.kind}` : "";
-    if (sig !== this.discardFaceSig) {
-      this.discardFaceSig = sig;
+    const discSig = last ? `${last.suit ?? "★"}|${last.value}|${last.kind}` : "";
+    if (discSig !== this.discardFaceSig) {
+      this.discardFaceSig = discSig;
       this.discardFace.removeChildren();
       if (last) {
         this.discardFace.addChild(buildCardFace({ id: "discard-top", suit: last.suit, value: last.value, kind: last.kind, sigils: [] } as Card, CARD_W));

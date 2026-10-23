@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" font-family="'Trebuchet MS',sans-serif">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cdd6e0"/><stop offset="1" stop-color="#aeb8c6"/></linearGradient>
+    <pattern id="floor" width="56" height="40" patternUnits="userSpaceOnUse">
+      <rect width="56" height="40" fill="#8a93a6"/><rect width="28" height="20" fill="#828ba0"/><rect x="28" y="20" width="28" height="20" fill="#828ba0"/>
+    </pattern>
+    <linearGradient id="ftube" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffef0"/><stop offset="1" stop-color="#e9ecd8"/></linearGradient>
+    <style>
+      .tbl{fill:#2f7d4f;stroke:#1f5e38;stroke-width:3;}
+      .lbl{fill:#fff6df;font-weight:bold;font-size:12px;text-anchor:middle;}
+      .lblbg{fill:#2a2440;stroke:#f4c430;stroke-width:2;}
+      .name{fill:#2a2440;font-size:11px;font-family:'Courier New',monospace;}
+      .rec{fill:#1f5e38;font-size:11px;font-weight:bold;font-family:'Courier New',monospace;}
+    </style>
+  </defs>
+
+  <rect width="900" height="330" fill="url(#wall)"/>
+  <rect y="330" width="900" height="230" fill="url(#floor)"/>
+  <rect y="322" width="900" height="10" fill="#5e6577"/>
+
+  <!-- ceiling fluorescent tubes -->
+  <g>
+    <rect x="120" y="14" width="180" height="14" rx="3" fill="url(#ftube)" stroke="#c9ccb8" stroke-width="2"/>
+    <rect x="360" y="14" width="180" height="14" rx="3" fill="url(#ftube)" stroke="#c9ccb8" stroke-width="2"/>
+    <rect x="600" y="14" width="180" height="14" rx="3" fill="url(#ftube)" stroke="#c9ccb8" stroke-width="2"/>
+  </g>
+
+  <!-- big banner -->
+  <g transform="translate(250,40)">
+    <rect x="0" y="0" width="400" height="46" rx="8" fill="#1f1838" stroke="#f4c430" stroke-width="3"/>
+    <text x="200" y="22" text-anchor="middle" font-size="20" font-weight="bold" fill="#ffe9a0" letter-spacing="4">★ PRISM ★</text>
+    <text x="200" y="39" text-anchor="middle" font-size="12" fill="#cbb8f0" letter-spacing="2">REGIONAL QUALIFIER · 64 PLAYERS</text>
+  </g>
+
+  <!-- affinity bunting -->
+  <g>
+    <polygon points="60,100 84,100 72,118" fill="#d9442e"/><polygon points="92,100 116,100 104,118" fill="#2e7fb8"/>
+    <polygon points="124,100 148,100 136,118" fill="#4a9e4a"/><polygon points="156,100 180,100 168,118" fill="#7d5aa6"/>
+    <polygon points="720,100 744,100 732,118" fill="#d8c24a"/><polygon points="752,100 776,100 764,118" fill="#d9442e"/>
+    <polygon points="784,100 808,100 796,118" fill="#2e7fb8"/><polygon points="816,100 840,100 828,118" fill="#4a9e4a"/>
+  </g>
+
+  <!-- feature-match stage (back center) -->
+  <g transform="translate(360,108)">
+    <rect x="0" y="0" width="180" height="120" rx="6" fill="#15122c" stroke="#3a2f60" stroke-width="3"/>
+    <text x="90" y="16" text-anchor="middle" font-size="10" fill="#9ad0ff" font-weight="bold">FEATURE MATCH</text>
+    <!-- mini duel board on screen -->
+    <line x1="14" y1="64" x2="166" y2="64" stroke="#6a5da0" stroke-width="1" stroke-dasharray="2 4"/>
+    <g>
+      <rect x="30" y="30" width="26" height="20" rx="3" fill="#241830" stroke="#7d5aa6" stroke-width="2"/>
+      <rect x="78" y="30" width="26" height="20" rx="3" fill="#182634" stroke="#2e7fb8" stroke-width="2"/>
+      <rect x="30" y="74" width="26" height="20" rx="3" fill="#321811" stroke="#d9442e" stroke-width="2"/>
+      <rect x="124" y="74" width="26" height="20" rx="3" fill="#16301a" stroke="#4a9e4a" stroke-width="2"/>
+    </g>
+    <circle cx="150" cy="34" r="8" fill="#e0577f"/><text x="150" y="38" text-anchor="middle" font-size="9" fill="#fff" font-weight="bold">9</text>
+    <circle cx="150" cy="100" r="8" fill="#f4b942"/><text x="150" y="104" text-anchor="middle" font-size="9" fill="#5a3410" font-weight="bold">14</text>
+  </g>
+
+  <!-- standings whiteboard (left) -->
+  <g transform="translate(40,150)">
+    <rect x="0" y="0" width="190" height="172" rx="6" fill="#f3f1e4" stroke="#9c9684" stroke-width="5"/>
+    <rect x="0" y="0" width="190" height="24" fill="#2a2440"/>
+    <text x="95" y="17" text-anchor="middle" font-size="12" fill="#ffe9a0" font-weight="bold">STANDINGS</text>
+    <g>
+      <text class="name" x="12" y="48">1. K. Volkov</text><text class="rec" x="178" y="48" text-anchor="end">7-0</text>
+      <text class="name" x="12" y="70">2. YOU</text><text class="rec" x="178" y="70" text-anchor="end">6-1</text>
+      <text class="name" x="12" y="92">3. M. Reyes</text><text class="rec" x="178" y="92" text-anchor="end">6-1</text>
+      <text class="name" x="12" y="114">4. S. Okafor</text><text class="rec" x="178" y="114" text-anchor="end">5-2</text>
+      <text class="name" x="12" y="136">5. T. Bauer</text><text class="rec" x="178" y="136" text-anchor="end">5-2</text>
+      <text class="name" x="12" y="158">6. A. Lindqvist</text><text class="rec" x="178" y="158" text-anchor="end">5-2</text>
+    </g>
+    <rect x="6" y="60" width="178" height="16" fill="#f4c430" opacity="0.25"/>
+  </g>
+
+  <!-- vendor booth (right) -->
+  <g transform="translate(688,150)">
+    <rect x="0" y="0" width="172" height="172" rx="6" fill="#6b3f1d" stroke="#4a2c14" stroke-width="4"/>
+    <rect x="0" y="-22" width="172" height="24" rx="4" fill="#1f1838" stroke="#f4c430" stroke-width="2"/>
+    <text x="86" y="-5" text-anchor="middle" font-size="11" fill="#fff6df" font-weight="bold">SINGLES · PACKS</text>
+    <g>
+      <rect x="12" y="14" width="30" height="42" rx="3" fill="#d9442e"/><rect x="48" y="14" width="30" height="42" rx="3" fill="#2e7fb8"/>
+      <rect x="84" y="14" width="30" height="42" rx="3" fill="#4a9e4a"/><rect x="120" y="14" width="30" height="42" rx="3" fill="#7d5aa6"/>
+    </g>
+    <rect x="8" y="66" width="156" height="44" rx="3" fill="#cfe7f2" opacity="0.6" stroke="#aebfc9" stroke-width="2"/>
+    <g><rect x="16" y="72" width="16" height="22" fill="#fff6e8" stroke="#d9442e"/><rect x="38" y="72" width="16" height="22" fill="#fff6e8" stroke="#d8c24a"/><rect x="60" y="72" width="16" height="22" fill="#fff6e8" stroke="#4a9e4a"/></g>
+    <rect x="8" y="120" width="156" height="44" rx="4" fill="#8a5a2b"/>
+  </g>
+
+  <!-- rows of play tables -->
+  <g>
+    <!-- table unit repeated -->
+    <g transform="translate(300,360)">
+      <ellipse cx="0" cy="36" rx="78" ry="14" fill="#000" opacity="0.12"/>
+      <circle cx="0" cy="-26" r="14" fill="#f1c79b"/><path d="M-14 -30 Q0 -46 14 -30 L14 -38 Q0 -44 -14 -38Z" fill="#5a3a1a"/>
+      <rect class="tbl" x="-78" y="-12" width="156" height="34" rx="8"/>
+      <rect x="-50" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#d9442e" stroke-width="2"/>
+      <rect x="-22" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#2e7fb8" stroke-width="2"/>
+      <rect x="30" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#4a9e4a" stroke-width="2"/>
+      <circle cx="0" cy="44" r="16" fill="#3a2a1a"/>
+    </g>
+    <g transform="translate(490,360)">
+      <ellipse cx="0" cy="36" rx="78" ry="14" fill="#000" opacity="0.12"/>
+      <circle cx="0" cy="-26" r="14" fill="#e8b98a"/><path d="M-14 -30 Q0 -48 14 -30 L16 -22 Q0 -36 -16 -22Z" fill="#1f1730"/>
+      <rect class="tbl" x="-78" y="-12" width="156" height="34" rx="8"/>
+      <rect x="-50" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#7d5aa6" stroke-width="2"/>
+      <rect x="-22" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#d8c24a" stroke-width="2"/>
+      <rect x="30" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#d9442e" stroke-width="2"/>
+      <circle cx="0" cy="44" r="16" fill="#caa278"/>
+    </g>
+    <g transform="translate(300,470)">
+      <ellipse cx="0" cy="36" rx="78" ry="14" fill="#000" opacity="0.12"/>
+      <circle cx="0" cy="-26" r="14" fill="#caa278"/><path d="M-14 -30 Q0 -46 14 -30 L14 -38 Q0 -44 -14 -38Z" fill="#3a2a1a"/>
+      <rect class="tbl" x="-78" y="-12" width="156" height="34" rx="8"/>
+      <rect x="-50" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#4a9e4a" stroke-width="2"/>
+      <rect x="-22" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#d9442e" stroke-width="2"/>
+      <rect x="30" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#2e7fb8" stroke-width="2"/>
+      <circle cx="0" cy="44" r="16" fill="#e8b98a"/>
+    </g>
+    <g transform="translate(490,470)">
+      <ellipse cx="0" cy="36" rx="78" ry="14" fill="#000" opacity="0.12"/>
+      <circle cx="0" cy="-26" r="14" fill="#f1c79b"/><path d="M-14 -30 Q0 -48 14 -30 L16 -22 Q0 -36 -16 -22Z" fill="#5a3a8a"/>
+      <rect class="tbl" x="-78" y="-12" width="156" height="34" rx="8"/>
+      <rect x="-50" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#d8c24a" stroke-width="2"/>
+      <rect x="-22" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#7d5aa6" stroke-width="2"/>
+      <rect x="30" y="-6" width="20" height="28" rx="3" fill="#fff6e8" stroke="#4a9e4a" stroke-width="2"/>
+      <circle cx="0" cy="44" r="16" fill="#3a2a1a"/>
+    </g>
+  </g>
+
+  <rect x="300" y="524" width="300" height="28" rx="8" fill="#2a2440" stroke="#f4c430" stroke-width="2"/>
+  <text x="450" y="543" text-anchor="middle" fill="#fff6df" font-size="13" font-weight="bold">TOURNAMENT HALL — the circuit (world: concept only)</text>
+</svg>

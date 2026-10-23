@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" font-family="'Courier New',monospace">
+  <defs>
+    <style>
+      .btn{fill:#d8c24a;stroke:#9c8226;stroke-width:2;}
+      .userbox{fill:#e7e0cd;stroke:#9c9684;stroke-width:2;}
+      .post{fill:#fbf3df;stroke:#9c9684;stroke-width:2;}
+      .uname{fill:#1f1838;font-size:12px;font-weight:bold;}
+      .rank{font-size:9px;}
+      .body{fill:#2a2440;font-size:12px;}
+      .sig{fill:#5b6070;font-size:10px;font-style:italic;}
+      .quote{fill:#5b6070;font-size:11px;font-style:italic;}
+    </style>
+  </defs>
+
+  <rect x="8" y="8" width="884" height="624" rx="4" fill="#c7ccd6" stroke="#5b6070" stroke-width="2"/>
+  <rect x="10" y="10" width="880" height="22" fill="#2a2440"/>
+  <text x="18" y="26" fill="#fff6df" font-size="12" font-weight="bold">PrismNexus Forums — Deck Help — "Rate my Ember aggro for Regionals?"</text>
+  <g fill="#c7ccd6"><rect x="836" y="13" width="16" height="16" stroke="#5b6070"/><rect x="855" y="13" width="16" height="16" stroke="#5b6070"/><rect x="874" y="13" width="12" height="16" stroke="#5b6070"/></g>
+
+  <!-- page -->
+  <rect x="10" y="32" width="880" height="600" fill="#f4e8d0"/>
+
+  <!-- header -->
+  <rect x="10" y="32" width="880" height="44" fill="#1f1838"/>
+  <text x="26" y="62" fill="#ffe9a0" font-size="22" font-weight="bold">PRISMNEXUS <tspan fill="#6fb8e0" font-size="14">// forums</tspan></text>
+  <text x="660" y="52" fill="#9ad0ff" font-size="11">Home · Search · Members · Login</text>
+  <text x="660" y="68" fill="#cbb8f0" font-size="11">Logged in as: noob_brewer (12 posts)</text>
+  <rect x="10" y="76" width="880" height="3" fill="#f4c430"/>
+
+  <!-- breadcrumb + thread title -->
+  <text x="26" y="98" fill="#5b6070" font-size="11">Forums » Strategy &amp; Deck Help » Standard</text>
+  <rect x="22" y="106" width="856" height="26" fill="#2a2440"/>
+  <text x="32" y="124" fill="#ffe9a0" font-size="14" font-weight="bold">Rate my Ember aggro for Regionals? (page 1 of 3)</text>
+
+  <!-- POST 1 -->
+  <g transform="translate(22,138)">
+    <rect class="userbox" x="0" y="0" width="150" height="150"/>
+    <rect x="46" y="12" width="58" height="58" fill="#2a1814" stroke="#d9442e" stroke-width="3"/>
+    <polygon points="75,24 81,40 97,40 84,50 89,66 75,56 61,66 66,50 53,40 69,40" fill="#ffae4a"/>
+    <text class="uname" x="75" y="88" text-anchor="middle">EmberLord99</text>
+    <text class="rank" x="75" y="104" text-anchor="middle" fill="#d9442e" font-weight="bold">★★★ Veteran</text>
+    <text class="rank" x="75" y="120" text-anchor="middle" fill="#5b6070">Posts: 1,204</text>
+    <text class="rank" x="75" y="136" text-anchor="middle" fill="#5b6070">Joined: 2002</text>
+
+    <rect class="post" x="150" y="0" width="706" height="150"/>
+    <text x="162" y="18" fill="#5b6070" font-size="10">Posted: Mon 14:32 — #1</text>
+    <text class="body" x="162" y="40">If you're going fast, you want 4x Ember Whelp and a low curve. Refract</text>
+    <text class="body" x="162" y="58">aggressively turns 1-2 — you're racing their Nexus, not their board.</text>
+    <text class="body" x="162" y="76">Cut the 5-drops. Two open lanes &gt; one big body when you're the beatdown.</text>
+    <rect x="162" y="92" width="680" height="2" fill="#d8c24a"/>
+    <text class="sig" x="162" y="112">— "Light is tempo. Spend it." | RC top 8 x3 | Ember til I die 🔥</text>
+  </g>
+
+  <!-- POST 2 (OP reply) -->
+  <g transform="translate(22,300)">
+    <rect class="userbox" x="0" y="0" width="150" height="150"/>
+    <rect x="46" y="12" width="58" height="58" fill="#142634" stroke="#2e7fb8" stroke-width="3"/>
+    <circle cx="75" cy="40" r="16" fill="#6fb8e0"/><circle cx="75" cy="36" r="6" fill="#cfeaf8"/>
+    <text class="uname" x="75" y="88" text-anchor="middle">noob_brewer</text>
+    <text class="rank" x="75" y="104" text-anchor="middle" fill="#4a9e4a" font-weight="bold">★ Rookie (OP)</text>
+    <text class="rank" x="75" y="120" text-anchor="middle" fill="#5b6070">Posts: 12</text>
+    <text class="rank" x="75" y="136" text-anchor="middle" fill="#5b6070">Joined: today</text>
+
+    <rect class="post" x="150" y="0" width="706" height="150"/>
+    <text x="162" y="18" fill="#5b6070" font-size="10">Posted: Mon 14:51 — #2</text>
+    <rect x="162" y="28" width="680" height="36" fill="#efe6cc" stroke="#cdbf99"/>
+    <text class="quote" x="170" y="44">&gt; cut the 5-drops, two open lanes &gt; one big body</text>
+    <text class="quote" x="170" y="58">EmberLord99 wrote</text>
+    <text class="body" x="162" y="84">omg thank you, that makes sense. but don't I die to Order go-wide if I</text>
+    <text class="body" x="162" y="102">have no blockers?? my local meta is ALL Order + Tide control rn 😭</text>
+    <text class="sig" x="162" y="134">— just trying to qualify before my mum makes me get a summer job</text>
+  </g>
+
+  <!-- POST 3 -->
+  <g transform="translate(22,462)">
+    <rect class="userbox" x="0" y="0" width="150" height="120"/>
+    <rect x="46" y="12" width="58" height="58" fill="#221830" stroke="#7d5aa6" stroke-width="3"/>
+    <circle cx="75" cy="42" r="15" fill="#9a7cc0"/><path d="M68 34 a10 10 0 1 0 12 14 a8 8 0 1 1 -12 -14" fill="#d3c2ec"/>
+    <text class="uname" x="75" y="88" text-anchor="middle">TideMistress</text>
+    <text class="rank" x="75" y="104" text-anchor="middle" fill="#7d5aa6" font-weight="bold">★★ Regular</text>
+
+    <rect class="post" x="150" y="0" width="706" height="120"/>
+    <text x="162" y="18" fill="#5b6070" font-size="10">Posted: Mon 15:07 — #3</text>
+    <text class="body" x="162" y="40">Pierce. The answer is Pierce. Two cheap Pierce units laugh at Order walls</text>
+    <text class="body" x="162" y="58">and still close. Also pls stop calling it "aggro," it's a *tempo* deck 🙄</text>
+    <text class="sig" x="162" y="92">— TideMistress | moderator | "rate my deck" is not a strategy, friends</text>
+  </g>
+
+  <!-- reply bar -->
+  <rect x="700" y="592" width="178" height="30" class="btn"/><text x="789" y="612" text-anchor="middle" font-size="13" font-weight="bold" fill="#3a2a10">✎ Post Reply</text>
+  <text x="26" y="612" fill="#5b6070" font-size="11">CONCEPT — community forum (in-fiction web; world feature, concept only)</text>
+</svg>

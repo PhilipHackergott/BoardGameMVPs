@@ -23,6 +23,30 @@ the knowledge base stays transferable across projects.
 Deviations are allowed but must be **justified in the build plan** (`04-build-plan.md`) and,
 if generally useful, written back to `knowledge/`.
 
+## 3D concepts (the `render/` substrate can be 3D)
+
+Most titles are 2D (Pixi or DOM). **Original video-game concepts** may need 3D — and the factory
+supports it **without breaking any rule above**:
+
+| Layer | 3D choice | Why |
+|-------|-----------|-----|
+| Board/scene rendering | **React Three Fiber** (Three.js + React) | Slots into the *exact* stack (Vite/TS/React/Zustand). The pure `engine/` is untouched; `render/` simply becomes an R3F `<Canvas>` instead of a Pixi scene. R3F beats Babylon.js *here* because Babylon isn't React-native. |
+| Physics (if needed) | `@react-three/rapier` | Matured 2025; wraps Rapier. |
+| Character controller | `ecctrl` | Drop-in first/third-person movement. |
+| Helpers | `drei` | Cameras, loaders, controls, common abstractions. |
+
+Rules that **still apply** to a 3D title:
+- **Engine purity is unchanged.** Game/sim logic stays in pure `engine/`; the R3F scene only
+  *projects* engine state to 3D and translates input to engine actions. Determinism + seeded RNG
+  still required.
+- **Lazy-load the 3D.** Three.js + R3F is a heavy bundle — boot the React shell first, then
+  `React.lazy` the `<Canvas>`. For mobile: glTF + Draco compression, LOD, instancing.
+- **The asset pipeline is the real constraint, not rendering.** The zero-asset model doesn't
+  extend to 3D models/textures/animations. Use **CC0 low-poly packs** (Kenney, Quaternius, KayKit,
+  Poly Haven) + **procedural primitive geometry** (build rooms/props from boxes/extrusions in code)
+  + synthesized audio. A **stylized low-poly** look is in scope; **photoreal / bespoke character
+  animation is out of scope** (needs an art team). Record `stack: "react-ts-r3f"`.
+
 ## The engine/UI split (most important rule)
 
 ```

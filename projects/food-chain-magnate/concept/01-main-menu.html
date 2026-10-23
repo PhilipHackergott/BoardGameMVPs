@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCM concept · Main Menu</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .menu-screen{min-height:700px;display:grid;grid-template-rows:auto auto 1fr auto;position:relative;overflow:hidden;
+    background:radial-gradient(120% 90% at 50% 0%, #2a4a5e 0%, var(--navy) 38%, #14222d 100%);color:#fff}
+  .menu-screen .halftone{position:absolute;inset:0;color:#fff;opacity:.07;z-index:0}
+  .menu-screen .starfield{position:absolute;inset:0;z-index:0;opacity:.7}
+  /* atomic sunburst behind the logo */
+  .sun{position:absolute;top:-120px;left:50%;width:520px;height:520px;transform:translateX(-50%);
+    opacity:.16;z-index:1;filter:blur(.3px)}
+  .marquee{margin:40px auto 0;text-align:center;position:relative;z-index:3}
+  .marquee .est{display:inline-flex;align-items:center;gap:8px;background:var(--mustard);color:var(--ink);
+    font-family:var(--font-display);letter-spacing:2px;font-size:.8rem;padding:4px 14px;border:2px solid #fff;
+    border-radius:999px;transform:rotate(-3deg);box-shadow:var(--shadow);white-space:nowrap}
+  .marquee .est .atomic-star{width:11px;display:inline-block}
+  .marquee .logo{font-family:var(--font-script);font-size:4.8rem;line-height:.9;margin:10px 0 0;color:#fff;
+    text-shadow:0 0 20px rgba(31,174,156,.7), 4px 4px 0 var(--cherry);white-space:nowrap}
+  .marquee .logo .a{color:var(--mustard)}
+  .marquee .tag{font-family:var(--font-display);letter-spacing:4px;font-size:1rem;color:var(--turquoise);margin-top:8px;white-space:nowrap}
+  .bulbs{height:9px;width:62%;margin:14px auto 2px;border-radius:999px;border:1px solid #0004;
+    background:repeating-linear-gradient(90deg,var(--mustard) 0 7px,#fff6 7px 9px,transparent 9px 18px)}
+  .menu{align-self:center;display:flex;flex-direction:column;gap:14px;width:340px;margin:0 auto;z-index:3}
+  .menu .btn{display:flex;flex-direction:column;align-items:center;gap:1px}
+  .menu .sub{font-family:var(--font-body);font-weight:600;font-size:.66rem;opacity:.82}
+  .skyline{position:absolute;bottom:0;left:0;right:0;z-index:2}
+  .foot{position:relative;z-index:3;text-align:center;padding:10px;font-size:.72rem;color:#cfe;opacity:.72}
+  .corner{position:absolute;z-index:2;opacity:.5}
+  .corner.tl{top:14px;left:14px} .corner.tr{top:14px;right:16px}
+</style></head>
+<body>
+<div class="frame">
+  <a class="backlink" href="index.html">&larr; concept set</a>
+  <h1 class="caption">Main Menu</h1>
+  <p class="sub">Drive-in marquee: atomic sunburst behind the script logotype, marquee bulbs, candy-stripe ribbon, a finned '55 cruiser zipping past the diner, halftone dusk. Campaign is a first-class entry.</p>
+  <div class="screen menu-screen">
+    <div class="halftone"></div><div class="starfield"></div>
+    <!-- atomic sunburst -->
+    <div class="sun sunburst"></div>
+
+    <!-- corner motifs -->
+    <svg class="corner tl" width="54" height="54" viewBox="0 0 60 60" aria-hidden="true">
+      <ellipse cx="30" cy="44" rx="22" ry="6" fill="#5a3a1e"/>
+      <rect x="9" y="34" width="42" height="10" rx="5" fill="#caa15a"/>
+      <rect x="11" y="27" width="38" height="9" rx="4" fill="#8a5a2a"/>
+      <path d="M9 28 q21 -16 42 0z" fill="#e0b25c"/>
+      <circle cx="22" cy="22" r="1.6" fill="#fff8"/><circle cx="34" cy="24" r="1.6" fill="#fff8"/>
+    </svg>
+    <svg class="corner tr" width="46" height="60" viewBox="0 0 50 64" aria-hidden="true">
+      <path d="M14 22 h22 l-3 30 a8 8 0 0 1 -16 0z" fill="#fff" stroke="#2B2118" stroke-width="2"/>
+      <rect x="12" y="16" width="26" height="7" rx="3" fill="var(--cherry)"/>
+      <rect x="22" y="2" width="6" height="16" fill="#fff" stroke="#2B2118" stroke-width="1.5"/>
+      <path d="M22 4 q3 -5 6 0z" fill="var(--cherry)"/>
+      <rect x="17" y="30" width="16" height="3" fill="var(--cherry)" opacity=".5"/>
+    </svg>
+
+    <div class="marquee">
+      <span class="est"><span class="atomic-star cherry"></span> EST. 1955 <span class="atomic-star cherry"></span></span>
+      <div class="logo">Food <span class="a">Chain</span> Magnate</div>
+      <div class="tag">A FAST-FOOD EMPIRE BUILDER</div>
+      <div class="bulbs"></div>
+    </div>
+
+    <div class="ribbon" style="z-index:2;margin-top:6px"></div>
+
+    <div class="menu">
+      <button class="btn big primary">CONTINUE<span class="sub">Suburbia · Turn 7 · You lead $312</span></button>
+      <button class="btn big">NEW GAME<span class="sub">Skirmish · 2–4 players · humans &amp; AI</span></button>
+      <button class="btn big" style="background:var(--mustard)">CAMPAIGN<span class="sub">Rise of a Fast-Food Empire · solo</span></button>
+      <div class="row gap3">
+        <button class="btn" style="flex:1">HOW TO PLAY</button>
+        <button class="btn" style="flex:1">SETTINGS</button>
+      </div>
+    </div>
+
+    <svg class="skyline" viewBox="0 0 1100 150" preserveAspectRatio="none" height="150">
+      <!-- ground + road -->
+      <rect x="0" y="116" width="1100" height="34" fill="#0d171e"/>
+      <rect x="0" y="112" width="1100" height="7" fill="#1c2f3a"/>
+      <g stroke="var(--mustard)" stroke-width="2" stroke-dasharray="22 18" opacity=".7"><line x1="0" y1="134" x2="1100" y2="134"/></g>
+      <!-- moon + sunburst glow -->
+      <circle cx="980" cy="34" r="16" fill="#f4ead0" opacity=".85"/>
+      <!-- diner with neon -->
+      <rect x="60" y="74" width="170" height="42" fill="#13212b" stroke="#2a4a5e"/>
+      <rect x="60" y="74" width="170" height="9" fill="var(--turquoise)" opacity=".5"/>
+      <rect x="135" y="40" width="9" height="34" fill="#2a4a5e"/>
+      <circle cx="139" cy="36" r="11" fill="var(--cherry)"/>
+      <text x="145" y="104" font-family="Pacifico" font-size="16" fill="var(--mustard)" text-anchor="middle">Diner</text>
+      <!-- billboard -->
+      <rect x="300" y="56" width="96" height="44" fill="#13212b" stroke="var(--turquoise)"/>
+      <text x="348" y="84" font-family="Anton" font-size="15" fill="var(--turquoise)" text-anchor="middle">EAT</text>
+      <rect x="344" y="100" width="7" height="16" fill="#2a4a5e"/>
+      <!-- houses -->
+      <g fill="#13212b" stroke="#2a4a5e">
+        <path d="M470 98 l24 -18 24 18 v18 h-48z"/><path d="M560 100 l20 -15 20 15 v16 h-40z"/>
+        <path d="M1000 96 l24 -17 24 17 v20 h-48z"/>
+      </g>
+      <!-- big roadside arrow sign -->
+      <rect x="690" y="30" width="130" height="44" rx="6" fill="#13212b" stroke="var(--mustard)"/>
+      <text x="755" y="60" font-family="Pacifico" font-size="22" fill="var(--mustard)" text-anchor="middle">Burger!</text>
+      <rect x="751" y="74" width="8" height="42" fill="#2a4a5e"/>
+      <!-- finned '55 cruiser zipping along the road -->
+      <g transform="translate(820,96)">
+        <!-- motion lines -->
+        <g stroke="var(--turquoise)" stroke-width="3" opacity=".55"><line x1="-34" y1="14" x2="-10" y2="14"/><line x1="-30" y1="22" x2="-6" y2="22"/><line x1="-26" y1="30" x2="-2" y2="30"/></g>
+        <!-- body -->
+        <path d="M0 30 q8 -20 34 -20 l34 0 q20 0 30 9 l38 5 q16 2 16 12 l0 4 q0 6 -8 6 l-152 0 q-8 0 -8 -8 z" fill="var(--cherry)" stroke="#2B2118" stroke-width="2"/>
+        <!-- tail fin -->
+        <path d="M150 28 l18 -12 l3 16 z" fill="var(--cherry)" stroke="#2B2118" stroke-width="2"/>
+        <!-- chrome strip -->
+        <rect x="6" y="40" width="150" height="3" fill="#fff" opacity=".7"/>
+        <!-- windows -->
+        <path d="M40 14 l30 0 l8 13 l-44 0 z" fill="#bfe6ef" stroke="#2B2118" stroke-width="1.5"/>
+        <!-- wheels (whitewalls) -->
+        <circle cx="42" cy="52" r="11" fill="#11181d"/><circle cx="42" cy="52" r="5" fill="#e9e3d2"/>
+        <circle cx="126" cy="52" r="11" fill="#11181d"/><circle cx="126" cy="52" r="5" fill="#e9e3d2"/>
+        <!-- headlight -->
+        <circle cx="170" cy="36" r="3.5" fill="var(--mustard)"/>
+      </g>
+    </svg>
+
+    <div class="foot">Unpublished, non-distributed personal prototype · real-IP build · do not distribute</div>
+  </div>
+  <p class="note">Decorative kit (all CSS/SVG, zero-asset): <code>.sunburst</code> rays, <code>.ribbon</code> candy-stripe, <code>.halftone</code> + <code>.starfield</code> dusk, <code>.atomic-star</code> sparkles, and inline-SVG diner / billboard / finned-car illustrations.</p>
+</div>
+</body></html>

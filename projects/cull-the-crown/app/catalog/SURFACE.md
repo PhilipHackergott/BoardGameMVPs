@@ -5,7 +5,7 @@ design-system cleanup and component generalisation. Screenshots live beside this
 captured via [`scripts/verify-catalog.mjs`](../scripts/verify-catalog.mjs) (drives the engine through the
 `window.__game` dev seam, so each frame is a real render).
 
-_Last regenerated: 2026-05-25._
+_Last regenerated: 2026-05-26._
 
 > **Big shift since the last pass: the UI has largely migrated from DOM to a unified Pixi kit.** Almost
 > every screen and overlay is now drawn on a `<canvas>` (PixiJS), not in the DOM. A single Pixi modal

@@ -74,3 +74,14 @@ export const PLASMA_PALETTE: Rgb[] = [
   [210, 150, 70],
   [60, 26, 44],
 ];
+
+// Pack-opening plasma: cooler purple — signals "you're in the pack take-over, not the shop".
+// Matches Balatro's Arcana-pack screen palette.
+export const PLASMA_PALETTE_PACK: Rgb[] = [
+  [16, 10, 28],
+  [42, 22, 64],
+  [86, 46, 132],
+  [134, 88, 196],
+  [222, 196, 240],
+  [50, 30, 92],
+];

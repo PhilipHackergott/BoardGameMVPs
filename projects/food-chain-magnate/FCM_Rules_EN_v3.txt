@@ -1,0 +1,720 @@
+tDoSnopdnilgeo'tlhtitgtc,ehoprotl'ksay
+
+     RULES
+
+                                                                                     Splotter
+COLOFON                                                                  fomoadgcnhataein
+
+Game design: Jeroen Doumen, Joris Wiersinga                              "Lemonade? They want lemonade? What is the world coming to?
+Graphic design: Ynze Moedt, Iris de Haan                                 I want commercials for burgers on all channels, every 15 minutes. We
+Rule translations: Birgit Hugk, Torsten Hintz                            are the Home of the Original Burger, not a hippie health haven. And
+Published by: Splotter Spellen, The Netherlands, info@splotter.nl,       place a billboard next to that new house on the corner. I want them
+http://www.splotter.nl                                                   craving beer every second they sit in their posh new garden." The new
+Playtesting by: Dan Blum, Eric Brosius, Ed Bryan, Nora Ghaoui,           management trainee trembles in front of the CEO and tries to politely
+James Hayward, Gil Hova, Trisha Huang, Wei-Hwa Huang, Joe Huber,         point out that... "How do you mean, we don't have enough staff? The
+Larry Levy, Ian Mackey, Roel van Meerendonk, Mirjam Molenkamp,           HR director reports to you. Hire more people! Train them! But what-
+Douwe Mulder, Gerard Mulder, Kent Neumann, Steffan O'Sullivan,           ever you do, don't pay them any real wages. I did not go into business
+Joe Rushanan, Alan Stern, Tucker Taylor, Bartel van der Veek, Henriet-   to become poor. And fire that discount manager, she is only costing me
+te Verburg, Roel Vinkenvleugel, Stefan Wegner, Arthur Zonnenberg.        money. From now on, we'll sell gourmet burgers. Same crap, double the
+Apologies if you are not on the list, or if we spelled your name wrong!  price. Get my marketing director in here!"
+Special thanks to Ragnar Krempel and Bianca van Duijl who playtested
+the game multiple times a day on many, many Sundays for almost three     Food Chain Magnate is a heavy strategy game about building a fast
+years. Without them, this game would not exist.                          food chain. The focus is on building your company using a card-driven
+© Splotter Spellen BV, Woerden, 2015. 3rd printing with some modi-       (human) resource management system. Players compete on a variable
+fications.                                                               city map through purchasing, marketing and sales, and on a job market
+                                                                         for key staff members. The game can be played by 2-5 serious gamers
+                                                                         in 2-4 hours.
+
+                                                                                                                                                 1
+                                                       TurTnrOarckder
+
+                                                        12345
+
+                                                   1 turn order track
+
+                                                             12
+
+1 game box
+
+                                                   20 map tiles
+
+                                                             1
+
+                                                   8 house tiles
+
+     1 rulebook                                    8 garden tiles
+
+     5 German player menus 5 English player menus                  14 9                 41
+2
+                                                   16 marketing tiles: 6 billboards, 4 mailboxes, 3 airplanes and 3 radios
+
+                                                    14
+
+                                                   16 numbered "busy" chips
+
+                                                   3 restaurants for each player
+                                                   1 turn order marker for each player
+PIZZA CHEF                     DIMSACNOAGUENR T          bMrANaAnGEdR
+
+Produce 8 pizzas               - Price $3                  Place airplane or lower,          Intthreodguacmine g
+                                                                 max duration 4
+                                                                                     Overview
+                                                         brand director
+                                                                                     Each player starts as a single entrepreneur and builds up a fast food
+222 employee cards                                                                   chain. They do this by hiring and training staff, represented by cards;
+                                                                                     and by running the operations of their company, which is done on a
+First burger                   First to                     First to                 variable board. The game continues until the bank runs out of money
+  marketed                       train                   lower prices                (twice). The richest player then wins.
+
+                               someone                                               The game is played in phases. Some phases are played simultaneously;
+                                                                                     others use a turn order.
+   + $5 for every burger sold  $15 discount on salaries  - Price $1
+                                                                                     Concepts
+84 milestone cards
+                                                                                     Employee cards: these cards depict a person. The text under the picture
++$100                          RESERVE                   RESERVE                     describes what that person can do in the company. Cards with a in
+                                                                                     the top left can be hired by recruiters. Cards that show a require
+                                +$200                     +$300                      a salary. Cards that can be trained show future career options in the
+                                                                                     bottom left. Some cards instead show a in the bottom left. These are
+          12                   123                       1234                        top positions. Each player may only own one of that particular card. On
+                                                                                     the top right, some cards show "range", counted by road or zeppelin.
+18 bank reserve cards                                                                Employee cards can be managers, marketeers, kitchen staff, and many
+                                                                                     other things.
+      CEO                      Bills of paper money
+                                                                                     Open slot: a position in the company structure where an employee
+  YOU                                                                                card could have been played.
+
+                     123                                                             Range: the number of times you cross onto a different tile. Range is
+              Hire 1 person                                                          normally tracked following a road, unless the card has a zeppelin sym-
+                                                                                     bol .
+6 CEO cards
+                                                                                     Restaurant: Each player has three restaurants available. Each restau-
+40 softdrinks (wood) 40 beers (wood) 40 lemonade (wood)                              rant is 2x2 squares big. One of these squares is marked as its entrance
+                                                                                     by the doors in the corner. If you need to count range from a restaurant,
+                                                                                     always start counting from its entrance.
+
+                                                                                     Map tile: a map element that can be picked up. It consists of 5x5 squares.
+                                                                                     Initially, a square can contain a road, drinks, part of a house, or empty space.
+
+                                                                                     Food and drinks: The wooden pieces symbolize food (burgers and piz-
+                                                                                     zas) and drinks (softdrinks, lemonade, and beer). Placed on a house,
+                                                                                     they show demand. Placed on a marketing campaign, they show what
+                                                                                     is being advertised and for how long. In the hands of a player, they re-
+                                                                                     present their stock. Drinks are also printed on the map. These indicate
+                                                                                     locations where buyers can get these type of drinks.
+
+40 pizzas (wood) 40 burgers (wood)
+                                                                                                                                                                                                           3
+                                                                        First to hire 3     First to train       First billboard
+                                                                       people in 1 turn         someone                placed
+                                                                        + 2 Management
+                                                                                            $15 discount on        No salaries for
+                                                                             Trainees            salaries            marketeers;
+                                                                                                                 Eternal marketing
+
+            Setting up                                                  First to throw      First burger         First burger
+                                                                       away drink/food        produced             marketed
+   Cards setup                                                                                                    + $5 for every
+                                                                        Get a freezer that  +1 burger cook         burger sold
+   Lay out the employee and milestone cards according to the              stores 10 items
+   image to the right.                                                    (drink or food)    First pizza          First pizza
+                                                                                              produced             marketed
+   If you lay out the cards as pictured, you will have an overview of   First waitress       +1 pizza cook        + $5 for every
+   upgrade paths and you can easily see which cards are in danger             played                                pizza sold
+   of running out.
+                                                                        Each waitress +$2
+   For each employee card marked with , remove a number of
+   cards so that you end up with the following number:                 First to have $20    First errand         First drink
+                                                                          May see bank        boy played          marketed
+                                                                           reserve cards                         + $5 for every
+                                                                                            All buyers get + 1     drink sold
+                                                                                            drink from each
+
+                                                                                                  source
+
+   players  employee    Billboards     Map size
+            cards used  removed
+
+   2        1           #12, #15, #16  3x3                             First to have $100        First cart       First airplane
+                                                                        Your CEO counts as  operator played           campaign
+   3        1           #15, #16       3x4                             CFO (+50% to cash    Buyers get range +1
+                                                                                                                 Count +2 open slots
+   4        2           #16            4x4                               earned) May not                         when determining
+                                                                            have a CFO.
+                                                                                                                     order of play
+
+   5        3           None           5x4
+
+   Put the billboards listed in the above table back in the box.          First to          First to pay $20 or     First radio
+                                                                       lower prices          more in salaries        campaign
+                                                                                              May use multiple   Your radios market
+                                                                          Price -$1             trainers on the   2 goods per turn
+                                                                                                 same person         instead of 1
+
+   Map setup
+
+   Create a map by randomly selecting map tiles. Rotate
+
+   each tile randomly before placing it in a grid. The num-
+
+   ber of map tiles used depends on the number of players,
+
+   as shown in the table above and the image to the right.
+
+                                                                                            2 players            3 players
+
+                                                                                            4 players            5 players
+
+4
+  WAITRESS         new business                 LOCAL                 Regional                   CFO
+   Get $3 cash.       developer               MANAGER                 Manager             Add +50% to cash
+ Win ties against      Place house        Place new restaurant,      Place or move        earned this round
+ restaurant with         or garden        "COMING SOON".            restaurant, opens
+fewer waitresses                           Drive-in available         immediately.          EXECUTIVE
+                         JUNIOR                                     Drive-in available   VICE PRESIDENT
+MANAGEMENT         VICE PRESIDENT                 3
+   TRAINEE                                                              SENIOR             10
+                     3                            VICE            VICE PRESIDENT
+  2                                          PRESIDENT
+                       LUXURIES                                     5
+    PRICING            MANAGER              4
+  MANAGER               Price +$10
+                                              DISCOUNT
+    Price -$1                                 MANAGER
+                                               Price - $3
+
+ RECRUITING                               RECRUITING                                     HR DIRECTOR
+      GIRL                                 MANAGER
+
+  Hire 1 person                           2x:  Hire 1 person                             4x:  Hire 1 person
+                                               or $5 less salary                              or $5 less salary
+   TRAINER
+ Train 1 person           cart                  COACH                    Guru
+                       OPERATOR             2 training slots.        3 training slots.
+   ERRAND           Get 2 drinks from     May train the same       May train the same
+      BOY          each source on route     person two steps
+                                                                      person up to
+ Get 1 drink of             2                   TRUCK                  three steps
+    any type                                    DRIVER
+                       CAMPAIGN            Get 3 drinks from           Zeppelin
+ MARKETING             MANAGER            each source on route           pilot
+   TRAINEE           Place mailbox or
+                   lower, max duration 3           3               Get 2 drinks from
+Place billboard,                                                  each source on route,
+ max duration 2             3                   brand
+                                              MANAGER                 ignore roads
+       2            burger Cook             Place airplane or
+                    Produce 3 burgers     lower, max duration 4           4
+   KITCHEN
+   TRAINEE                                                              brand
+Produce 1 burger                                                      director
+    or 1 pizza                                                        Place radio or
+                                                                  lower, max duration 5
+
+                                          burger CHEF
+                                          Produce 8 burgers
+
+                    PIZZA Cook             PIZZA CHEF
+                   Produce 3 pizzas       Produce 8 pizzas
+
+                                                                                                                 5
+   Filling the bank                                                                       Phpahsaesbe y
+
+   Place $50 x the number of players into the bank pool. Use a practical         Phase 1: Restructuring
+   set of (small) bills. Put the rest of the money back into the box for now.
+   Players do not get any money at the start of the game.                        Each player simultaneously chooses which of their employees to use
+                                                                                 this turn. These cards are placed face down on the table. All other cards
+   Player markers                                                                are placed face down in a separate pile. After all players have chosen
+   Each player chooses one of the restaurant chains available and receives       their cards, they simultaneously open the pile of cards to be used this
+   a CEO card, 3 restaurants and a set of 3 bank reserve cards.                  turn. These employees are said to be "at work". The rest of the cards
+                                                                                 cannot be used this turn, although they can be trained, and you will
+   Initial order of play                                                         need to pay their salary if they are not fired. These cards are said to be
+   Collect the turn order markers of the chosen restaurant chains and            "on the beach".
+   shuffle them. Randomly take out the turn order markers and place
+   them on the turn order track in the order in which they were drawn.           During all phases except this one, every player can at any time request
+                                                                                 to see the cards of another player. This includes both the cards at work
+   Placing the first restaurants                                                 and those cards `on the beach'.
+   Each player has to place one starting restaurant.
+                                                                                 In the first turn, the CEO will be the only card played. The CEO is
+   Start with the player who is last on the turn order, and end with the         always at work.
+   player who is first. Each player may either place a restaurant, or pass. If
+   anyone passed, a second round is executed in turn order. Each player          In all subsequent turns, after opening the pile, the cards at work must
+   who has not yet placed a restaurant must now place it. Players who            be placed into a company structure. The cards are placed in a pyramid.
+   have already placed a restaurant do not participate in the second round.      Each card is placed under the person he/she is reporting to. The top of
+                                                                                 the pyramid is the CEO, who obviously reports to nobody.
+   There are a few limitations on the initial placement of restaurants:
+         · Restaurants must be placed fully on empty squares that do not         The company structure always contains the CEO. The CEO can have
+           contain any other restaurants, roads, drinks, or houses.              up to three cards reporting to him. This is indicated by the 3 slots (rec-
+         · Restaurants must be placed so that their entrance borders on a        tangles) on the CEO card. The cards reporting to the CEO can be either
+           square with a road.                                                   normal staff or managers (black cards only). Each manager can have
+         · Restaurants may not be placed in such a way that their entrance       between 2-10 people reporting to him, as indicated by the number of
+           is on the same tile as the entrance of an existing restaurant.        slots on the card. Cards reporting to a manager can only be normal
+                                                                                 employees, not other managers.
+   Setting goals
+   Each player now chooses one of their bank reserve cards. The chosen           If a player has inadvertently placed more cards than can fit into the
+   reserve cards are placed face down next to the bank. The other reserve        company structure, all cards except the CEO are placed on the beach
+   cards are discarded unseen. They will not be used for now.                    and the player has to play his turn with only the CEO.
+
+   The chosen bank reserve cards collectively indicate how much money            After the bank reserve cards have been opened, CEOs may gain or lose
+   will be added to the bank once it runs out of money. The higher the           a slot. The extra slot can be used for normal staff or managers. You can
+   value of the cards, the longer the game will last. At the start of the game,  use a reserve card to indicate the new number of CEO slots.
+   players will not know exactly how long the game will take, which makes
+   balancing short and long term strategies more challenging.                    Phase 2: Order of business
+
+                                                                                 In this phase, players choose their position on the turn order track. The
+                                                                                 player with the most open slots in his company structure may choose
+                                                                                 first, followed by the player with the second largest number of open
+                                                                                 slots, etc. Open slots are slots on a CEO or manager that have not been
+                                                                                 used for an employee card. If a player has the "First airplane campaign"
+                                                                                 milestone, he counts two extra open slots.
+
+                                                                                 If two or more players have the same number of open slots, the one who
+                                                                                 was ahead in turn order in the previous turn chooses first.
+
+                                                                                 Players choose their position in the turn order by placing the turn
+                                                                                 order marker on an available spot on the turn order track. Note that
+
+6
+Example: a fledgling company structure.                     CEO
+                                                        Hire 1 person
+
+                                                         3
+
+MANAGEMENT                               MARKETING                          ERRAND
+   TRAINEE                                 TRAINEE                             BOY
+
+  2                                      Place billboard,                  Get 1 drink of
+                                         max duration 2                       any type
+
+                                               2
+
+RECRUITING                               RECRUITING
+     GIRL                                     GIRL
+
+Hire 1 person                            Hire 1 person
+
+there are only as many spots on the chart as there are players participa-  Train
+ting. For example, with 3 players, you cannot choose the 4th position.     For each training action in your company structure you may train one
+                                                                           person one step. You may only train employee cards that are on the
+Phase 3: Working 9:00­5:00                                                 beach, including employees you just hired. Employees that are current-
+                                                                           ly at work in your company structure and busy marketeers cannot be
+In this phase, all players take turns in turn order. Each player may       trained. Marketeers, kitchen staff and buyers each have their own up-
+perform one action for each card he has at work. The actions of the        grade track. All other (non-entry) employees are trained directly from
+pricing manager, discount manager, luxury manager, CFO, recruiting         managers (black cards).
+manager, HR director and waitress are mandatory; the actions of all
+other employees are optional. A player completes all of his actions be-    Most cards list a number of training options on the bottom of the card.
+fore the next player gets his turn. The available actions are indicated    For example, the kitchen trainee can be trained into a burger cook or
+on the cards.                                                              a pizza cook. Cards that have no training options listed cannot be
+                                                                           trained.
+Actions have to be performed in the order listed here; The position of a
+card in the organizational chart has no influence.                         Return the card you want to train to the main stock of cards and replace
+                                                                           it with the card you want to train it to.
+Recruit
+Each company always gets one free recruitment action performed by          In general, you may not train an employee you have just trained any
+the CEO. You can hire additional employees by having recruitment           further in the same turn. Exceptions are:
+cards in your company structure. For each recruitment action availa-
+ble, you may hire one additional employee.                                       · A coach may train the same card two steps ;
+                                                                                 · A guru may train the same card up to three steps;
+You may only hire people at entry positions (indicated by in the top             · If you have the "First to pay $20 in salaries" milestone, you
+left corner of the card). Take the card(s) you want and add them to
+your pile of cards that are on the beach. If a certain deck runs out of            may use multiple trainers, coaches and gurus to train the same
+cards, you may no longer hire that type of employee until cards become             card.
+available again. However, you may hire such a card if you immediately
+train it to a higher level in the training sub-phase of this turn (so you  A coach (or guru) may alternatively divide their attention over multiple
+don't actually have to take the card).                                     employees, for example training each one step.
+
+Recruitment actions are available on the recruiting girl card (1x), the    You cannot train to a position if the final card is not available in the
+recruiting manager (2x) and the HR director (4x). Note that unused         stock. However, if you train multiple steps or hire and immediately
+recruitment actions on the recruiting manager and HR director will         train a person, the intermediate cards do not have to be available.
+give a salary discount in phase 5.
+                                                                           You may only have one copy of each card marked with .
+
+                                                                                                                                                     7
+   Initiate marketing campaigns                                                   only one of the squares adjacent to a road needs to be in range of the
+   For each marketeer in your company structure, you may place a mar-             marketeer. The marketing tile itself has to be in range, not just the road
+   keting campaign on the board. Depending on the type of marketeer,              used to get there.
+   you may place either a billboard, a mailbox, an airplane or a radio cam-
+   paign. The marketeer also indicates a certain specific range and maxi-         Airplanes must be placed on the side of the board. Airplanes do not have
+   mum duration. After you place the campaign, you have to choose what            to be connected to a road and are not affected by range. The available
+   you want to advertise.                                                         airplanes have a size of 1, 3 or 5 squares and must always be placed so
+                                                                                  that they fly over the corresponding number of rows or columns on the
+   Type of campaign: Marketing trainees may place only a billboard;               board--it is not allowed to place an airplane so that it would fly outside
+   Campaign managers may place a mailbox or billboard; brand managers             of the board.
+   may place an airplane, mailbox or billboard; and a brand director may
+   place any type of campaign.                                                    It is allowed to place a marketing campaign in a location where it will
+                                                                                  not reach any houses.
+   Range: Each marketeer has a certain range. For example, the marke-
+   ting trainee has a range of 2. This means he can place billboards on his       Determine what to advertise: A campaign can advertise either pizza,
+   own tile (0), an adjacent tile (1) or a tile two steps away. All connecti-     burgers, or one type of drink. To indicate this, place wooden pieces of
+   ons must be by road and start at a restaurant entrance. You can freely         the advertised type on the campaign as advertising markers. The num-
+   choose which of your restaurants the marketeer starts counting range           ber of pieces should correspond to the duration of the campaign.
+   from.
+                                                                                  Marketeer will be busy: After placing the campaign, put the marke-
+   Brand managers and directors are not limited by range. They can place          teer card aside and place a "busy" chip on the card. The number on
+   campaigns on areas that they cannot reach by road, but when they place         the "busy" chip should correspond to that on the marketing campaign.
+   a billboard, mailbox, or radio, it still has to be placed adjacent to a road.  This indicates the marketeer card will be unavailable until the marke-
+                                                                                  ting campaign ends. The marketeer will not take up a slot in your orga-
+   Duration: The text on the marketeer card states the maximum duration           nizational structure when busy.
+   of a campaign that the marketeer can initiate. The minimum duration of
+   a campaign is 1 turn. For example, a marketing trainee has a maximum           If a player has the "First billboard placed" milestone, marketing cam-
+   duration of 2, so he can initiate a campaign that runs for 1 or 2 turns.       paigns placed by that player will not end. To indicate this, place the
+   Marketing campaigns can never be ended prematurely.                            campaign tile on its eternal side on the board with a single wooden pie-
+                                                                                  ce on it. The corresponding marketeer card will be unavailable for the
+   Placing the campaign: Billboards, mailboxes and radios must be                 rest of the game. It will not be returned to the stock or the player's hand.
+   placed on empty squares on the board. They must connect to the road
+   used to reach the tile. If a marketing campaign spans multiple tiles,
+
+                                         7
+   13
+
+                                                                                  15
+
+   Xango Blues Bar has played two marketing trainees in its structure this        Even though it is not yet possible for Xango Blues Bar to deliver to house
+   turn. It can place both billboards 11 and 14, as shown in the picture abo-     15, placing billboard 14 may still make sense: by adding a garden to house
+   ve. The range to play billboard 11 is 0, as it is on the same tile as the      15, it will become accessible by road.
+   restaurant. The range to play billboard 14 is 2 (the maximum for the
+   marketing trainee), as you have to cross into an adjacent tile twice.
+
+8
+Get food & drinks                                                             Place or move restaurants
+If you have any kitchen staff and/or buyers in your structure, you may        If you have a local manager or a regional manager in your structure,
+take food and drinks from the general stock following the instructions on     you may place a new restaurant or move an existing one. A restaurant
+the card. Earned food and drinks are kept in front of the player and are      must be placed fully on empty squares that do not contain any other
+available to all restaurants in the player's chain when needed.               map elements. It must be also be placed so that its entrance is adjacent
+                                                                              to a road. However, unlike during the initial placement, a restaurant
+Kitchen trainee: take one burger or pizza.                                    may be placed in such a way that its entrance is on the same tile as the
+                                                                              entrance of another restaurant.
+Errand boy: take one drink (softdrink, beer, or lemonade) of your choice.
+                                                                              Local manager: A local manager may place a new restaurant within
+Burger cook and/or chef: take the number of burgers as written on the card.   a range of 3 tiles, travelled by road, from one of the chain's existing
+                                                                              restaurants. The new restaurant must be placed with the printed en-
+Pizza cook and/or chef: take the number of pizzas as written on the card.     trance connecting to a road. This does not have to be the road used to
+                                                                              determine the range. The new restaurant is placed with the "COMING
+Cart operator: starting from one of your restaurant entrances, trace a        SOON" side up. It will only open at the end of the turn. Note that as
+route of range 2 over roads. Including the tile of your restaurant, the rou-  long as the local manager is active, restaurants of that chain have a dri-
+te will thus cover up to three tiles. Take 2 drinks from the stock for each   ve-in, and are considered to have entrances in each corner.
+drink symbol you pass by on either side of the road. Note that you have
+to traverse the road directly (orthogonally) adjacent to the drink symbol.    Regional manager: A regional manager may place a restaurant any-
+If there are multiple drink symbols on the same tile, it is sometimes pos-    where on the board, provided the entrance connects to a road. He may
+sible to pass more than one of them. However, it is not allowed to make       also pick up one of his restaurants already on the board and place it
+U-turns in order to do so. There is no need for the cart operator to return   somewhere else and/or rotate it. Restaurants that have been placed
+to one of your restaurants..                                                  or moved by a regional manager are active immediately: there is no
+                                                                              "COMING SOON" waiting period. Note that as long as the regional
+Truck driver: Same as cart operator, but the truck has a range of 3, and      manager is active, restaurants of that chain have a drive-in, and are
+takes 3 drinks per symbol you pass by.                                        considered to have entrances in each corner.
+
+Zeppelin pilot: Starting from your restaurant entrance, trace a route of
+range 4, ignoring roads. Including the tile of your restaurant, the route
+will cover up to five tiles. You may not cover the same tile twice. Collect
+2 drinks from stock for each drink symbol on the tiles you fly over. If
+there are multiple drink symbols on a tile, you may collect drinks for
+all of them.
+
+If a player has the "First Errand Boy Played" milestone, each source
+will provide an extra drink. Errand boys will also bring in two drinks of
+the same type, including the errand boy just played.
+
+If a player has the "First Cart Operator Played" milestone, his cart
+operators, truck drivers and zeppelin pilots have one additional range.
+
+Place new houses and gardens
+If your structure contains a new business developer, you may place a
+new house on the map, or add a garden to an existing house.
+
+Placing a new house: A new house may be placed in any empty area
+on the map, provided the house is connected to at least one road. There
+are no range limitations. You may freely choose which house to place.
+
+Placing a new garden: A new garden must be placed so that it connects
+to a house printed on a map tile. It has to connect over 2 squares, so that
+the final house and garden forms a 2x3 rectangle. Gardens may only be
+placed on empty squares. Each house may only get one garden. Turn
+the garden so that it is obvious which house it belongs to. Houses that
+have been placed on the board by a new business developer automati-
+cally come with a garden, and may not get another one.
+
+                                                                                                                                                          9
+    Phase 4: Dinnertime                                                             As the order of the houses depends on the house numbers, it is
+    It's evening, and the inhabitants go out to get some food. This happens               quite possible that a chain runs out of food to serve houses later
+    in the order of the numbers printed on the houses, starting with the                  in the order. These will then search for food elsewhere. In some
+    lowest number on the board. Players make no decisions in this phase;                  cases, this may lead to some of the inhabitants travelling very long
+    the inhabitants of the houses will determine where to eat based on the                distances, or not finding food at all.
+    rules given in this section.
+                                                                                    Example: a player sells 1 burger and 2 beer to a house with a gar-
+    To determine if and where a house will eat, follow these steps:                       den. He has the "First burger marketed" milestone card, which
+          · If no demand counters have been placed on the house, its                      gives a bonus of $5 on burgers. He has also played a luxury ma-
+            inhabitants will not go out to eat.                                           nager, which raises the unit price by $10. His unit price is $10 +
+          · If there are demand counters, check if there is a chain with a                $10 = $20. The garden doubles this income, to 2 x $20 = $40. The
+            restaurant connected to the house by road which can deliver all               burger bonus of $5 is then added, so the income for the burger
+            of the food and drinks the inhabitants want. For example, if the              is $45. He has no bonus for drinks, so the beer sells for the same
+            house contains demand for 2 burgers and a beer, there needs to                unit price of $20, which is doubled because of the garden to $40.
+            be a chain that can provide 2 burgers and a beer--if the chain has            So his total income is $45 + 2x $40 = $125.
+            only burgers, or not enough burgers, the inhabitants will search
+            for a better place or decide not to go out. There are no range res-     Waitresses: After all houses have been processed, each chain receives
+            trictions, but there must be a road connection between the house        $3 (or $5 if they have the "First waitress played" milestone) for each
+            and the restaurant. You may start at any road orthogonally adja-        waitress in their structure.
+            cent to the house or the garden. If there is no road connection, the
+            inhabitants will stay at home. If there is one chain that fulfills the  CFO: Then, each chain that has a CFO in their structure (or the "First
+            requirements, the inhabitants will eat there.                           to have $100" milestone) receives a 50% bonus on all cash, including
+          · If there are multiple chains that can provide the full menu, and        waitress tips, that it earned in this turn (rounded up).
+            that have a restaurant connected by road to the house, competi-
+            tion ensues. The inhabitants will go to the restaurant by evalua-       If at any time during this phase the bank has insufficient funds to pay
+            ting the price and the distance.                                        out all income, the bank breaks and reserve cards are opened (see brea-
+          · T he standard unit price of each good is $10. This unit price           king the bank). If the bank breaks a second time, the game ends at the
+            will be different if the chain has one or more price managers           end of this phase, and salaries will not be paid this turn.
+            (-$1), discount managers (-$3), or a luxury manager (+$10) in
+            its structure. The `First to lower prices' milestone permanent-         Breaking the bank (1st time): Open the reserve cards that were chosen
+            ly lowers the unit price of that chain by $1. Note that bonuses         by the players at the start of the game. Sum the money amounts shown
+            (CFO, "First burger marketed", etc.) do not alter the unit price.       on the reserve cards and add this total to the bank.
+            For example, a chain with 2 active price managers and an active
+            discount manager will charge a unit price of $5.                        Each reserve card also shows 2, 3 or 4 open slots. Whichever number
+          · To determine the distance, determine the range from the house           occurs most determines the number of slots all CEO's will have from
+            to the closest restaurant of each of the chains. You must follow        the next turn onwards. For example, if there are two "2 slot" cards, one
+            the road and end up at an entrance of the restaurant. Each tile         "3 slot", and one "4 slot", all CEOs will have 2 slots instead of 3 for
+            border you cross counts as one step. So, a house on the same            the remainder of the game. If two types of reserve cards occur equally
+            tile as an restaurant entrance will be at distance 0 if the two are     often, the highest number determines the slots--for example, two "2
+            connected by a road on the same tile.                                   slots" cards and two "4 slots" cards will lead to all CEOs having 4 slots.
+          · A dd up the unit price and the distance. Note that the number of        Place the appropriate reserve cards under the CEOs as a visual remin-
+            demand tokens does not matter for this calculation. The inha-           der of the new number of slots.
+            bitants will eat at the restaurant which has the lowest result. So,
+            they may walk one step further to save $1 per item, 2 steps to          Breaking the bank (2nd time): If the bank breaks a second time,
+            save $2, etc.                                                           the game ends. Finish phase 4 and continue paying all players their
+          · If two chains have the same (unit price + distance), inhabitants        earnings, if need be by writing cash still owed from the bank down on
+            will go to the restaurant with the most waitresses in its structure.    paper. Whoever has the most cash at the end of this phase wins the
+          · If both chains also have the same number of waitresses in their         game. In case of a tie, the tied player who is earlier in turn order wins.
+            structure, inhabitants will go to the chain that is earlier in the
+            turn order.
+
+    The chain which is chosen by the inhabitants must serve the food
+          and drinks. Discard the demand counters from the house and the
+          identical markers from the chain's stock. The chain gets paid for
+          each item it sells. Specifically, they get the unit price + bonuses
+          from milestones for each item sold.
+
+    If the house has a garden, the chain receives double the unit price
+          for each item. Note that the bonuses are not doubled, so the final
+          income is (2 x unit price) + bonuses.
+
+10
+Phase 5: Payday                                                              8 tiles surrounding that tile. A house will be reached even if only part
+Each chain may now choose to fire any number of people in the compa-         of the house, or the garden, is on one of these tiles. A radio campaign
+ny structure or on the beach. Cards that are fired must be placed back       started by a player with the "First radio campaign" milestone will place
+into the general stock of available cards.                                   two demand tokens.
+
+Normally, marketeers that are busy may not be fired.                         After running a campaign, remove one advertising token from the
+                                                                             campaign (unless it is an eternal campaign). If the campaign has no
+Then, each chain needs to pay $5 for each card in their structure or on      more tokens left, return it to the stock and return the corresponding
+the beach that has a on the card. Note that there are a number of            marketeer to the player. Otherwise, the campaign stays on the board,
+milestones and employee abilities that allow you to reduce the amount        and the marketeer remains busy. Note that a busy marketeer is never
+of salary you pay. Paid wages are returned to the bank.                      placed into your company structure next turn, and also will not require
+                                                                             an (open) slot. He may still require a salary though!
+Busy marketeers with a must still be paid. In exceptional cases, a
+player may have no money but an obligation to pay a busy marketeer.          Phase 7: Clean up
+In this case, the marketeer must be fired. The corresponding marketing       All players who do not have the "first to throw away drink/food"
+campaign remains on the board. Note that this is only allowed if you         milestone must discard any food or drinks they still own.
+have already fired all of your other employees that require a salary.
+                                                                             All cards from the company structure and the beach are taken back into
+Recruiting manager and HR director: If the company structure                 hand. Other players may ask to see them at this point.
+contains a Recruiting manager or HR director that has not been used
+to full capacity for hiring new people, the additional actions of these      All restaurants that are showing the "COMING SOON" side are turned
+managers reduce the amount the chain pays in salaries. Each left-over        over to their "WELCOME" side.
+action gives a $5 discount.
+                                                                             If any milestones have been awarded this turn, all remaining milestone
+All discounts that are available have to be used (this may be relevant if    cards of the same type are turned upside down. These are no longer
+you want to get the "First to pay $20 in salaries" milestone). No matter     available for the rest of the game.
+how much salary discount you have, however, the minimum amount to
+be paid is $0--people will not pay to work for you!                          Advertising tokens that have been placed on campaigns, and demand
+                                                                             tokens that have been placed on houses remain on the board.
+Phase 6: Marketing campaigns
+In this phase, all marketing campaigns run. This happens in the order        The next turn then starts, commencing with phase 1.
+of the numbers printed on the campaigns, with the lowest number first.
+
+Note that each house can have at most 3 demand tokens in total, or 5
+if the house has a garden. If a campaign reaches a house that is already
+filled with demand tokens, it has no effect on that house. This may lead
+to some campaigns being utterly useless, as is the nature of marketing
+campaigns.
+
+Billboard campaign: A billboard reaches all houses it is orthogonally
+adjacent to. Normally, it will reach 1 or 2 houses only. Place a demand
+token of the type advertised by the campaign on each adjacent house. A
+house will be reached even if only its garden is adjacent to the billboard.
+
+Mailbox campaign: A mailbox reaches all houses it can get to without
+crossing a road (you can think of the area enclosed by roads and per-
+haps the border of the board as a "block"). A mailbox is only stopped by
+roads, and will freely pass through other map elements such as restau-
+rants and houses. Place a demand token of the type advertised by the
+campaign on each house in the block.
+
+Airplane campaign: An airplane reaches every house that it can fly
+over. These are all houses in a line of 1, 3 or 5 rows or columns across
+the board starting from the airplane counter. Place a demand token of
+the type advertised by the campaign on each house in the fly-over zone.
+A house will be reached even if only part of the house, or its garden, is
+in the fly-over zone.
+
+Radio campaign: A radio campaign reaches every house on the tile
+on which the radio campaign has been placed, as well as houses on all
+
+                                                                                                                                                       11
+           Milestones                                                              For the rest of the game, that chain receives a bonus for being the
+                                                                                   "Home of the original burger/pizza/drink". Whenever it sells a burger/
+    If a player at any point in the turn fulfills the requirements of a milestone  pizza/drink, it gets an additional $5 bonus. This bonus does not affect
+    card, he is immediately awarded that milestone card. Most milestones           the unit price. This means it has no influence on the inhabitants' deci-
+    give benefits. These benefits take effect immediately. You must apply the      sions on where to eat; and it is not doubled by gardens. Like all income,
+    benefit for the rest of the game, even if it is not helpful.                   however, it can be boosted by a CFO.
+
+    Other players can claim the same milestone provided that they do so            In the case of drinks, the bonus counts for all drinks, not just the type
+    during the same turn. Occasionally there may not be enough milestones          originally marketed.
+    cards; please make a proxy copy to hand out in that case. In phase 7 of each
+    turn, all remaining milestone cards that have been claimed at least once       First errand boy played
+    are taken out of the game and can no longer be claimed by other players.       This milestone is awarded when you play an errand boy in your struc-
+                                                                                   ture. It is not awarded for errand boys on the beach.
+    Milestones are very important in the game and it is vital to plan your
+    strategy around them.                                                          For the rest of the game, your buyers (errand boys, cart operators, truck
+                                                                                   drivers, and zeppelin pilots) get 1 extra drink per source they encoun-
+    First billboard placed                                                         ter. So, errand boys will get 2 (identical) drinks of any type. Cart opera-
+    This milestone is awarded when you place a billboard campaign on the map.      tors and zeppelin pilots will gather 3 drinks for each drink symbol they
+                                                                                   pass, and truck drivers will receive 4.
+    For the rest of the game, two effects occur:
+          · You no longer pay salaries for marketeers (campaign manager,           This bonus applies to the errand boy played to get the milestone.
+            brand manager, brand director). It is not allowed to pay salaries
+            voluntarily.                                                           First to have $20
+          · When you place a marketing campaign, it remains on the board           This milestone is awarded if you have $20 cash at any time (in practice
+            forever. To indicate this, place the campaign tile on its eternal      this means after getting income and before paying out salaries).
+            side on the board with a single wooden piece on it. The corres-
+            ponding marketeer card will be unavailable for the rest of the         You may look at the face down reserve cards. You are allowed to make
+            game. It will not be returned to the stock or the player's hand.       truthful or confusing noises about whatever you see on the cards. Ho-
+            This rule already applies to the billboard you place to get the        wever, you may not show them to other players.
+            milestone.
+                                                                                   First burger/pizza produced
+    First to train someone                                                         These milestones are awarded when you produce a burger/pizza, res-
+    This milestone is awarded when you train an employee to a higher level.        pectively.
+
+    For the rest of the game, you will receive a $15 discount on salary costs.     You immediately receive a burger cook/ pizza cook card. As this
+    Salary costs can never go below $0. Using the discount is obligatory;          milestone is awarded during production, you may not train the burger
+    you may not voluntarily pay salaries.                                          cook, as training occurs before production. If there are no more cook
+                                                                                   cards of the correct type, you receive nothing. The cook will require a
+    First to hire three people in one turn                                         salary in the Payday phase. If you do not want to pay her, you may fire
+    This milestone is awarded when you hire three people or more in the            the cook instead.
+    same turn.
+                                                                                   First waitress played
+    You immediately receive 2 management trainee cards that are placed             This milestone is awarded when you play a waitress in your structure. It
+    on the beach. If you have active training capacity, you may immediately        is not awarded for waitresses on the beach.
+    train these cards as recruitment happens before training. In the unli-
+    kely case that there are not enough management trainee cards left, you         For the rest of the game, you will receive $5 for each waitress in your
+    receive whatever is left.                                                      structure rather than $3. This bonus already applies to the waitress
+                                                                                   played to get the milestone.
+    First burger/pizza/drink marketed
+    These milestones are awarded when you place a marketing campaign               First to throw away drink/food
+    that advertises burgers/pizza/any type of drink, respectively.                 This milestone is awarded when you throw away at least one food or
+                                                                                   drink token in phase 7 (Cleanup).
+
+                                                                                   For the rest of the game, this milestone card functions as a freezer. You
+                                                                                   may store up to 10 tokens (food and/or drink) in the freezer during
+                                                                                   phase 7. These items may be sold in subsequent turns. Items can be kept
+                                                                                   in the freezer for as long as you want. If you have more than 10 tokens,
+                                                                                   you may freely choose which ones to keep and which ones to discard.
+
+                                                                                   You may not yet store anything in the freezer in the turn in which you
+                                                                                   receive this milestone.
+
+12
+First to lower prices                                                      For the rest of the game, you may use training actions provided by mul-
+This milestone is awarded when you play a pricing manager or a dis-        tiple employees to train the same person. For instance, with 2 trainers
+count manager into your structure, thereby lowering your prices.           and a coach, you could now train a management trainee up to an exe-
+                                                                           cutive vice president in one turn.
+For the rest of the game, your prices will automatically be $1 lower.
+For instance, they will be $9 if you play no price related managers. You
+cannot undo this effect.
+
+This takes effect immediately, so your prices will already be $1 lower in
+the turn in which you first lowered prices.
+
+First cart operator played
+This milestone is awarded when you place the first cart operator into
+your structure. It is not awarded for cart operators on the beach.
+
+For the rest of the game, your cart operators, truck drivers and zeppelin
+pilots will have +1 range. This takes effect immediately, so your first
+cart operator will already have a range of 3.
+
+First airplane campaign
+This milestone is awarded when you place an airplane campaign.
+
+For the rest of the game, when determining order of play, you add 2
+extra open slots. These slots cannot be used to play managers or other
+employees, they are just a bonus when determining the order of play.
+
+First radio campaign
+This milestone is awarded when you place a radio campaign.
+
+For the rest of the game, if you have a radio campaign running in phase
+6: place 2 goods of the type advertised on each of the houses reached by
+the radio. If the house is already full, place 0 or 1 goods, depending on
+how much advertising the house will still take.
+
+You may not choose to market 1 instead of 2 goods. Your radio will
+market the same good twice, it cannot market two different goods.
+
+This takes effect immediately, so in phase 6 of the turn in which the
+milestone is achieved.
+
+First to have $100
+This milestone is awarded if you have $100 or more in cash at the end
+of phase 4.
+
+Your CEO gets the ability to also do the work of a CFO. This gives a 50%
+cash bonus at the end of phase 4 (dinnertime). You do not get a CFO
+card. If you already have a CFO card, you must fire the CFO in phase 5
+of this turn. You may not train a CFO anymore after you have achieved
+this milestone.
+
+The new ability takes effect only from the next turn onward, as you can
+get it only after phase 4 has just ended.
+
+First to pay $20 or more in salaries
+This milestone is awarded if you have to pay $20 or more in salaries
+in phase 5. These salaries have to be actually paid out-- you may not
+count salaries that are covered by a discount. Note that you have to use
+all discounts still available to you at the start of phase 5. You may not
+voluntarily pay more salaries than you have to. (Of course, you may use
+a recruiting manager or HR director to hire an employee in phase 2 so
+her salary discounts are no longer available in phase 5).
+
+                                                                                                                                                    13
+    Introgdaumcetory                                                        StGruaitdeegy
+
+    Food Chain Magnate is a highly unforgiving game. If you make a mista-   Some strategic pointers:
+    ke, it can be very hard or even impossible to get back on track.              · The best strategy in this game is highly dependent on: the board
+                                                                                    layout, your board position, and the actions of other players (in
+    In order to get to know the game, we strongly advise during your first          no particular order).
+    game to alter the rules as follows:                                           · Milestones are the key to planning your strategy. You will need
+                                                                                    to achieve milestones before others do. Reaching the right
+          · Do not use the reserve cards.                                           milestones as soon as possible is often essential, as the others
+          · Put $75 per player into the bank pool instead of $50.                   will likely be taken by the time you reach them.
+          · Take out all milestones.                                              · There is a trade-off between building up your company through
+          · Do not pay any salaries (skip phase 5).                                 recruitment and training and earning money through marke-
+          · The game ends when the bank breaks once.                                ting and sales. The winning mix depends on how long the game
+                                                                                    will take. This is strongly determined by the trade-off chosen by
+    This will allow for a somewhat shorter game that enables everyone to            the players.
+    get to know the rules without running their companies into the ground.        · The game normally accelerates strongly towards the end. You
+    For your next game, we recommend playing with these same alterati-              can win by earning money only in the last turn, if you have pre-
+    ons and adding the milestone cards (even if some of them will not have          pared well. Or, you could still be preparing for a turn that never
+    a benefit in the introductory game).                                            comes.
+                                                                                  · You can hurt other players by advertising goods they cannot
+                                                                                    produce. But beware, you may also be helping them sell more
+                                                                                    later on!
+                                                                                  · Price wars are very effective to attack others, but they will be
+                                                                                    very costly to yourself as well. Use them tactically.
+                                                                                  · Houses with gardens are very lucrative but may attract competition.
+                                                                                  · You can sometimes make more money selling a few things at
+                                                                                    high prices than by selling a lot of things at a discount. But it can
+                                                                                    also be the other way around.
+                                                                                  · Sometimes, it can be useful to advertise in such a way that other
+                                                                                    players earn money--as long as you earn more yourself!
+                                                                                  · Combine the previous two ideas.
+
+14
+

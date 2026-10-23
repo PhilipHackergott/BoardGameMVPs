@@ -79,14 +79,19 @@ function DeckModalApp() {
       panelW: PANEL_W,
       panelH: PANEL_H,
       accent: picking ? THEME.violet : THEME.gold,
+      // While a pending pick is armed, the modal stays open even on a misclick — without this an
+      // accidental click outside the panel rect dismisses the picker and the player loses the
+      // Remove/Tarot action they just paid for. A dedicated Cancel button below covers exit.
+      dismissable: !picking,
       build: (mm) => {
         const w = mm.width;
-        // --- tabs (mid-fight) or the pick prompt ---
+        // --- tabs (mid-fight) or the pick prompt + explicit cancel ---
         if (showTabs) {
           mm.button("Remaining", 0, 2, 124, 30, effTab === "remaining" ? THEME.gold : THEME.frameDim, true, () => setTab("remaining"), 11);
           mm.button("Full Deck", 130, 2, 124, 30, effTab === "full" ? THEME.gold : THEME.frameDim, true, () => setTab("full"), 11);
         } else if (picking) {
           mm.text("Tap a card to choose it.", 0, 11, 12, THEME.parchmentEdge);
+          mm.button("Cancel", w - 100, 0, 100, 30, THEME.frameDim, true, close, 11);
         }
 
         const topY = 44;

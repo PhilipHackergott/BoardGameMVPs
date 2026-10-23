@@ -7,6 +7,31 @@
 > yet rarity-gated) and use the held-consumable flow. Pending: a dedicated Spectral pack + on-card
 > seal/edition badges.
 
+## Current SPECTRAL_LIBRARY (engine source of truth)
+
+18 entries in `app/src/engine/content.ts → SPECTRAL_LIBRARY`:
+
+| # | id | Name | Section |
+|---|----|------|---------|
+| 1 | `familiar` | Familiar | Card-gen (3 enhanced 10s) |
+| 2 | `grim` | Grim | Card-gen (2 enhanced Aces) |
+| 3 | `incantation` | Incantation | Card-gen (4 enhanced numbered) |
+| 4 | `cryptid` | Cryptid | Copy chosen card ×2 |
+| 5 | `immolate` | Immolate | Destroy 5 random, +20 gold |
+| 6 | `sigil` | Sigil | Hand → single random suit |
+| 7 | `ouija` | Ouija | Hand → single random rank, −1 hand size |
+| 8 | `black-hole` | Black Hole | +1 every Fighting Style level |
+| 9 | `wraith` | Wraith | Random joker + gold→0 |
+| 10 | `ankh` | Ankh | Copy a guild member, destroy the others |
+| 11 | `the-soul` | The Soul | Powerful joker if room |
+| 12 | `talisman` | Talisman | Gold Seal on a hand card |
+| 13 | `deja-vu` | Deja Vu | Red Seal on a hand card |
+| 14 | `trance` | Trance | Blue Seal on a hand card |
+| 15 | `medium` | Medium | Purple Seal on a hand card |
+| 16 | `aura` | Aura | Random edition (Burnished/Haloed/Prismatic) on a guild member |
+| 17 | `ectoplasm` | Ectoplasm | Shadow edition (+1 slot) on a guild member, −1 hand size |
+| 18 | `hex` | Hex | Prismatic on a guild member, destroy all others |
+
 
 > A design catalogue adapting **all 18 Balatro Spectral cards** to Cull the Crown, for the "Balatro
 > Patch." Spectrals are **rare, powerful held consumables** — most carry a sharp **downside** (destroy

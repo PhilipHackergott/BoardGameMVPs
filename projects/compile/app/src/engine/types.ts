@@ -62,7 +62,8 @@ export interface CardDef {
   /** Stable id, e.g. "Fire-3". */
   id: string;
   protocol: ProtocolName;
-  /** Printed value, contributed when the card is face-up. 0..5 in the base set. */
+  /** Printed value, contributed when the card is face-up. 0..5 for ten protocols; Gravity uses
+   *  {0,1,2,4,5,6} and Metal {0,1,2,3,5,6}. */
   value: number;
   /** Box texts (shown verbatim on the card). Any may be empty. */
   topText?: string;
@@ -75,7 +76,9 @@ export interface CardDef {
   /** Auxiliary trigger (bottom box): live only while face-up AND uncovered. */
   trigger?: Trigger;
   triggerEffect?: EffectFn;
-  /** True if the card data here is a stand-in pending the real published text. */
+  /** Value + box texts are the real published data for all cards. This flag now means the EFFECT
+   *  LOGIC is a simplification (the faithful subset the current runtime can express) — surfaced in
+   *  the UI as a "SIMPLIFIED" tag. False once a card's whole effect is modelled faithfully. */
   placeholder?: boolean;
 }
 

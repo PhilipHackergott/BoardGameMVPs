@@ -307,6 +307,7 @@ export interface ShopState {
   looseOffers: LooseOffer[]; // always 3 single-buy items (union of pack pools)
   edictOffers?: string[]; // 0 or 1 edict — one acquirable per Act
   removeCardCost: number; // escalating "Remove a card" price (snapshot for display)
+  removeSpent?: boolean; // true after the player removes a card THIS shop visit — coin flips out
   rerollCost: number;
   openPack?: PackOffer | null; // the pack currently being opened (the pick UI), else null
 }

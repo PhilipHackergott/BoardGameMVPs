@@ -39,6 +39,21 @@ what scaled.
   mid-move cancels the pending beat cleanly. Reset the flag on new-game/return-to-menu.
   _Source: lacuna `src/state/store.ts` (`paused`/`togglePause`) + `src/ui/App.tsx`, `Controls.tsx`._
 
+- **Verify the ladder *climbs* with a sim — "three tiers" that play the same is the default failure.**
+  Lacuna's "Hard" was secretly ≈ Medium (greedy+rival) until a real **2-ply lookahead** that scores on
+  the *actual win condition* (`finalize`'s projected colours won, so it's power/affinity-aware) made it
+  beat Medium **78–84%** (Medium beats Low ~100%). Add a "strength ladder" test (harder vs. easier tier,
+  **seats alternated** to cancel first-player) and assert the higher tier wins well above 50%, or your
+  difficulty selector is cosmetic. _Source: lacuna `src/ai/ai.ts` (`aiPlace`,`bestGreedyReply`,`evalColors`)
+  + the sim ladder test; `07-balance-report.md` Round 3._
+- **The AI is also your balance instrument — and balance is *relative to its skill*.** The same AI that
+  opposes the player is what runs the AI-vs-AI balance sweep (`playbooks/balance-and-tuning.md`), so
+  investing in it pays twice. But the numbers move when the AI improves (Lacuna: a smarter Hard pushed
+  Warding 60→83% and flipped the first-player edge), and a shallow AI **can't use** optional actives /
+  info / multi-turn combos — that content reads artificially low ("AI-blind"), and the fix is often to
+  **teach the AI** (Nomad 24→61% once the AI used its redeploy), not to buff the content. Re-tune against
+  the AI you ship; flag planning-dependent content for human `/test`. _Source: lacuna `07-balance-report.md`._
+
 ## Template for an entry
 - **Game type / branching factor:**
 - **Approach that worked for the MVP:**

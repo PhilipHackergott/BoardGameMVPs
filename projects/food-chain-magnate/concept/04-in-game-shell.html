@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCM concept · In-game Shell</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .shell{display:grid;grid-template-rows:auto 1fr auto;height:720px;background:var(--cream)}
+  /* status crown */
+  .crown{display:flex;align-items:center;gap:var(--s4);padding:var(--s3) var(--s4);
+    background:var(--navy);color:#fff;border-bottom:3px solid var(--ink);flex-wrap:wrap}
+  .crown .grp{display:flex;align-items:center;gap:var(--s3)}
+  .crown .lbl{font-size:.62rem;letter-spacing:1.5px;opacity:.7;font-weight:800}
+  .crown .spacer{flex:1}
+  /* body */
+  .body{display:grid;grid-template-columns:222px 1fr 250px;gap:var(--s3);padding:var(--s3);min-height:0}
+  .col{display:flex;flex-direction:column;gap:var(--s3);min-height:0}
+  .boardmini{border:2px solid var(--ink);border-radius:var(--r2);overflow:hidden;background:#FBF4E2;display:flex;flex-direction:column}
+  .boardmini svg{width:100%;height:100%;display:block}
+  .log{font-size:.74rem;flex:1;overflow:hidden}
+  .log .e{padding:3px 0;border-bottom:1px dashed var(--chrome)}
+  .log .e b{color:var(--navy)}
+  /* footer / hand */
+  .hand{display:flex;align-items:center;gap:var(--s3);padding:var(--s3) var(--s4);background:var(--cream-3);border-top:3px solid var(--ink)}
+  .hand .handcards{display:flex;gap:var(--s3);flex:1;overflow:auto}
+  .mini-emp{width:120px;flex:none;border:2px solid var(--ink);border-radius:var(--r1);background:var(--cream);box-shadow:var(--shadow);font-size:.68rem}
+  .mini-emp .mb{font-family:var(--font-display);color:#fff;font-size:.7rem;padding:3px 6px}
+  .mini-emp .mf{padding:3px 6px;display:flex;justify-content:space-between;align-items:center}
+  .node{width:100%;background:var(--cream);border:1.5px solid var(--ink);border-radius:var(--r1);font-size:.72rem;margin-bottom:5px;overflow:hidden}
+  .node .nb{font-family:var(--font-display);color:#fff;font-size:.72rem;padding:2px 6px}
+  .node .nbody{padding:3px 6px;display:flex;justify-content:space-between;color:var(--ink-soft)}
+  .nb.mgmt{background:var(--navy)} .nb.recruit{background:#7A5C9E} .nb.kitchen{background:var(--burger)}
+  .nb.market{background:var(--cherry)} .nb.sales{background:var(--mustard-d)}
+</style></head>
+<body>
+<div class="frame">
+  <a class="backlink" href="index.html">&larr; concept set</a>
+  <h1 class="caption">In-game Shell — the HUD</h1>
+  <p class="sub">Status crown (always on): phase rail · turn order · bank clock · standings. Center = the contested board. Right = the phase instrument (your org chart now). Bottom = the hand + actions.</p>
+
+  <div class="screen">
+   <div class="shell">
+
+    <!-- STATUS CROWN -->
+    <div class="crown">
+      <div class="grp"><span class="lbl">PHASE</span>
+        <div class="phaserail">
+          <span class="ph done">Restructure</span><span class="ph done">Order</span>
+          <span class="ph active">Working 9–5</span><span class="ph">Dinnertime</span>
+          <span class="ph">Payday</span><span class="ph">Mktg</span><span class="ph">Clean</span>
+        </div>
+      </div>
+      <div class="grp"><span class="lbl">ORDER</span>
+        <div class="turntrack">
+          <span class="seat now"><span class="crest c1">◆</span></span>
+          <span class="seat"><span class="crest c2">●</span></span>
+          <span class="seat"><span class="crest c3">▲</span></span>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="grp"><span class="lbl">BANK CLOCK</span>
+        <div class="bezel" style="color:var(--ink)">
+          <div class="bankclock">
+            <div class="gauge"><div class="fill" style="width:54%"></div></div>
+            <span class="amt">$324</span><span class="breaks">●○ breaks</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+      <!-- LEFT: standings + log -->
+      <div class="col">
+        <div class="panel"><div class="panel-tt">Standings</div><div class="panel-body">
+          <div class="standings">
+            <div class="row lead"><span class="crest c1">◆</span><span class="nm">Big B (you) 👑</span><span class="ca">$324</span></div>
+            <div class="row"><span class="crest c2">●</span><span class="nm">Zee's <span class="muted" style="font-size:.6rem">AI·Ad-Man</span></span><span class="ca">$291</span></div>
+            <div class="row"><span class="crest c3">▲</span><span class="nm">Patty's <span class="muted" style="font-size:.6rem">AI·Baron</span></span><span class="ca">$268</span></div>
+          </div>
+        </div></div>
+        <div class="panel"><div class="panel-tt">Milestones <span class="atomic-star" style="width:13px;height:13px"></span></div>
+          <div class="panel-body" style="display:flex;flex-direction:column;gap:5px;font-size:.72rem;font-weight:600">
+            <div style="padding:3px 7px;border-radius:var(--r1);background:#E7FBF6;border:1.5px solid var(--turquoise);white-space:nowrap">★ First billboard — <b>you</b></div>
+            <div style="padding:3px 7px;border-radius:var(--r1);background:#FFF6E0;border:1.5px solid var(--mustard-d);white-space:nowrap">◷ First to train — <b>open</b></div>
+            <div style="padding:3px 7px;border-radius:var(--r1);background:#eee;border:1.5px solid var(--chrome-dark);color:var(--ink-soft);white-space:nowrap">🔒 First radio — Zee's</div>
+          </div></div>
+        <div class="panel" style="flex:1;display:flex;flex-direction:column"><div class="panel-tt">Log</div>
+          <div class="panel-body log">
+            <div class="e"><b>Big B</b> hired a Discount Mgr</div>
+            <div class="e"><b>Zee's</b> placed a Radio campaign 🍕</div>
+            <div class="e"><b>Patty's</b> trained Cook → Burger Cook</div>
+            <div class="e">★ <b>Zee's</b> claimed <i>First Radio</i></div>
+            <div class="e"><b>Big B</b> built a restaurant (COMING SOON)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTER: board -->
+      <div class="boardmini">
+        <svg viewBox="0 0 520 460" preserveAspectRatio="xMidYMid meet">
+          <g fill="#CFD3D6" stroke="#A9AFB4"><rect x="0" y="150" width="520" height="12"/><rect x="0" y="310" width="520" height="12"/><rect x="160" y="0" width="12" height="460"/><rect x="350" y="0" width="12" height="460"/></g>
+          <g stroke="#fff" stroke-width="2" stroke-dasharray="9 8"><line x1="0" y1="156" x2="520" y2="156"/><line x1="0" y1="316" x2="520" y2="316"/><line x1="166" y1="0" x2="166" y2="460"/><line x1="356" y1="0" x2="356" y2="460"/></g>
+          <!-- footprint -->
+          <rect x="180" y="170" width="160" height="130" rx="8" fill="rgba(200,71,43,.15)" stroke="var(--pizza)" stroke-dasharray="6 5"/>
+          <!-- houses -->
+          <g font-family="Inter" font-weight="700" font-size="10" text-anchor="middle">
+            <g transform="translate(60,210)"><path d="M0 7 l14 -12 14 12 v18 h-28z" fill="#fff" stroke="#2B2118" stroke-width="2"/><text x="14" y="22">1</text><circle cx="5" cy="-8" r="5" fill="var(--burger)" stroke="#2B2118"/></g>
+            <g transform="translate(240,210)"><path d="M0 7 l14 -12 14 12 v18 h-28z" fill="#fff" stroke="#2B2118" stroke-width="2"/><text x="14" y="22">2</text><circle cx="5" cy="-8" r="5" fill="var(--pizza)" stroke="#2B2118"/><circle cx="19" cy="-8" r="5" fill="var(--soda)" stroke="#2B2118"/></g>
+            <g transform="translate(430,90)"><path d="M0 7 l14 -12 14 12 v18 h-28z" fill="#fff" stroke="#2B2118" stroke-width="2"/><text x="14" y="22">3</text><circle cx="5" cy="-8" r="5" fill="var(--burger)" stroke="#2B2118"/></g>
+            <g transform="translate(430,360)"><path d="M0 7 l14 -12 14 12 v18 h-28z" fill="#fff" stroke="#2B2118" stroke-width="2"/><text x="14" y="22">4</text></g>
+          </g>
+          <!-- restaurants -->
+          <g transform="translate(96,86)"><rect width="46" height="28" rx="3" fill="var(--co-1)" stroke="#2B2118" stroke-width="2"/><rect width="46" height="9" fill="#fff" opacity=".85"/><text x="23" y="7" font-family="Anton" font-size="6" fill="var(--cherry-d)" text-anchor="middle">WELCOME</text><text x="23" y="23" font-family="Pacifico" font-size="11" fill="#fff" text-anchor="middle">Big B</text></g>
+          <g transform="translate(390,250)"><rect width="46" height="28" rx="3" fill="var(--co-2)" stroke="#2B2118" stroke-width="2"/><rect width="46" height="9" fill="#fff" opacity=".85"/><text x="23" y="7" font-family="Anton" font-size="6" fill="var(--turquoise-d)" text-anchor="middle">WELCOME</text><text x="23" y="23" font-family="Pacifico" font-size="10" fill="#fff" text-anchor="middle">Zee's</text></g>
+          <!-- radio piece -->
+          <g transform="translate(250,250)"><rect width="22" height="16" rx="2" fill="#fff" stroke="var(--pizza)" stroke-width="2"/><text x="11" y="12" font-size="9" text-anchor="middle">📻</text></g>
+        </svg>
+      </div>
+
+      <!-- RIGHT: phase instrument (org chart compact) -->
+      <div class="col">
+        <div class="panel" style="flex:1"><div class="panel-tt">Your company <span class="chip money" style="font-size:.6rem">salary $15</span></div>
+          <div class="panel-body" style="padding:var(--s3)">
+            <div class="node"><div class="nb mgmt">CEO</div><div class="nbody"><span>3 slots</span><span>FREE</span></div></div>
+            <div style="padding-left:10px;border-left:2px solid var(--chrome)">
+              <div class="node"><div class="nb recruit">Recruiting Mgr</div><div class="nbody"><span>2 slots</span><span>$5</span></div></div>
+              <div class="node"><div class="nb market">Brand Mgr</div><div class="nbody"><span>2 slots</span><span>$5</span></div></div>
+              <div class="node"><div class="nb kitchen">Burger Cook</div><div class="nbody"><span>line</span><span>$5</span></div></div>
+            </div>
+            <a class="backlink" href="05-org-chart.html" style="font-size:.74rem">edit tree (Restructuring) →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HAND / ACTIONS -->
+    <div class="hand">
+      <span class="lbl" style="color:var(--ink-soft);font-size:.62rem;letter-spacing:1.5px;font-weight:800">WORKING · spend each card's action</span>
+      <div class="handcards">
+        <div class="mini-emp"><div class="mb" style="background:#7A5C9E">Recruiting Mgr</div><div class="mf"><span>hire</span><span class="chip" style="font-size:.55rem;padding:0 5px">act</span></div></div>
+        <div class="mini-emp"><div class="mb" style="background:var(--cherry)">Brand Mgr</div><div class="mf"><span>campaign</span><span class="chip" style="font-size:.55rem;padding:0 5px">act</span></div></div>
+        <div class="mini-emp"><div class="mb" style="background:var(--burger)">Burger Cook</div><div class="mf"><span>produce</span><span class="chip" style="font-size:.55rem;padding:0 5px">act</span></div></div>
+        <div class="mini-emp" style="opacity:.55"><div class="mb" style="background:var(--soda)">Errand Boy</div><div class="mf"><span>used</span><span>✓</span></div></div>
+      </div>
+      <button class="btn primary">END ACTIONS ▶</button>
+    </div>
+
+   </div>
+  </div>
+  <p class="note">Two-zone substrate: the center board is the Pixi canvas; the crown / panels / hand / org chart are DOM. They meet on a clean board-vs-panels seam.</p>
+</div>
+</body></html>

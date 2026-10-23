@@ -153,5 +153,44 @@ this proactively and treats relevant items as a pre-flight checklist.
   `newRun(...)` — never click the (now-Pixi) PLAY button. _Source: cull-the-crown `playwright.config.ts`
   + `tests/e2e/look.spec.ts`._
 
+## Confirmed (Cull the Crown — UX safety + sweep harness)
+- **Symptom:** a modal opens (e.g. Remove-a-card-from-deck picker) then "**immediately closes**" when
+  the player tries to click a card. **Cause:** the modal stage's default *click-outside-the-panel
+  dismisses the modal* behaviour. The player's first click lands outside the panel rect — the modal
+  closes AND `pendingPick` clears, burning the action they paid for. **Fix:** when a `pendingPick` is
+  armed, the modal MUST be **non-dismissable** (`dismissable: false`) AND have an explicit **Cancel**
+  button in the header. The pattern: `dismissable: !picking`. _Source: cull-the-crown
+  `src/ui/PixiDeckModal.tsx`._
+- **Symptom:** parallel Playwright tests fail with **"Test timeout while setting up page"** after
+  cancelled sweeps. **Cause:** killing the playwright runner leaves **zombie Chromium processes** that
+  exhaust the host's page-setup budget; new tests can't get a Chromium instance. **Fix:** reap chrome
+  zombies between sweeps — `Stop-Process -Name chrome -Force -ErrorAction SilentlyContinue` (Windows)
+  / `pkill -f chromium-browser` (Unix). Wire into a `pretest:sweep` script so it's automatic. The
+  e2e dev server keeps running on its port — only the headless browsers need reaping. _Source:
+  cull-the-crown sweep-harness session._
+- **Symptom:** parallel `playwright test --reporter=line` tests **drop `console.log` lines** — got
+  ~half of expected logs from a 26-test sweep. **Cause:** the `line` reporter uses TTY cursor-up
+  ANSI codes to overwrite per-test status lines; parallel workers writing concurrently get clobbered
+  and their `console.log` lines get truncated. **Fix:** use **`list` reporter** (each test on its own
+  line, no overwrites) OR the JSON reporter (`["json", { outputFile: "results.json" }]`) to capture
+  everything as structured data. Tag harvestable lines (`PLAYTEST_RESULT {...}`) so a downstream
+  `grep | node parse.cjs` script can aggregate. _Source: cull-the-crown
+  `tests/playtest/sweep.spec.ts` + `playwright.sweep.config.ts`._
+- **Symptom:** PixiJS modal renders at the wrong scale relative to other Pixi canvases in the same
+  app. Cards in a pack-opening modal looked smaller than the felt's hand cards. **Cause:** the felt
+  canvas uses `width: STAGE_W, height: STAGE_H, autoDensity: false` (fixed logical resolution then
+  CSS-scaled by the parent), while the modal uses `resizeTo: host, autoDensity: true` (logical
+  coords = CSS pixels). The same constant `CARD_W = 44` resolves to vastly different display sizes
+  in each. **Fix:** either align both to the same logical resolution, OR compute a scale factor at
+  render time: `cardScale = canvasW / STAGE_W`, then `displayedW = CARD_W * cardScale`. _Source:
+  cull-the-crown `src/ui/PixiPackModal.tsx`._
+- **Symptom:** the modal's `m.show({ ..., title: ... })` shows the **stale title** between back-to-back
+  modal-content swaps (e.g. closing one pack and opening the next of a different kind). **Cause:** the
+  React component holding the modal only triggers `rebuild()` on its own state changes, not on store
+  changes that change the modal's data source. **Fix:** subscribe to the store inside the React
+  component (`useGame.subscribe(rebuild)` cleaned up on unmount) so any store change re-paints the
+  modal contents — the Pixi canvas stays mounted, only the scene-graph rebuilds. _Source:
+  cull-the-crown `src/ui/PixiPackModal.tsx`._
+
 ## Template for a confirmed entry
 - **Symptom:** **Cause:** **Fix:** **Source project:**

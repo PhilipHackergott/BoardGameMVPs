@@ -100,6 +100,9 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
     m.show({
       title: "New Run",
       header: false, // Balatro-style: the tab row is the top of the panel, no title band
+      // The Back button in the content already provides explicit dismiss; the corner ✕ otherwise
+      // overlaps the Challenges tab at this panel width.
+      noCloseButton: true,
       panelW: PANEL_W,
       panelH: PANEL_H,
       build: (mm) => {
@@ -153,6 +156,25 @@ export default function PixiRunSetup({ onClose }: { onClose: () => void }) {
         mm.rect(CARD_X, DECK_Y, CARD_W, CARD_H, deckUnlocked ? 0x241836 : 0x140a1e, { radius: z(10), stroke: deckUnlocked ? THEME.gold : THEME.frameDim });
         mm.sprite(`/art/decks/${deck.id}.svg`, CARD_X + z(5), DECK_Y + z(5), CARD_W - z(10), CARD_H - z(10));
         if (!deckUnlocked) mm.text("🔒", CARD_X + CARD_W / 2, DECK_Y + CARD_H / 2, z(30), THEME.frameDim, { anchor: 0.5, anchorY: 0.5 });
+
+        // Deck-position dots: one dot per deck, grey, with the currently-selected deck rendered
+        // white. Sits centered under the deck card so the player can see "I'm on deck N of M" at
+        // a glance.
+        const dotN = DECK_LIBRARY.length;
+        const dotR = Math.max(2, z(2.5));
+        const dotGap = Math.max(3, z(3));
+        const dotStep = dotR * 2 + dotGap;
+        const dotsW = dotN * (dotR * 2) + (dotN - 1) * dotGap;
+        const dotsX0 = CARD_X + (CARD_W - dotsW) / 2 + dotR;
+        const dotsY = DECK_Y + CARD_H + z(8) + dotR;
+        for (let i = 0; i < dotN; i++) {
+          const cx = dotsX0 + i * dotStep;
+          const isCur = i === deckIdx;
+          const dx = cx - dotR;
+          const dy = dotsY - dotR;
+          const sz = dotR * 2;
+          mm.rect(dx, dy, sz, sz, isCur ? 0xffffff : THEME.frameDim, { radius: dotR });
+        }
 
         // stake ladder beside the deck (#2): activated = colour chip, unlocked-inactive = grey box,
         // still-locked = small grey dot. Lowest stake at the bottom, climbing upward.

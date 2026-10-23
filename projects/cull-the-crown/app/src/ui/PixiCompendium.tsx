@@ -130,12 +130,20 @@ function galleryItems(page: Page): GItem[] {
   }
 }
 
+const GALLERY_PAGE_SIZE = 6; // 6 entries per gallery page — keeps loaded SVGs bounded and the
+// modal snappy. Pagination state resets when the player switches sections.
+
 export default function PixiCompendium({ onClose, start = "overview" }: { onClose: () => void; start?: Page }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<ModalStage | null>(null);
   const [page, setPage] = useState<Page>(start);
+  const [galleryPage, setGalleryPage] = useState(0);
   const pageRef = useRef<Page>(page);
   pageRef.current = page;
+  const galleryPageRef = useRef(galleryPage);
+  galleryPageRef.current = galleryPage;
+  // Reset to page 0 whenever the player switches Compendium section.
+  useEffect(() => { setGalleryPage(0); }, [page]);
 
   const rebuild = () => {
     const m = modalRef.current;
@@ -180,9 +188,24 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
             return;
           }
           if (page === "enemies") { drawEnemies(mm, cw - 14); return; }
-          // galleries
-          drawGallery(mm, galleryItems(page), cw - 14);
+          // Paginated gallery — only the current page's GALLERY_PAGE_SIZE items render, keeping
+          // texture/memory pressure low. Page chrome (Prev / N of M / Next) renders at the bottom.
+          const all = galleryItems(page);
+          const pageCount = Math.max(1, Math.ceil(all.length / GALLERY_PAGE_SIZE));
+          const cur = Math.min(galleryPageRef.current, pageCount - 1);
+          const slice = all.slice(cur * GALLERY_PAGE_SIZE, cur * GALLERY_PAGE_SIZE + GALLERY_PAGE_SIZE);
+          drawGallery(mm, slice, cw - 14);
         });
+        // Pager chrome lives OUTSIDE the scroll region so it stays pinned at the modal bottom.
+        const all = galleryItems(page);
+        const pageCount = Math.max(1, Math.ceil(all.length / GALLERY_PAGE_SIZE));
+        const cur = Math.min(galleryPageRef.current, pageCount - 1);
+        if (!RULES[page] && page !== "enemies" && pageCount > 1) {
+          const py = 580 - 50 - 20 - 36;
+          mm.button("‹ Prev", cx0, py, 80, 28, THEME.frameDim, cur > 0, () => setGalleryPage((p) => Math.max(0, p - 1)), 11);
+          mm.text(`Page ${cur + 1} of ${pageCount}  ·  ${all.length} entries`, cx0 + cw / 2, py + 14, 11, THEME.parchmentEdge, { anchor: 0.5, anchorY: 0.5 });
+          mm.button("Next ›", cx0 + cw - 80, py, 80, 28, THEME.frameDim, cur < pageCount - 1, () => setGalleryPage((p) => Math.min(pageCount - 1, p + 1)), 11);
+        }
       },
     });
   };
@@ -220,7 +243,7 @@ export default function PixiCompendium({ onClose, start = "overview" }: { onClos
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => { rebuild(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [page]);
+  useEffect(() => { rebuild(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [page, galleryPage]);
 
   return <div ref={hostRef} className="pixi-modal-host" />;
 }

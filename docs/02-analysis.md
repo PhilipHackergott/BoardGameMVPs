@@ -9,6 +9,13 @@ Decide whether the title is worth building by examining market position, competi
 monetization, and — critically — **IP/rights**. Analysis answers **"should this exist as a
 product, and can we ship it responsibly?"**
 
+> **Original video-game concepts:** compare against **competitor *video games*** (Steam/itch
+> comparables, genre/community interest, search trends) instead of BGG stats. IP is usually
+> *clean by design* (original IP) but still recorded — and real-world brands must become generic
+> stand-ins. After analysis, an original concept produces a **`game-design-document.md`** (the
+> design foundation that `/spec` consumes) since there is no rulebook to adapt. See the root
+> `CLAUDE.md` → "The original-concept track".
+
 ## Inputs
 
 - `01-candidate-brief.md` and `project-state.json`.

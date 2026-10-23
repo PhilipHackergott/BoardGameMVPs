@@ -59,11 +59,27 @@ export function MainMenu() {
   const savedSnapshot = useGame((s) => s.savedSnapshot);
   const auth = useGame((s) => s.auth);
   const online = useGame((s) => s.online);
-  const friends = useGame((s) => s.friends);
   const findMatch = useGame((s) => s.findMatch);
   const cancelQueue = useGame((s) => s.cancelQueue);
 
   const [view, setView] = useState<View>("home");
+  // Sign-in modal (instead of a full screen): clicking Find Match while signed out opens it,
+  // and on success we continue into matchmaking. `afterAuth` is the deferred intent.
+  const [authModal, setAuthModal] = useState(false);
+  const [afterAuth, setAfterAuth] = useState<null | "find">(null);
+  const openAuth = (then: null | "find" = null) => {
+    setAfterAuth(then);
+    setAuthModal(true);
+  };
+  const closeAuth = () => {
+    setAuthModal(false);
+    setAfterAuth(null);
+  };
+  const onAuthDone = () => {
+    setAuthModal(false);
+    if (afterAuth === "find") findMatch();
+    setAfterAuth(null);
+  };
 
   const [players, setPlayers] = useState(saved.players);
   const [names, setNames] = useState<string[]>(() => {
@@ -151,22 +167,31 @@ export function MainMenu() {
       </div>
 
       {view === "home" && (
+        <button
+          className={`account-corner${auth ? "" : " signin"}`}
+          onClick={() => (auth ? setView("settings") : openAuth())}
+        >
+          {auth ? (
+            <>
+              <span className="account-chip-rank">{auth.user.elo}</span>
+              <span className="account-chip-name">{auth.user.handle}</span>
+            </>
+          ) : (
+            <span className="account-chip-name">Sign in</span>
+          )}
+        </button>
+      )}
+
+      {view === "home" && (
         <nav className="menu-nav">
-          <button className="account-chip" onClick={() => setView(auth ? "settings" : "auth")}>
-            {auth ? (
-              <>
-                <span className="account-chip-rank">{auth.user.elo}</span>
-                <span className="account-chip-name">{auth.user.handle}</span>
-                <span className="account-chip-rec">
-                  {auth.user.wins}W · {auth.user.losses}L
-                </span>
-              </>
-            ) : (
-              <span className="account-chip-name">Sign in to play ranked →</span>
-            )}
+          <button className="nav-btn" onClick={continueGame} disabled={!canContinue}>
+            <span className="nav-btn-title">Continue</span>
+            <span className="nav-btn-sub">
+              {canContinue ? `Resume your ${resumeCfg?.players ?? 2}-player game` : "No game in progress"}
+            </span>
           </button>
 
-          <button className="nav-btn primary" onClick={() => (auth ? findMatch() : setView("auth"))}>
+          <button className="nav-btn primary" onClick={() => (auth ? findMatch() : openAuth("find"))}>
             <span className="nav-btn-title">Find Match</span>
             <span className="nav-btn-sub">
               {auth ? `Ranked online · Elo ${auth.user.elo}` : "Sign in to play ranked online"}
@@ -178,29 +203,8 @@ export function MainMenu() {
             <span className="nav-btn-sub">Pass-and-play or vs CPU on this device</span>
           </button>
 
-          <button className="nav-btn" onClick={() => setView("friends")}>
-            <span className="nav-btn-title">
-              Friends
-              {auth && friends.reqIn.length > 0 && <span className="nav-badge">{friends.reqIn.length}</span>}
-            </span>
-            <span className="nav-btn-sub">
-              {auth
-                ? friends.reqIn.length > 0
-                  ? `${friends.reqIn.length} new friend request${friends.reqIn.length > 1 ? "s" : ""}`
-                  : `${friends.list.length} friend${friends.list.length === 1 ? "" : "s"} · invite to play`
-                : "Sign in to add friends"}
-            </span>
-          </button>
-
-          <button className="nav-btn" onClick={continueGame} disabled={!canContinue}>
-            <span className="nav-btn-title">Continue</span>
-            <span className="nav-btn-sub">
-              {canContinue ? `Resume your ${resumeCfg?.players ?? 2}-player game` : "No game in progress"}
-            </span>
-          </button>
-
           <button className="nav-btn" onClick={() => setView("runs")}>
-            <span className="nav-btn-title">Past Runs</span>
+            <span className="nav-btn-title">Match History</span>
             <span className="nav-btn-sub">{history.length > 0 ? `${history.length} recorded` : "No games yet"}</span>
           </button>
 
@@ -211,9 +215,7 @@ export function MainMenu() {
         </nav>
       )}
 
-      {view === "auth" && <AuthScreen onDone={() => setView("home")} onBack={() => setView("home")} />}
-
-      {view === "friends" && <FriendsPanel onBack={() => setView("home")} onSignIn={() => setView("auth")} />}
+      {view === "friends" && <FriendsPanel onBack={() => setView("home")} onSignIn={() => openAuth()} />}
 
       {view === "new" && (
         <div className="menu-sheet">
@@ -317,7 +319,7 @@ export function MainMenu() {
             </button>
           </div>
 
-          <AccountPanel onSignIn={() => setView("auth")} />
+          <AccountPanel onSignIn={() => openAuth()} />
 
           <div className="field">
             <label>Theme</label>
@@ -410,7 +412,7 @@ export function MainMenu() {
           </div>
 
           <div className="field">
-            <label>Past runs</label>
+            <label>Match history</label>
             <button className="ghost-btn" onClick={clearHistory} disabled={history.length === 0}>
               Clear {history.length > 0 ? `(${history.length})` : ""}
             </button>
@@ -422,7 +424,7 @@ export function MainMenu() {
       {view === "runs" && (
         <div className="menu-sheet">
           <div className="sheet-head">
-            <h2>Past Runs</h2>
+            <h2>Match History</h2>
             <div className="sheet-head-actions">
               {history.length > 0 && (
                 <button className="ghost-btn" onClick={clearHistory}>
@@ -479,6 +481,14 @@ export function MainMenu() {
             <button className="ghost-btn" onClick={cancelQueue}>
               Cancel
             </button>
+          </div>
+        </div>
+      )}
+
+      {authModal && (
+        <div className="modal-overlay" onClick={closeAuth}>
+          <div onClick={(e) => e.stopPropagation()}>
+            <AuthScreen onDone={onAuthDone} onBack={closeAuth} />
           </div>
         </div>
       )}

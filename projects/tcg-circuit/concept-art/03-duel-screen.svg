@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" font-family="'Trebuchet MS',sans-serif">
+  <defs>
+    <linearGradient id="mat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#171430"/><stop offset="0.5" stop-color="#241c40"/><stop offset="1" stop-color="#171430"/>
+    </linearGradient>
+    <radialGradient id="nexus" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#fff2c4"/><stop offset="0.6" stop-color="#f4b942"/><stop offset="1" stop-color="#b9701f"/>
+    </radialGradient>
+    <radialGradient id="nexusFoe" cx="0.5" cy="0.4" r="0.6">
+      <stop offset="0" stop-color="#ffd1e8"/><stop offset="0.6" stop-color="#e0577f"/><stop offset="1" stop-color="#8a2c4c"/>
+    </radialGradient>
+    <linearGradient id="cardback" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a2d6e"/><stop offset="1" stop-color="#22184a"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="4" orient="auto">
+      <polygon points="0,0 10,4 0,8" fill="#ffd24a"/>
+    </marker>
+    <style>
+      .slot{fill:none;stroke:#6a5da0;stroke-width:2;stroke-dasharray:6 5;}
+      .uname{fill:#fff6df;font-size:9px;text-anchor:middle;font-weight:bold;}
+      .pow{fill:#fff;font-size:20px;font-weight:bold;text-anchor:middle;}
+      .callout{fill:#9ad0ff;font-size:11px;font-weight:bold;}
+      .clead{stroke:#9ad0ff;stroke-width:1.2;fill:none;stroke-dasharray:3 3;}
+      .cost{fill:#fff;font-size:14px;font-weight:bold;text-anchor:middle;}
+    </style>
+  </defs>
+
+  <rect width="960" height="600" fill="url(#mat)"/>
+  <!-- center line -->
+  <line x1="40" y1="300" x2="760" y2="300" stroke="#6a5da0" stroke-width="2" stroke-dasharray="2 6" opacity="0.7"/>
+
+  <!-- ======================= OPPONENT (top) ======================= -->
+  <g transform="translate(28,18)">
+    <rect x="0" y="0" width="250" height="58" rx="10" fill="#2a2147" stroke="#8a2c4c" stroke-width="2"/>
+    <circle cx="30" cy="29" r="20" fill="#3a2d6e"/><circle cx="30" cy="22" r="9" fill="#e8b98a"/><rect x="20" y="30" width="20" height="16" rx="5" fill="#8a2c4c"/>
+    <text x="58" y="24" fill="#fff6df" font-size="13" font-weight="bold">RIVAL — "Kai"</text>
+    <text x="58" y="42" fill="#c8b8e8" font-size="11">Gloom / Tide control</text>
+  </g>
+  <!-- opp Nexus -->
+  <g transform="translate(330,30)">
+    <circle cx="30" cy="30" r="30" fill="url(#nexusFoe)" stroke="#fff" stroke-width="2"/>
+    <text x="30" y="37" text-anchor="middle" font-size="22" font-weight="bold" fill="#3a1024">13</text>
+    <rect x="68" y="18" width="120" height="12" rx="6" fill="#3a2147"/><rect x="68" y="18" width="78" height="12" rx="6" fill="#e0577f"/>
+    <text x="68" y="48" font-size="11" fill="#ffd1e8" font-weight="bold">NEXUS LIFE 13 / 20</text>
+  </g>
+  <!-- opp hand (face down) -->
+  <g transform="translate(640,16)">
+    <g transform="rotate(8 30 30)"><rect x="0" y="0" width="40" height="58" rx="5" fill="url(#cardback)" stroke="#6a5da0" stroke-width="1.5"/></g>
+    <g transform="rotate(3 60 30)"><rect x="24" y="-2" width="40" height="58" rx="5" fill="url(#cardback)" stroke="#6a5da0" stroke-width="1.5"/></g>
+    <g transform="rotate(-2 90 30)"><rect x="48" y="-2" width="40" height="58" rx="5" fill="url(#cardback)" stroke="#6a5da0" stroke-width="1.5"/></g>
+    <g transform="rotate(-7 120 30)"><rect x="72" y="0" width="40" height="58" rx="5" fill="url(#cardback)" stroke="#6a5da0" stroke-width="1.5"/></g>
+    <circle cx="150" cy="50" r="13" fill="#2a2147" stroke="#6a5da0"/><text x="150" y="55" text-anchor="middle" font-size="13" fill="#fff6df" font-weight="bold">×4</text>
+  </g>
+
+  <!-- opp lanes -->
+  <g>
+    <rect class="slot" x="318" y="110" width="100" height="74" rx="8"/>
+    <rect class="slot" x="430" y="110" width="100" height="74" rx="8"/>
+    <rect class="slot" x="542" y="110" width="100" height="74" rx="8"/>
+    <!-- opp unit lane1 (Gloom) -->
+    <g transform="translate(322,114)">
+      <rect width="92" height="66" rx="7" fill="#241830" stroke="#7d5aa6" stroke-width="3"/>
+      <text class="uname" x="46" y="16">DUSK WRAITH</text>
+      <circle cx="46" cy="40" r="16" fill="#3a2147" stroke="#7d5aa6" stroke-width="2"/><text class="pow" x="46" y="47">2</text>
+      <text x="46" y="61" text-anchor="middle" font-size="8" fill="#c8b8e8">drain 1</text>
+    </g>
+    <!-- lane2 empty -->
+    <!-- opp unit lane3 (Tide) -->
+    <g transform="translate(546,114)">
+      <rect width="92" height="66" rx="7" fill="#182634" stroke="#2e7fb8" stroke-width="3"/>
+      <text class="uname" x="46" y="16">TIDE SENTRY</text>
+      <circle cx="46" cy="40" r="16" fill="#16344a" stroke="#2e7fb8" stroke-width="2"/><text class="pow" x="46" y="47">4</text>
+      <text x="46" y="61" text-anchor="middle" font-size="8" fill="#9fd0ee">guard</text>
+    </g>
+  </g>
+
+  <!-- lane labels between -->
+  <g opacity="0.8">
+    <text x="368" y="300" text-anchor="middle" font-size="10" fill="#8478b8">LANE 1</text>
+    <text x="480" y="300" text-anchor="middle" font-size="10" fill="#8478b8">LANE 2</text>
+    <text x="592" y="300" text-anchor="middle" font-size="10" fill="#8478b8">LANE 3</text>
+  </g>
+
+  <!-- ======================= PLAYER (bottom) ======================= -->
+  <!-- your lanes -->
+  <g>
+    <rect class="slot" x="318" y="316" width="100" height="74" rx="8"/>
+    <rect class="slot" x="430" y="316" width="100" height="74" rx="8"/>
+    <rect class="slot" x="542" y="316" width="100" height="74" rx="8"/>
+    <!-- your unit lane1 (Ember) -->
+    <g transform="translate(322,320)">
+      <rect width="92" height="66" rx="7" fill="#321811" stroke="#d9442e" stroke-width="3"/>
+      <text class="uname" x="46" y="16">EMBER WHELP</text>
+      <circle cx="46" cy="40" r="16" fill="#4a1c12" stroke="#d9442e" stroke-width="2"/><text class="pow" x="46" y="47">3</text>
+      <text x="46" y="61" text-anchor="middle" font-size="8" fill="#f0a58e">haste</text>
+    </g>
+    <!-- your unit lane2 (Verdant) -->
+    <g transform="translate(434,320)">
+      <rect width="92" height="66" rx="7" fill="#16301a" stroke="#4a9e4a" stroke-width="3"/>
+      <text class="uname" x="46" y="16">OAK WARDEN</text>
+      <circle cx="46" cy="40" r="16" fill="#173f1c" stroke="#4a9e4a" stroke-width="2"/><text class="pow" x="46" y="47">6</text>
+      <text x="46" y="61" text-anchor="middle" font-size="8" fill="#a8e0a8">+2 next</text>
+    </g>
+    <!-- lane3 empty -->
+  </g>
+
+  <!-- attack arrow: your lane2 (opp lane2 empty) -> opp Nexus -->
+  <path d="M 480 320 C 470 240, 400 150, 372 92" class="" fill="none" stroke="#ffd24a" stroke-width="3" stroke-dasharray="7 5" marker-end="url(#arrow)" opacity="0.95"/>
+  <text x="430" y="210" fill="#ffd24a" font-size="11" font-weight="bold" transform="rotate(-58 430 210)">empty lane → hits Nexus!</text>
+
+  <!-- your Nexus + Light gauge (bottom-left) -->
+  <g transform="translate(30,410)">
+    <circle cx="34" cy="34" r="32" fill="url(#nexus)" stroke="#fff" stroke-width="2"/>
+    <text x="34" y="42" text-anchor="middle" font-size="24" font-weight="bold" fill="#5a3410">20</text>
+    <text x="0" y="86" font-size="11" fill="#ffe08a" font-weight="bold">YOUR NEXUS 20 / 20</text>
+    <!-- Light gauge -->
+    <g transform="translate(0,98)">
+      <text x="0" y="0" font-size="12" fill="#9ad0ff" font-weight="bold">LIGHT</text>
+      <g>
+        <circle cx="14" cy="18" r="9" fill="#ffe08a" stroke="#caa24a" stroke-width="1.5"/>
+        <circle cx="38" cy="18" r="9" fill="#ffe08a" stroke="#caa24a" stroke-width="1.5"/>
+        <circle cx="62" cy="18" r="9" fill="#ffe08a" stroke="#caa24a" stroke-width="1.5"/>
+        <circle cx="86" cy="18" r="9" fill="#ffe08a" stroke="#caa24a" stroke-width="1.5"/>
+        <circle cx="110" cy="18" r="9" fill="#2a2147" stroke="#6a5da0" stroke-width="1.5"/>
+      </g>
+      <text x="0" y="44" font-size="11" fill="#cfe6ff">4 / 4 this turn</text>
+    </g>
+  </g>
+
+  <!-- deck/discard -->
+  <g transform="translate(700,330)">
+    <rect x="0" y="0" width="44" height="62" rx="5" fill="url(#cardback)" stroke="#6a5da0" stroke-width="1.5"/>
+    <text x="22" y="80" text-anchor="middle" font-size="10" fill="#c8b8e8">DECK 26</text>
+    <rect x="0" y="100" width="44" height="62" rx="5" fill="#2a2147" stroke="#574a86" stroke-width="1.5"/>
+    <text x="22" y="180" text-anchor="middle" font-size="10" fill="#8478b8">USED 8</text>
+  </g>
+
+  <!-- buttons -->
+  <g font-weight="bold">
+    <g transform="translate(770,430)">
+      <rect width="160" height="44" rx="10" fill="#2a2147" stroke="#9ad0ff" stroke-width="2"/>
+      <text x="80" y="28" text-anchor="middle" font-size="14" fill="#9ad0ff">↻ REFRACT</text>
+    </g>
+    <g transform="translate(770,484)">
+      <rect width="160" height="48" rx="10" fill="#d9442e" stroke="#ffcaba" stroke-width="2"/>
+      <text x="80" y="30" text-anchor="middle" font-size="15" fill="#fff">END TURN ▶</text>
+    </g>
+  </g>
+
+  <!-- your hand (fanned, face up, affinity colored) -->
+  <g transform="translate(250,470)">
+    <!-- card template: cost circle TL, art, name, power BR -->
+    <!-- 1 Ember unit cost2 pow3 -->
+    <g transform="rotate(-12 40 70)">
+      <rect x="0" y="0" width="86" height="120" rx="9" fill="#2a1814" stroke="#d9442e" stroke-width="3"/>
+      <rect x="8" y="26" width="70" height="48" rx="4" fill="#3f201a"/>
+      <circle cx="16" cy="16" r="13" fill="#d9442e" stroke="#fff" stroke-width="1.5"/><text class="cost" x="16" y="21">2</text>
+      <text x="43" y="88" text-anchor="middle" font-size="9" fill="#fff6df" font-weight="bold">EMBER WHELP</text>
+      <text x="43" y="100" text-anchor="middle" font-size="7" fill="#f0a58e">Unit · haste</text>
+      <circle cx="70" cy="104" r="12" fill="#4a1c12" stroke="#d9442e"/><text x="70" y="109" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">3</text>
+    </g>
+    <!-- 2 Tide spell cost3 -->
+    <g transform="translate(70,-12) rotate(-6 40 70)">
+      <rect x="0" y="0" width="86" height="120" rx="9" fill="#142634" stroke="#2e7fb8" stroke-width="3"/>
+      <rect x="8" y="26" width="70" height="48" rx="4" fill="#16344a"/>
+      <circle cx="16" cy="16" r="13" fill="#2e7fb8" stroke="#fff" stroke-width="1.5"/><text class="cost" x="16" y="21">3</text>
+      <text x="43" y="88" text-anchor="middle" font-size="9" fill="#fff6df" font-weight="bold">TIDAL PULL</text>
+      <text x="43" y="100" text-anchor="middle" font-size="7" fill="#9fd0ee">Spell · draw 2, bounce</text>
+    </g>
+    <!-- 3 Verdant unit cost5 pow6 (center, raised) -->
+    <g transform="translate(150,-26)">
+      <rect x="0" y="0" width="90" height="124" rx="9" fill="#15301a" stroke="#4a9e4a" stroke-width="3"/>
+      <rect x="8" y="28" width="74" height="50" rx="4" fill="#173f1c"/>
+      <circle cx="16" cy="16" r="13" fill="#4a9e4a" stroke="#fff" stroke-width="1.5"/><text class="cost" x="16" y="21">5</text>
+      <text x="45" y="92" text-anchor="middle" font-size="9" fill="#fff6df" font-weight="bold">OAK WARDEN</text>
+      <text x="45" y="104" text-anchor="middle" font-size="7" fill="#a8e0a8">Unit · lifegain</text>
+      <circle cx="74" cy="106" r="12" fill="#173f1c" stroke="#4a9e4a"/><text x="74" y="111" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">6</text>
+    </g>
+    <!-- 4 Gloom unit cost2 pow2 -->
+    <g transform="translate(244,-12) rotate(6 40 70)">
+      <rect x="0" y="0" width="86" height="120" rx="9" fill="#221830" stroke="#7d5aa6" stroke-width="3"/>
+      <rect x="8" y="26" width="70" height="48" rx="4" fill="#2e1f44"/>
+      <circle cx="16" cy="16" r="13" fill="#7d5aa6" stroke="#fff" stroke-width="1.5"/><text class="cost" x="16" y="21">2</text>
+      <text x="43" y="88" text-anchor="middle" font-size="9" fill="#fff6df" font-weight="bold">GRAVE IMP</text>
+      <text x="43" y="100" text-anchor="middle" font-size="7" fill="#c8b8e8">Unit · sacrifice</text>
+      <circle cx="70" cy="104" r="12" fill="#2e1f44" stroke="#7d5aa6"/><text x="70" y="109" text-anchor="middle" font-size="13" font-weight="bold" fill="#fff">2</text>
+    </g>
+    <!-- 5 Order gear cost1 -->
+    <g transform="translate(314,0) rotate(12 40 70)">
+      <rect x="0" y="0" width="86" height="120" rx="9" fill="#2e2810" stroke="#d8c24a" stroke-width="3"/>
+      <rect x="8" y="26" width="70" height="48" rx="4" fill="#3f3614"/>
+      <circle cx="16" cy="16" r="13" fill="#d8c24a" stroke="#fff" stroke-width="1.5"/><text class="cost" x="16" y="21">1</text>
+      <text x="43" y="88" text-anchor="middle" font-size="9" fill="#fff6df" font-weight="bold">AEGIS SIGIL</text>
+      <text x="43" y="100" text-anchor="middle" font-size="7" fill="#ecdf8a">Gear · +2 guard</text>
+    </g>
+  </g>
+
+  <!-- design callouts -->
+  <g>
+    <text class="callout" x="700" y="60">opponent hand</text><path class="clead" d="M 700 64 L 760 50"/>
+    <text class="callout" x="250" y="120" text-anchor="end">3 LANES — your unit hits</text>
+    <text class="callout" x="250" y="134" text-anchor="end">the unit across, or the Nexus</text>
+    <path class="clead" d="M 256 128 L 316 150"/>
+    <text class="callout" x="150" y="430">Nexus = your life (20→0)</text><path class="clead" d="M 150 426 L 70 440"/>
+    <text class="callout" x="150" y="556">LIGHT escalates +1/turn;</text>
+    <text class="callout" x="150" y="570">REFRACT a card for +1 now</text>
+    <path class="clead" d="M 146 560 L 100 528"/>
+    <text class="callout" x="610" y="585" text-anchor="end">cost ◔ · power ◉ · affinity = frame colour</text>
+    <path class="clead" d="M 614 581 L 660 560"/>
+  </g>
+
+  <!-- caption -->
+  <rect x="320" y="6" width="320" height="0" fill="none"/>
+  <rect x="330" y="566" width="300" height="0" fill="none"/>
+</svg>

@@ -14,24 +14,31 @@ npm run build    # tsc --noEmit && vite build
 npm test         # vitest: card DB, field math, draft, full AI-vs-AI games
 ```
 
-## ⚠️ The one thing that is NOT 1:1 yet: card text
+## Card data: real text & values (sourced) — effect logic partly simplified
 
-The supplied rulebook PDF defines the **complete rules system** but contains **no individual card
-texts**. Compile: Main 1 has **12 protocols × 6 command cards = 72 unique cards**, and each card's
-effects live on the card face. So:
+Compile: Main 1 has **12 protocols × 6 command cards = 72 unique cards**. The user's rulebook PDF
+defined the **complete rules system** but printed **no individual card texts**; that gap is now
+**resolved by web research** — see [`../card-reference.md`](../card-reference.md) for the full sourcing
+and citations.
 
 - The **rules engine is faithful**: draft, lines, values, face-down = 2, the full turn order
   (Start → Check Control → Check Compile → Action → Check Cache → End), control component +
   rearrange, compile / recompile (steal), refresh, clear-cache, win, and the LIFO effect-resolution
   stack with uncover triggers are all implemented from the rulebook.
-- The **card effects are placeholders**: every card in [`src/engine/cards.ts`](src/engine/cards.ts)
-  is a clearly-flagged stand-in (`placeholder: true`), themed to each protocol's verb summary that
-  *is* printed in the rulebook (Death = DELETE/DRAW, Fire = DISCARD-FOR-EFFECT, Water =
-  RETURN/DRAW/FLIP, …). Values are a clean 0–5 spread.
+- The **card names, values & box texts are the real published data** for all 72 cards in
+  [`src/engine/cards.ts`](src/engine/cards.ts). (Note: values are *not* a clean 0–5 spread — Gravity
+  uses {0,1,2,4,5,6} and Metal {0,1,2,3,5,6}.)
+- The **effect logic** is faithful for 24/72 cards; the other 48 have real text but a **simplified**
+  effect (tagged `SIMPLIFIED` in the in-game Codex, `placeholder: true` in code), because the current
+  runtime lacks some primitives (value modifiers, play-from-deck, reactive "when covered/flipped"
+  triggers, lock-outs, rearrange, reveal, value/line-conditional multi-delete, covered targeting).
 
-### How to make it truly 1:1
+### How to reach full effect fidelity (a build-stage task)
 
-Edit only [`src/engine/cards.ts`](src/engine/cards.ts). Each card has three command boxes
+Card *data* is done. Closing the remaining effect gap means **extending the runtime**
+(`types.ts` / `effects.ts` / `field.ts` / `game.ts`) with the missing primitives listed in
+[`../card-reference.md`](../card-reference.md), then flipping the remaining `placeholder` flags to
+`false` in [`src/engine/cards.ts`](src/engine/cards.ts). Each card has three command boxes
 (see [`src/engine/types.ts`](src/engine/types.ts) → `CardDef`):
 
 | Box | Field(s) | Rulebook meaning |
@@ -41,9 +48,9 @@ Edit only [`src/engine/cards.ts`](src/engine/cards.ts). Each card has three comm
 | Bottom — Auxiliary | `bottomText` / `trigger` + `triggerEffect` | active only while face-up **and** uncovered (Start/End) |
 
 Effects are authored as generator functions over the `EffectAPI` (see the verb builders at the top
-of `cards.ts`: `draw`, `deleteTarget`, `flipTarget`, `shiftTarget`, `returnTarget`, `forceDiscard`,
-`discardForEffect`, composed with `seq(...)`). Set `placeholder: false` on each card you verify.
-Nothing else in the engine changes — the AI, UI, and rules pick up new card data automatically.
+of `cards.ts`: `draw`, `selfDiscard`, `deleteTarget`, `flipTarget`, `shiftTarget`, `returnTarget`,
+`forceDiscard`, `discardForEffect`, composed with `seq(...)`). The AI, UI, and rules pick up card
+changes automatically.
 
 ## Architecture (pure engine + thin UI)
 

@@ -5,9 +5,17 @@
 
 ## Purpose
 
-Surface board games that are good candidates for a digital MVP and produce a one-page brief
+Surface games that are good candidates for a digital MVP and produce a one-page brief
 that justifies pursuing a specific title. Discovery answers **"why this game?"** — not whether
 it's a business (that's analysis).
+
+> **Original video-game concepts** (the second intake track) run discovery too, with the rubric
+> *reinterpreted*: there is no BGG entry, designer, or publisher, so those identity fields are
+> repurposed (genre, perspective, comparable *video games*); "digital fit" is a given (the thing is
+> born-digital); and the load-bearing axes become **MVP scope, design clarity, visual feasibility,
+> and demand signal**. Mark the brief with a concept note saying so. `source: "user-concept"`.
+> See the root `CLAUDE.md` → "The original-concept track". Examples: `projects/spaeti/`,
+> `projects/tcg-circuit/`.
 
 ## Inputs
 

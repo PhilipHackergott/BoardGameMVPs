@@ -1,0 +1,25 @@
+Arm the one-shot 2am "continue the tcg-circuit world build" task
+================================================================
+
+This fires continue-tcg-build.ps1 ONCE at 2:00am (the usage-limit reset) so the build keeps going
+unattended. It runs Claude headless with --dangerously-skip-permissions (so it can write files / run
+npm / git without prompts) — an unattended, permission-bypassing agent, so YOU arm it explicitly.
+The PC must stay on (and ideally logged in) for it to fire. Each run consumes Claude usage quota.
+
+Run this once in PowerShell (normal, non-elevated is fine — it's a current-user task):
+
+  $action  = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -ExecutionPolicy Bypass -File "C:\Users\phili\Documents\BoardGameMVPs\scripts\continue-tcg-build.ps1"'
+  $trigger = New-ScheduledTaskTrigger -Once -At ([datetime]'2026-05-26 02:00:00')
+  Register-ScheduledTask -TaskName 'BoardGameFactory-ContinueTCG' -Action $action -Trigger $trigger -Description 'One-shot 2am continuation of the tcg-circuit world build (everything except Acts II-IV).' -Force
+
+Verify / control:
+  Get-ScheduledTaskInfo -TaskName 'BoardGameFactory-ContinueTCG'      # NextRunTime
+  Get-Content scripts\continue-tcg-build.log -Tail 30 -Wait           # watch it work
+  Start-ScheduledTask  -TaskName 'BoardGameFactory-ContinueTCG'       # run it now (test)
+  Unregister-ScheduledTask -TaskName 'BoardGameFactory-ContinueTCG' -Confirm:$false   # remove
+
+Notes:
+- It's a ONE-TIME task; it stays registered (disabled) after firing. Re-arm by re-running the command
+  with a new -At time, or just Start-ScheduledTask to run again.
+- The prompt the agent runs is scripts/tcg-continue.prompt.md — edit it to steer the overnight work.
+- If 2am is still inside a usage window, the script retries twice more (30-min gaps).

@@ -44,8 +44,11 @@ veil** over it so foreground text/panels stay legible.
    busy background.
 5. **Legibility & accessibility are part of "looks good."** Distinguish pieces by **shape + colour,
    not hue alone**; keep contrast high over the animated background; honour reduce-motion.
-6. **Menus/HUD/shop/settings = DOM/React; board + cards + FX = Pixi.** DOM is faster, accessible,
-   and easier to lay out. Don't render menus in Pixi.
+6. **Pick ONE UI substrate up front — don't mix-then-migrate.** DOM for text/form-heavy games
+   (faster, accessible, native scroll/inputs); a **Pixi UI kit** (typeface/button/modal/tokens) for
+   **canvas-native pixel-art games** where the chrome must read as part of the rendered scene. The
+   expensive mistake is DOM-over-canvas "to move fast", then porting menus/HUD/modals to Pixi piece by
+   piece (Cull the Crown's detour). Decide in the build plan — see [`ui-architecture.md`](ui-architecture.md).
 
 ## Flow & transitions: never auto-switch on an outcome (Cull the Crown lessons)
 
@@ -95,6 +98,47 @@ eye colour, and crown shape) so the player reads *what* they're fighting at a gl
 label. Reference: `cull-the-crown/app/src/ui/App.tsx` (CombatScreen overlay) + `render/combatStage.ts`
 (`drawRoyal`, `SUIT_ROYAL`).
 
+## UI detail craft — the notes that kept coming back as rework (Cull the Crown's Pixi-UI loop)
+
+Even after a polished first build, a second pass spent ~20 rounds of the user pointing at the *same
+classes* of detail. They generalise — bake them in so the next game skips the loop:
+
+- **Focal hierarchy: build the screen around the ONE thing the player acts on.** Adapting a known game?
+  Expect the user to point at reference screenshots and say "make X the centre." Give the central
+  target (the enemy **HP bar** / the score) the most visual weight and presence, and make the **value of
+  the current action** (your played-card damage) read centrally — don't give every stat equal billing.
+- **Fill the container; don't cluster at the top.** Distribute a panel/sidebar's sections to fill its
+  height (compute even gaps) so it looks designed, not like content floating in a half-empty column.
+- **One model, ONE size, everywhere.** The same object is the same size on every surface — a card in
+  hand, in the deck/discard pile, and a joker in the shop *vs.* in the battle HUD all share one model at
+  one footprint. **Reuse the model, don't re-derive a smaller/larger variant per surface.** Matching
+  zones get **matching backdrops** (the joker row uses the hand's dark panel).
+- **Each fact has one home — don't duplicate it across persistent chrome.** Once the sidebar shows the
+  royal's disabled suit, the extra felt warning is noise; cut it. (This is the *complement* of "surface
+  plan-relevant state redundantly" above: redundancy belongs at the **decision moment**, not as the same
+  fact echoed in two always-on chrome spots.)
+- **Typography is first-class, and the default is too small + too soft.** Three fixes the user asked for
+  by name: **size up** headlines/labels/numbers; **sharpen** by rendering the canvas at `resolution: 2–3`
+  (more backing pixels → crisp pixel text) with `image-rendering: pixelated`; and add **"living text"** —
+  split headlines/labels/numbers into **per-character glyphs** that bob+tilt on a tiny *staggered* phase
+  (Balatro's wiggle). Character-level, not whole-row; amplitude very small (≈0.013 rad + ≈0.45 px).
+  Stat boxes also read better **vertical** (label over number) than inline.
+- **Budget panel height for *wrapped* text + padding from the start.** "Slight cropping" recurred every
+  time a panel was sized to its one-line happy path and a wrapped name/sub-line then collided with the
+  next element. Size to the wrapped content, give boxes real inner padding, and make buttons tall enough
+  to be comfortable targets.
+- **Colour-code state, don't just print it.** Numbers the game state modifies should *signal* it — green
+  when buffed (a multiplier raised it), red when suppressed (the enemy disables that suit) — so the
+  player reads the math at a glance.
+- **Controls live next to what they act on; cut low-value chrome.** Sort-hand buttons belong under the
+  hand, not in a far sidebar; the "stage/hand" stat boxes were noise and got cut. Place each control in
+  its context and delete the rest.
+- **Stacks look physical (2.5D), not flat.** Deck/discard piles are the real card model stacked with
+  **per-card rotation + position jitter**, not a uniform fan — so they read as a heap of cards.
+
+Read with [`ui-architecture.md`](ui-architecture.md) (the kit that makes the above cheap to apply
+consistently) and [`patterns/presentation-fx.md`](../patterns/presentation-fx.md) (the motion kit).
+
 ## Verify real input early (don't let a pretty board be unclickable)
 
 Polished canvas boards are easy to make *unclickable*: Pixi per-object hit-testing can silently
@@ -127,6 +171,18 @@ _Visuals_
 - [ ] **Forced choices grow + blink**; a **turn/phase indicator** is always visible.
 - [ ] **Real-pointer input works** (tap + drag) — proven by a non-seam e2e, not just dev-seam tests.
 - [ ] **Colourblind-safe** (shape ≠ hue only), readable font sizes, keyboard-reachable primary actions.
+
+_UI detail craft (the rework notes — see "UI detail craft" above)_
+- [ ] **Focal hierarchy** — the central target (HP/score) is the most present element; the current
+      action's value reads centrally; chrome **fills its container** (no top-clustered dead space).
+- [ ] **One model at one size** across every surface; matching zones share backdrops; **no fact
+      duplicated** across two persistent chrome spots.
+- [ ] **Text sized up + sharp** (canvas `resolution: 2–3`) with **per-character living-text wiggle** on
+      headlines/labels; stat boxes vertical (label over number).
+- [ ] **Panels sized for wrapped text + real padding**; comfortable (tall) button targets — no cropping.
+- [ ] **State-modified numbers colour-coded** (green buff / red debuff); **controls sit beside what they
+      act on**, low-value chrome cut.
+- [ ] **Stacks are 2.5D** — the real model + per-card rotation/jitter, not a flat uniform fan.
 
 _Sound (see `audio-and-sound.md`)_
 - [ ] **Music** (synthesized, looping, starts on first gesture) + **SFX** on the key actions/UI.
@@ -167,3 +223,19 @@ _Shell + persistence (see `front-of-house-shell.md`)_
 - **Full-page Playwright screenshots of a WebGL canvas can be black** — screenshot the canvas
   element directly, or capture DOM-only screens.
 - **Keep FX in `render/`/`fx/`; the engine stays pure.** Game-feel never leaks into rules.
+- **Outcome-gate reveal delay must be under ~500 ms.** The "kill animation finishes → gate appears"
+  cinematic pause should feel earned, not stuck. Cull's first cut used 1150 ms and playtesters
+  reported "stuck after defeating the royal" — they quit before the gate painted. Tune to 400-500 ms
+  for wins, ~900 ms for losses. _Source: cull-the-crown `PixiCombatGate.tsx`, retrospective wave 8._
+- **Same-asset rule for cards.** A card revealed in a pack-opening modal MUST match the in-deck/in-
+  hand visual exactly (same renderer, same scale, same overlays). Subtle aspect-ratio drift between
+  modal-Pixi (CSS pixels) and felt-Pixi (fixed logical resolution then CSS-scaled) reads as "this
+  modal is broken" even if the player can't articulate why. See build-gotchas → wrong-scale entry.
+- **Pack reveals are full-felt take-overs, not modals over the shop.** Slide the shop tray off-felt
+  + recolour the plasma + lay out hand (top) / picks (mid) / title-and-skip tray (bottom). The
+  recoloured background is the affordance — no dim panel needed. See
+  `patterns/presentation-fx.md` → "Pack-takeover screen pattern".
+- **Armed-pick modals must be non-dismissable.** When the player has paid for a Remove or a
+  targeting tarot, the picker modal must NOT close on an outside-the-panel click — that misclick
+  burns the action. `dismissable: !picking` + explicit Cancel button. See build-gotchas →
+  "immediately closes" entry.

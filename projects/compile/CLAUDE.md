@@ -15,14 +15,17 @@ the user's instruction** (discovery/analysis/spec deliberately skipped; "the gam
 implement 1:1"). **Hot-seat multiplayer + Easy/Medium/Hard AI.** Look: futuristic neon-arcade
 (synthwave), techniques borrowed from `../cull-the-crown`.
 
-## Provenance & the card-data gap
+## Provenance & the card data
 
 - Brought in from the user's **rulebook PDF** (`compile-main-1-rulebook.pdf`); the extracted text is
-  kept here as `rulebook-extracted.txt`.
-- The PDF defines the **full rules system** but **no individual card texts**. Per the user's choice
-  ("I'll provide data"), the engine + UI + draft + AI are built against a documented card schema and
-  ship with **clearly-flagged placeholder cards**. Dropping in the published 72-card data
-  (`app/src/engine/cards.ts` only) makes it truly 1:1. See `app/README.md`.
+  kept here as `rulebook-extracted.txt`. The PDF defines the **full rules system** but **no card texts**.
+- **The card-data gap is now RESOLVED by web research** (2026-05-26). All 72 cards' real **names,
+  values, and box texts** were sourced and cross-checked against the official rulebook + BGG — see
+  **`card-reference.md`** for the full data, citations, and the `[VERIFY]` checklist. They are
+  encoded in `app/src/engine/cards.ts`.
+- Remaining gap is **effect-logic fidelity**, not data: 24/72 effects run faithfully; the other 48
+  have real text but a **simplified** effect (tagged `SIMPLIFIED` / `placeholder: true`) pending new
+  runtime primitives. Closing that is a **build-stage** task (see `app/README.md` + `card-reference.md`).
 - Treat any external rating/market figure as `unverified` (no analysis stage was run).
 
 ## Artifacts
@@ -30,6 +33,7 @@ implement 1:1"). **Hot-seat multiplayer + Easy/Medium/Hard AI.** Look: futuristi
 | Stage | File |
 |-------|------|
 | 4 Build | `app/` + `app/README.md` |
+| (ref) | `card-reference.md` — the sourced 72-card data + citations + `[VERIFY]` checklist |
 | (ref) | `rulebook-extracted.txt` — text dump of the user's rulebook PDF |
 
 Discovery/analysis/spec artifacts were intentionally skipped at the user's direction.
@@ -38,7 +42,9 @@ Discovery/analysis/spec artifacts were intentionally skipped at the user's direc
 
 - The `app/` follows `../../docs/stack-and-conventions.md`: a pure, unit-tested `engine/` and a thin
   `render/` + `ui/` that consume it. Game rules never live in the UI.
-- The single file to edit for card fidelity is `app/src/engine/cards.ts`.
+- Card data (names/values/texts) lives in `app/src/engine/cards.ts`; the sourced reference is
+  `card-reference.md`. Raising effect-logic fidelity beyond the current 24/72 means extending the
+  runtime (`engine/*`), which is a build-stage change, not a data edit.
 - Keep `project-state.json` and the root `registry/projects.json` in sync after every change.
 
 ## IP note

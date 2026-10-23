@@ -163,7 +163,10 @@ function handValue(hand: Card[]): number {
   return hand.reduce((a, c) => a + c.value, 0);
 }
 
-/** Hearts: shuffle the discard, place N cards face-down under (at the bottom of) the deck. */
+/** Hearts (per Regicide solo rules): shuffle the discard, count out N cards face-down equal to
+ *  the attack value played, and place them under (at the bottom of) the Tavern deck — no peeking.
+ *  The remaining discard stays on the table, face-up.
+ *  N is the play's total attack value passed in (resolution computes it as v + upgrades.H). */
 function applyHeal(run: RunState, n: number): void {
   if (n <= 0 || run.discard.length === 0) return;
   const take = Math.min(n, run.discard.length);
@@ -171,7 +174,10 @@ function applyHeal(run: RunState, n: number): void {
   run.rngState = sh.state;
   const healed = sh.arr.slice(0, take);
   run.discard = sh.arr.slice(take);
-  run.deck = run.deck.concat(healed); // bottom of the deck
+  run.deck = run.deck.concat(healed); // append = bottom (draws splice(0, ...) from front = top)
+  // Surface the heal so the player sees the rule fired — without a notice the move is silent and
+  // reads as "Hearts do nothing" (a recurring playtest complaint).
+  run.notice = `Hearts heal: ${take} card${take === 1 ? "" : "s"} shuffled from the discard back under the deck.`;
 }
 
 /** Diamonds: draw N from the top of the deck, never exceeding the current max hand size. */
@@ -275,6 +281,12 @@ export function combatPlay(run: RunState, cardIds: string[], wildSuits?: Record<
   // Decree after-play hooks on a surviving royal (e.g. the Headsman / Mad King lop a card).
   for (const d of decrees) d.onPlayResolved?.(run);
 
+  // Draw-after-play: replace the cards just spent so the hand size stays roughly constant across
+  // the fight. Keeps the player cycling through their deck (the shop's job is to *improve* what
+  // they cycle into); doesn't refill to full (that would let any draw-cap deck swap their whole
+  // hand each turn for free). N = cards played.
+  applyDraw(run, selected.length);
+
   // Step 4 setup: suffer the counter-attack (reduced by accumulated shield).
   enterDefend(run);
   return { defeated: false, exact: false };
@@ -375,9 +387,20 @@ function beginPlayTurn(run: RunState): void {
   const combat = run.combat!;
   combat.subphase = "play";
   combat.incoming = 0;
-  // No legal action available -> deferred loss.
-  if (run.hand.length === 0 && combat.yieldedLastTurn) {
+  // Self-heal: if the enemy is at 0 HP but outcome wasn't set (e.g. a debug-menu kill, a relic
+  // hook that bypassed combatPlay, or a state-mutation cheat), force-set outcome="won" now so the
+  // gate appears instead of leaving the player stuck on "YOUR MOVE" with a felled royal.
+  if (combat.enemy.damageTaken >= combat.enemy.maxHealth && !combat.outcome) {
+    combat.outcome = "won";
+    combat.wonExact = combat.enemy.damageTaken === combat.enemy.maxHealth;
+    return;
+  }
+  // No cards left to play -> instant loss. The old check only fired after a prior yield, which
+  // left the player stuck staring at an empty hand with "YOUR MOVE" but no possible action (the
+  // royal still standing). With an empty hand there is no legal next move — surface the loss now
+  // so the gate appears.
+  if (run.hand.length === 0) {
     combat.outcome = "lost";
-    run.notice = "No cards to play, and you cannot yield again.";
+    run.notice = "No cards to play. The royal stands.";
   }
 }

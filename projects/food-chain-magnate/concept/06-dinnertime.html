@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCM concept · Dinnertime resolution</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .dhdr{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+    padding:var(--s4) var(--s5);background:var(--navy);color:#fff;border-bottom:3px solid var(--ink)}
+  .dhdr .step{font-family:var(--font-display);font-size:1.3rem}
+  .dhdr .ka{font-family:var(--font-mono);font-weight:700;background:var(--mustard);color:var(--ink);
+    padding:6px 14px;border-radius:999px;border:2px solid var(--ink);box-shadow:var(--shadow)}
+  .dbody{display:grid;grid-template-columns:300px 1fr;gap:var(--s5);padding:var(--s5)}
+  .map{border:2px solid var(--ink);border-radius:var(--r2);background:#FBF4E2;overflow:hidden}
+  .map svg{width:100%;height:auto;display:block}
+  .demand-big{display:flex;gap:8px;align-items:center;font-weight:700}
+  .demand-big .sw{width:20px;height:20px;border-radius:4px;border:2px solid var(--ink);display:inline-block}
+  .ctrls{display:flex;gap:var(--s3);align-items:center;padding:0 var(--s5) var(--s5)}
+  .progress{flex:1;height:10px;border:2px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden}
+  .progress .pf{height:100%;width:33%;background:var(--turquoise)}
+</style></head>
+<body>
+<div class="frame">
+  <a class="backlink" href="index.html">&larr; concept set</a>
+  <h1 class="caption">Dinnertime — resolution step-through</h1>
+  <p class="sub">The friction that's gone, made visible. For each house, the engine lays out the <b>price + distance</b> math, names the tie-break, and counts cash up. This is both the trust device and the best teacher of FCM's core rule.</p>
+
+  <div class="screen">
+    <div class="ribbon"></div>
+    <div class="dhdr" style="position:relative;overflow:hidden">
+      <div class="sunburst" style="position:absolute;right:-30px;top:-60px;width:200px;height:200px;opacity:.18"></div>
+      <div style="position:relative"><div class="step">DINNERTIME · House 4 of 12</div>
+        <div style="font-size:.82rem;opacity:.8">resolving in house-number order</div></div>
+      <div class="row center gap3">
+        <span style="font-size:.7rem;letter-spacing:1px;opacity:.8">SALE</span>
+        <span class="ka">＋$56 ka-ching!</span>
+      </div>
+    </div>
+
+    <div class="dbody">
+      <!-- MAP: route to house 4 -->
+      <div class="map">
+        <svg viewBox="0 0 300 280">
+          <g fill="#CFD3D6" stroke="#A9AFB4"><rect x="0" y="92" width="300" height="10"/><rect x="0" y="190" width="300" height="10"/><rect x="120" y="0" width="10" height="280"/></g>
+          <g stroke="#fff" stroke-width="2" stroke-dasharray="8 7"><line x1="0" y1="97" x2="300" y2="97"/><line x1="0" y1="195" x2="300" y2="195"/><line x1="125" y1="0" x2="125" y2="280"/></g>
+          <!-- winning route Big B -> house4 -->
+          <polyline points="70,70 70,97 125,97 125,195 210,195 210,220" fill="none" stroke="var(--cherry)" stroke-width="3" stroke-dasharray="9 6"/>
+          <!-- losing route Zee's (longer) -->
+          <polyline points="250,60 250,97 210,97 210,220" fill="none" stroke="var(--chrome-dark)" stroke-width="2" stroke-dasharray="4 5"/>
+          <!-- Big B -->
+          <g transform="translate(46,44)"><rect width="42" height="26" rx="3" fill="var(--co-1)" stroke="#2B2118" stroke-width="2"/><text x="21" y="18" font-family="Pacifico" font-size="11" fill="#fff" text-anchor="middle">Big B</text></g>
+          <!-- Zee's -->
+          <g transform="translate(228,36)"><rect width="42" height="26" rx="3" fill="var(--co-2)" stroke="#2B2118" stroke-width="2"/><text x="21" y="18" font-family="Pacifico" font-size="10" fill="#fff" text-anchor="middle">Zee's</text></g>
+          <!-- house 4 + garden -->
+          <g transform="translate(196,214)"><rect x="-8" y="2" width="50" height="34" rx="4" fill="rgba(85,122,46,.22)" stroke="#557A2E" stroke-dasharray="4 3"/><path d="M0 8 l16 -14 16 14 v22 h-32z" fill="#fff" stroke="#2B2118" stroke-width="2"/><text x="16" y="26" font-family="Inter" font-size="11" font-weight="700" text-anchor="middle">4</text><text x="40" y="0" font-size="10" fill="#557A2E">×2</text></g>
+        </svg>
+        <div style="padding:var(--s3)">
+          <div class="demand-big">House 4 wants:
+            <span class="sw" style="background:var(--burger)"></span><span class="sw" style="background:var(--burger)"></span>
+          </div>
+          <p class="note" style="margin-top:6px">2× burger · has a <b>garden</b> (×2 unit price) · cherry route = winner, grey = the loser's longer route.</p>
+        </div>
+      </div>
+
+      <!-- WHY PANEL -->
+      <div class="panel"><div class="panel-tt">Why this house buys from Big B</div>
+        <div class="panel-body why">
+          <div class="houseline">Qualifying chains (road-connected · can serve the full order of 2 burgers):</div>
+
+          <div class="cand win">
+            <span class="crest c1">◆</span>
+            <div><b>Big B</b> <span class="calc">price $7 (−$3 discount mgr)  +  distance 4  =</span></div>
+            <span class="score">11 ✓ WINS</span>
+          </div>
+          <div class="cand">
+            <span class="crest c2">●</span>
+            <div>Zee's <span class="calc">price $10  +  distance 1  =</span></div>
+            <span class="score">11</span>
+          </div>
+
+          <div class="houseline" style="margin:10px 0 6px;color:var(--cherry-d)">⚖ Tie at 11 → tie-break: <b>most waitresses</b> → Big B has 1, Zee's has 0 → <b>Big B wins</b>.</div>
+
+          <div class="payout">
+            <div class="row between"><span>2 burgers × unit price $7</span><span>$14</span></div>
+            <div class="row between"><span>× garden (house 4)</span><span>×2 → $28</span></div>
+            <div class="row between"><span>★ "First burger marketed" milestone</span><span>+$10</span></div>
+            <div class="row between"><span>1 waitress bonus</span><span>+$3</span></div>
+            <div class="row between"><span>CFO +50% (CEO @ $100 milestone)</span><span>+$15</span></div>
+            <div class="row between" style="border-top:2px solid var(--ink);margin-top:6px;padding-top:6px;font-weight:700;font-size:1.05rem"><span>Paid from bank to Big B</span><span>$56</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ctrls">
+      <button class="btn">◀ Prev</button>
+      <div class="progress"><div class="pf"></div></div>
+      <span class="muted" style="font-size:.78rem">House 4 / 12</span>
+      <button class="btn">Auto-fast ⏩</button>
+      <button class="btn primary">Next house ▶</button>
+    </div>
+    <p class="note" style="padding:0 var(--s5) var(--s5)">Every modifier is itemised (garden ×2 · milestone bonus · waitress · CFO). Step or auto. This is the full tie-break chain (price+distance → waitresses → turn order) made legible — the engine's headline correctness surface.</p>
+  </div>
+</div>
+</body></html>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Application, Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { useGame } from "./store";
-import { contentMeta, makeCardFromTemplate, tarotById } from "../engine/index";
+import { contentMeta, makeCardFromTemplate, SIGIL_INFO, tarotById } from "../engine/index";
 import { Card, PackKind } from "../engine/types";
 import { ModalStage } from "../render/ui/modalStage";
 import { buildCardFace } from "../render/cardFace";
@@ -9,7 +9,7 @@ import { CARD_W, CARD_H } from "../render/cardNode";
 import { STYLE_ART_SLUG } from "../render/sidebarStage";
 import { FightingStyleId } from "../engine/types";
 import { PIXEL_FONT, THEME } from "../render/theme";
-import { PACK_LABEL, SIZE_LABEL } from "./packMeta";
+import { PACK_LABEL } from "./packMeta";
 import { sfx } from "../audio/chiptune";
 import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
 import { useTooltip } from "./tooltip";
@@ -169,7 +169,7 @@ function PackModalApp() {
       into.addChild(s);
       return;
     }
-    if (cache.has(url)) return; // in-flight / failed
+    if (cache.has(url)) return; // in-flight — the load promise will rebuild once it resolves
     cache.set(url, null);
     void Assets.load(url)
       .then((t: Texture) => {
@@ -177,37 +177,43 @@ function PackModalApp() {
         cache.set(url, t);
         rebuild();
       })
-      .catch(() => {});
+      .catch(() => {
+        // Drop the in-flight marker so a future rebuild can RETRY this URL (otherwise a transient
+        // network/SVG-parse failure means the slot stays blank for the life of the modal — that's
+        // how a single drill's art was missing in the take-over).
+        cache.delete(url);
+      });
   };
 
-  // The pickable "tile" — playing-card-sized art with the name below. Tarot/Spectral/Style/Relic
-  // render in a portrait-card shape (the size of a playing card but slightly more vertical) so the
-  // pack-reveal reads as "pick a card from the spread" the way Balatro does.
-  const TILE_W = 50;
-  const TILE_H = 78; // playing-card size (44×62) but slightly more vertical for tarot reveal feel
-  const buildTile = (kind: PackKind, cid: string): { view: Container; w: number; h: number } => {
+  // The pickable "tile" — battle-card-sized art with the name below. Tarot/Spectral/Style/Relic
+  // render in a card-shaped frame at the exact battle-card footprint so the pack-reveal reads as
+  // "pick a card from the spread" with the same physical scale as the felt hand. The size is
+  // passed in from rebuild() (scaled to match felt-display CSS px), not the raw CARD_W constant.
+  const buildTile = (kind: PackKind, cid: string, tileW: number, tileH: number): { view: Container; w: number; h: number } => {
     const meta = contentMeta(kind, cid);
     const accent = meta.rarity ? RARITY_ACCENT[meta.rarity] ?? THEME.gold : THEME.gold;
+    const TILE_W = tileW;
+    const TILE_H = tileH;
     const c = new Container();
     let artW = 0, artH = 0;
     if (kind === "card") {
-      // A new card joining the deck — show it AS the card face at natural felt-card scale.
-      const face = buildCardFace(makeCardFromTemplate(cid, 0), CARD_W);
+      // A new card joining the deck — show it AS the card face at the same scale as the felt hand.
+      const face = buildCardFace(makeCardFromTemplate(cid, 0), tileW);
       face.position.set(0, 0);
       c.addChild(face);
-      artW = CARD_W; artH = CARD_H;
+      artW = tileW; artH = tileH;
     } else {
-      // Tarot / Spectral / Style / Relic — portrait card frame with the art inside.
-      const frame = new Graphics();
-      frame.roundRect(-TILE_W / 2, -TILE_H / 2, TILE_W, TILE_H, 5).fill({ color: 0x140a1e }).stroke({ width: 1.5, color: accent });
-      c.addChild(frame);
-      const badge = new Container();
-      const initial = new Text({ text: (meta.name[0] ?? "?").toUpperCase(), style: { fill: accent, fontSize: 20, fontFamily: PIXEL_FONT, fontWeight: "700" } });
-      initial.anchor.set(0.5);
-      badge.addChild(initial);
+      // Tarot / Spectral / Style / Relic — free-floating art at battle-card scale (no frame). The
+      // pack-art SVGs are already drawn as cards; we render them naked so they read like the playing
+      // cards beside them rather than a framed thumbnail.
       const url = artUrl(kind, cid);
-      if (url) loadArt(url, badge, TILE_W - 12, TILE_H - 12);
-      c.addChild(badge);
+      if (url) {
+        loadArt(url, c, TILE_W, TILE_H);
+      } else {
+        const initial = new Text({ text: (meta.name[0] ?? "?").toUpperCase(), style: { fill: accent, fontSize: 28, fontFamily: PIXEL_FONT, fontWeight: "700" } });
+        initial.anchor.set(0.5);
+        c.addChild(initial);
+      }
       artW = TILE_W; artH = TILE_H;
     }
     const name = new Text({ text: meta.name, style: { fill: THEME.goldBright, fontSize: 11, fontFamily: PIXEL_FONT, fontWeight: "700", align: "center", wordWrap: true, wordWrapWidth: Math.max(96, artW + 36) } });
@@ -223,6 +229,18 @@ function PackModalApp() {
     const run = useGame.getState().run;
     const pack = run.shop?.openPack;
     if (!pack) return;
+    // Defensive — debug/cheat-opened packs sometimes have contentIds:undefined or picksRemaining:0,
+    // which produced an empty modal canvas (no picks, no tray) with no way out. Coerce to safe
+    // defaults so the bottom tray + Skip always render.
+    if (!Array.isArray(pack.contentIds)) pack.contentIds = [];
+    if (typeof pack.picksRemaining !== "number") pack.picksRemaining = 1;
+    // Always force the stage fully visible on every rebuild — there have been multiple races
+    // where the stage was left at low/zero alpha (transition residue, subscribe firing mid-init).
+    if (m.app.stage) {
+      m.app.stage.alpha = 1;
+      m.app.stage.scale.set(1);
+      m.app.stage.position.set(0, 0);
+    }
     const isHandPack = pack.kind === "tarot" || pack.kind === "spectral";
     const hand = run.hand;
     const armedNow = armedRef.current;
@@ -235,9 +253,14 @@ function PackModalApp() {
     const panelW = canvasW;
     const panelH = canvasH;
 
-    // Hand cards: FELT-normal size (so they read as "your cards"). Hand-pack only.
-    const fanCardW = CARD_W;
-    const fanCardH = CARD_H;
+    // Hand cards and pick tiles must MATCH the on-felt playing-card display size. The felt canvas
+    // renders at a fixed 480×360 logical resolution, then CSS-scales to the host width — so a felt
+    // CARD_W (44 logical) displays at ~140 CSS px. The pack canvas uses autoDensity, so it works in
+    // CSS px directly. We compensate by scaling the card faces by (canvasW / STAGE_W) so a pack
+    // card lands at the same visual size as a felt card.
+    const cardScale = canvasW / 480; // STAGE_W
+    const fanCardW = Math.round(CARD_W * cardScale);
+    const fanCardH = Math.round(CARD_H * cardScale);
 
     floatCards.current = [];
     pickTiles.current = [];
@@ -247,6 +270,9 @@ function PackModalApp() {
       panelW,
       panelH,
       bare: true,
+      // No backdrop — the shop tray slides down off-felt while the pack is open, so the picks sit
+      // directly against the plasma background instead of layering over a dim panel.
+      backdropAlpha: 0,
       accent: armedNow ? THEME.violet : THEME.gold,
       build: (mm) => {
         // Use the FULL canvas for positioning so things sit visually at the middle of the felt area,
@@ -254,14 +280,8 @@ function PackModalApp() {
         const innerW = mm.width + PAD * 2;
         const cx = innerW / 2 - PAD; // offset so x=cx ends up at the canvas centre
 
-        // --- title block ---
-        mm.text(PACK_LABEL[pack.kind], cx, 4, 18, THEME.goldBright, { anchor: 0.5, bold: true });
-        const sub = [SIZE_LABEL[pack.size], `choose ${pack.picksRemaining} of ${pack.contentIds.length}`].filter(Boolean).join(" · ");
-        mm.text(sub, cx, 30, 12, THEME.parchmentEdge, { anchor: 0.5 });
-
-        // --- hand (hand-packs only): centred horizontally, slightly above the vertical centre ---
-        // Slightly-above-centre = canvasH * 0.34; vertical centre would be 0.5.
-        const handY = isHandPack ? Math.floor(canvasH * 0.34) - PAD : 0;
+        // --- hand: in the upper third, full battle-card size (matches Balatro's pack take-over) ---
+        const handY = isHandPack ? Math.floor(canvasH * 0.30) - PAD : 0;
         if (isHandPack) {
           mm.text(armedNow ? "▾ pick a card to apply to" : "cards drawn from your deck", cx, handY - fanCardH / 2 - 14, 11, armedNow ? THEME.violet : THEME.parchmentEdge, { anchor: 0.5 });
           const mid = (hand.length - 1) / 2;
@@ -293,19 +313,18 @@ function PackModalApp() {
 
         // --- pick tiles: centred horizontally, BELOW the hand (or mid-screen for non-hand packs) ---
         const n = pack.contentIds.length;
-        // Card packs use the felt-card size; everything else uses TILE_W/H from buildTile.
-        const usingCardSize = pack.kind === "card";
-        const tileW = usingCardSize ? CARD_W : 50;
-        const tileH = usingCardSize ? CARD_H : 78;
-        const slotW = tileW + 26; // gap between tiles
+        // All packs render tiles at battle-card size — same physical scale as the felt hand.
+        const tileW = fanCardW;
+        const tileH = fanCardH;
+        const slotW = tileW + Math.round(26 * cardScale); // gap between tiles, also scaled
         const totalW = n * slotW;
         const tilesX0 = cx - totalW / 2 + slotW / 2;
         const tilesY = isHandPack
           ? handY + fanCardH / 2 + 30 + tileH / 2 // below the hand row
-          : Math.floor(canvasH * 0.5) - PAD; // mid-screen for joker/card/style packs
+          : Math.floor(canvasH * 0.48) - PAD; // mid-screen for joker/card/style packs
         pack.contentIds.forEach((cid, i) => {
           const tx = tilesX0 + i * slotW;
-          const { view, w: tw, h: th } = buildTile(pack.kind, cid);
+          const { view, w: tw, h: th } = buildTile(pack.kind, cid, tileW, tileH);
           mm.node(view, tx, tilesY);
           pickTiles.current.push({ cid, view, baseX: tx, baseY: tilesY });
           const targets = isHandPack && !!tarotById(cid)?.target;
@@ -320,7 +339,19 @@ function PackModalApp() {
           }
           const meta = contentMeta(pack.kind, cid);
           const tipType = pack.kind === "relic" ? "joker" : pack.kind === "card" ? "card" : pack.kind;
-          const tip = { title: meta.name, text: meta.text, type: tipType, rarity: meta.rarity };
+          // Tooltip rule for card-pack picks: a vanilla card gets NO tooltip (the face already
+          // tells you "5 of Spades"). An enhanced card gets ONLY the enhancement explanation —
+          // no boilerplate "Add a X to your deck". For non-card packs, keep the meta tooltip.
+          let tip: { title: string; text: string; type: string; rarity?: string } | undefined;
+          if (pack.kind === "card") {
+            // Re-derive sigils from the template (the meta itself doesn't expose them directly).
+            const tmplSig = cid.split(":")[1];
+            const sig = tmplSig && (SIGIL_INFO as Record<string, { name: string; text: string }>)[tmplSig];
+            if (sig) tip = { title: sig.name, text: sig.text, type: "sigil" };
+            // else no tooltip — vanilla card needs no explanation.
+          } else {
+            tip = { title: meta.name, text: meta.text, type: tipType, rarity: meta.rarity };
+          }
           // Hit-box hugs the tile (with a tiny pad for hover ease) — NO upward expansion so a hand-card
           // sitting above never gets blocked by a tile's hit area.
           mm.hit(tx - tw / 2 - 4, tilesY - th / 2 - 4, tw + 8, th + 36, () => {
@@ -329,12 +360,25 @@ function PackModalApp() {
           }, tip);
         });
 
-        // Skip button — bare mode has no ✕, this is the deliberate way out.
-        const skipW = 120;
-        const skipH = 34;
-        const skipX = cx - skipW / 2;
-        const skipY = canvasH - skipH - 24 - PAD;
-        mm.button("Skip ▸", skipX, skipY, skipW, skipH, THEME.frameDim, true, close, 13);
+        // --- bottom tray: pack title + "Choose N" + Skip button (Balatro Arcana-pack layout) ---
+        const trayH = 52;
+        const trayY = canvasH - trayH - 18 - PAD;
+        const titleW = 180;
+        const skipW = 80;
+        const trayGap = 8;
+        const trayW = titleW + skipW + trayGap;
+        const trayX = cx - trayW / 2;
+        // Title block (dark rounded rect, two-line "Arcana Pack" / "Choose 1")
+        const trayPanel = new Graphics();
+        trayPanel.roundRect(trayX, trayY, titleW, trayH, 8).fill({ color: 0x140d1c, alpha: 0.96 }).stroke({ width: 2, color: THEME.frameDim });
+        mm.node(trayPanel, 0, 0);
+        mm.text(PACK_LABEL[pack.kind], trayX + titleW / 2, trayY + 10, 14, THEME.goldBright, { anchor: 0.5, bold: true });
+        const sub = `Choose ${pack.picksRemaining}${pack.contentIds.length > pack.picksRemaining ? " of " + pack.contentIds.length : ""}`;
+        mm.text(sub, trayX + titleW / 2, trayY + 30, 11, THEME.parchmentEdge, { anchor: 0.5 });
+        // Skip button (sits right of the title tray, same vertical baseline)
+        const skipX = trayX + titleW + trayGap;
+        const skipY = trayY + (trayH - 34) / 2;
+        mm.button("Skip", skipX, skipY, skipW, 34, THEME.frameDim, true, close, 12);
       },
     });
   };
@@ -363,7 +407,10 @@ function PackModalApp() {
         cv.style.inset = "0";
         cv.style.width = "100%";
         cv.style.height = "100%";
-        cv.style.zIndex = "60"; // above the felt + DeckPeek (44), below any global tooltip (9500)
+        // High z-index (9000-tier, matching modal layer) so the pack take-over reliably renders
+        // ABOVE the felt's plasma. Earlier z=60 left the modal canvas behind in some browsers'
+        // stacking contexts — content was hoverable (tooltips fired) but invisible.
+        cv.style.zIndex = "9000";
         cv.style.imageRendering = "pixelated";
       }
       const modal = new ModalStage(app);
@@ -393,28 +440,17 @@ function PackModalApp() {
       const fx = new Container();
       app.stage.addChild(fx);
       fxLayer.current = fx;
+      // Ensure full visibility from the start — earlier we ran a crack-open fade (alpha 0 → 1) but
+      // it fought the store-subscribe rebuild (a state change during the fade could leave the modal
+      // empty/invisible). Skipping the fade is correct over cute here.
+      app.stage.alpha = 1;
+      app.stage.scale.set(1);
+      app.stage.position.set(0, 0);
       rebuild();
-      // Crack-open transition — scale + fade so the pack feels like it's bursting onto the felt.
-      app.stage.alpha = 0;
-      app.stage.scale.set(0.86);
-      app.stage.position.set(app.screen.width * 0.07, app.screen.height * 0.07);
-      const start = performance.now();
-      const ease = (t: number) => 1 - Math.pow(1 - t, 3); // ease-out cubic
-      const animate = () => {
-        const t = Math.min(1, (performance.now() - start) / 320);
-        const k = ease(t);
-        app.stage.alpha = k;
-        const s = 0.86 + 0.14 * k;
-        app.stage.scale.set(s);
-        const off = (1 - s) * 0.5;
-        app.stage.position.set(app.screen.width * off, app.screen.height * off);
-        if (t >= 1) {
-          app.stage.position.set(0, 0);
-          app.stage.scale.set(1);
-          app.ticker.remove(animate);
-        }
-      };
-      app.ticker.add(animate);
+      // Safety net: if a state change races with the initial mount (e.g. the user opened a pack
+      // mid-cheat-menu, several setState fires before fonts finish loading), schedule a second
+      // rebuild a frame later so an empty-canvas race always resolves.
+      window.setTimeout(() => { if (!cancelled) rebuild(); }, 100);
       // Continuous tick: drift the hand cards (gentle bob/sway) + drive the apply-flash fx.
       let floatTime = 0;
       const ticker = (t: { deltaMS: number }) => {
@@ -466,7 +502,14 @@ function PackModalApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // repaint when the armed target changes
+  // repaint when the armed target changes OR when the live pack contents change (next pick in a
+  // multi-pick reveal, or a new pack opened back-to-back). Subscribes outside React so we don't
+  // re-mount the Pixi canvas — same modal stage, freshly painted.
+  useEffect(() => {
+    const unsub = useGame.subscribe(() => rebuild());
+    return unsub;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     rebuild();
     // eslint-disable-next-line react-hooks/exhaustive-deps

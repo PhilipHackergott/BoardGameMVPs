@@ -1021,6 +1021,15 @@ export const SIGIL_INFO: Record<SigilId, { name: string; glyph: string; code: st
   stoneskin: { name: "Stoneskin", glyph: "⛰", code: "Sk", color: 0x8a8f97, text: "+5 shield and +5 damage when this card is played." },
 };
 
+/** Display info for joker Editions — used by the HUD and any other surface that wants to explain
+ *  what an enhancement does (sources of effect numbers: combat.ts edition adjustments). */
+export const EDITION_INFO: Record<EditionId, { name: string; text: string }> = {
+  burnished: { name: "Burnished", text: "+5 flat damage on plays this joker affects." },
+  haloed: { name: "Haloed", text: "+8 flat damage on plays this joker affects." },
+  prismatic: { name: "Prismatic", text: "×1.5 damage multiplier on plays this joker affects." },
+  shadow: { name: "Shadow (Negative)", text: "+1 guild slot — doesn't take up a normal joker slot." },
+};
+
 /** Apply a sigil to a card in place. Flat sigils stack; structural ones (companion/extra/wildcard)
  *  are single and reshape the card. Used by sigil packs, the Engraver tarot, and events. */
 export function addSigil(card: Card, id: SigilId): void {

@@ -137,3 +137,49 @@ This keeps the gates honest while still shipping a tuned game:
 - **Treating every low number as weak** — re-read insight #2 before you buff. Half of Lacuna's "weak"
   content was just AI-blind.
 - **Over-fitting to noise** — re-read insight #1. ±5pt at N=800 is nothing.
+
+## Compensating designer-imposed stat changes (the "doubled HP" pattern)
+
+When a designer (user or feature spec) doubles an enemy stat — "make all royals tougher" /
+"double max-HP across the board" — the **player-side economy has to compensate**, or the longer
+fights collapse the hand. From Cull the Crown's HP-doubling wave (wave 8):
+
+1. **Identify the linked resource.** In Cull, each enemy turn ate ~10 worth of cards from the
+   player's hand to defend. Doubling enemy HP doubled the number of turns per fight → doubled the
+   cards drained. The hand-economy ran dry before the kill.
+2. **Decide the compensation lever — guided by what the design says drives power.** Three options:
+   - **Reduce enemy attack sub-linearly** (we landed at ~75% of (HP / 6)) so defending costs fewer
+     cards per turn. Universally safe — doesn't compete with any other power source.
+   - **Boost economic levers** (more gold, better shop selection, more potent consumables, cheaper
+     refresh tarots) — the right answer when **the design says power comes from the shop**, not
+     from a baseline. CTC explicitly chose this path: combo jokers and refresh consumables are the
+     intended power curve.
+   - **Add a per-turn draw refill** (Balatro pattern) — MECHANICALLY this is the single biggest
+     lever; we prototyped +3/turn and it turned consistent first-Queen deaths into consistent
+     first-King deaths in one round. But it **competes with the shop as the power source** —
+     suddenly every player has the same hand-economy regardless of what they bought. Only use it
+     when "draws per round" is itself a design pillar (Balatro) — not when the design says shop
+     purchases must do the work (CTC). We reverted the +3 draw on design guidance for this reason.
+   - **Boost starting resources** (gold, starting tarots, joker slots). Slower lever, harder to
+     measure.
+3. **Re-run the sim against the SAME AI** after each lever pull. Insight #2 still applies: don't
+   buff content that's actually fine, just AI-blind to it.
+4. **Lock the climactic tier last.** With Cull's curve, Jacks and Queens settled fast; Kings stayed
+   tight (most playtest runs reached the final king but died on it). That's the *intended* shape —
+   the climax should feel reachable but require care, not be a brick wall.
+
+The general rule: **a +X% to an enemy stat is a -X% to the player's resource budget by default.**
+Compensate explicitly or the difficulty curve quietly steepens past the intended profile.
+
+## The shop AI in a balance sim matters more than people expect
+
+A playtest AI that **skips the shop** ends most Cull runs at the first Queen (≈50% of all
+deaths). The same AI with even a **cheap "buy one affordable relic per shop"** heuristic consistently
+reaches the final King. The gap is huge — and **real human players will shop**, so a balance tuned
+against a no-shop AI is probably too easy in real play, and tuned against a strong shopping AI is
+probably too hard.
+
+Practical rule for the sim harness: implement **two AI difficulties** — one that skips the shop
+(weak human floor) and one that buys greedily (skilled human ceiling). A piece's win-rate **gap**
+between those two AIs is itself a signal: huge gap = the piece scales with shopping (good, but maybe
+mandatory); small gap = the piece is independent of shopping (good, broadly useful).

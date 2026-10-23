@@ -13,8 +13,9 @@ export type SfxName = "select" | "place" | "pickup" | "collect" | "harvest" | "c
 // always plays the triad MAJOR and the SILVER seat plays the same root in MINOR (so on by
 // seat parity: even seats major, odd seats minor). The interaction arpeggiates that triad in
 // thirds: select a flower = root, place the pawn = third, and taking the flowers rings the
-// fifth a beat later. Roots sit clear of the music's bands (~349–660 Hz → fifths ≤ ~989).
-const COLOR_ROOTS = [349.23, 392.0, 440.0, 493.88, 523.25, 587.33, 659.25]; // F4 G4 A4 B4 C5 D5 E5
+// fifth a beat later. A warm, LOW register (~175–490 Hz) so the cues feel cosy and synthy
+// rather than bright/plinky, melting into the ambient bed instead of poking through it.
+const COLOR_ROOTS = [174.61, 196.0, 220.0, 246.94, 261.63, 293.66, 329.63]; // F3 G3 A3 B3 C4 D4 E4 — an octave down
 function triadFor(color: number, player: number): number[] {
   const root = COLOR_ROOTS[((color % COLOR_ROOTS.length) + COLOR_ROOTS.length) % COLOR_ROOTS.length];
   const major = (((player % 2) + 2) % 2) === 0; // Gold seat (0) → major, Silver seat (1) → minor
@@ -25,9 +26,10 @@ function triadFor(color: number, player: number): number[] {
 // gently detuned sine for chorus shimmer, and a faint sub-octave sine for body. `mult`
 // scales the frequency, `detune` is in cents, `amp` its relative level.
 const WARM_VOICES: { type: OscillatorType; mult: number; detune: number; amp: number }[] = [
-  { type: "triangle", mult: 1, detune: 0, amp: 0.6 },
-  { type: "sine", mult: 1, detune: 7, amp: 0.45 }, // chorus shimmer
-  { type: "sine", mult: 0.5, detune: 0, amp: 0.3 }, // sub-octave body
+  { type: "triangle", mult: 1, detune: -7, amp: 0.46 }, // soft fundamental, slightly flat for warmth
+  { type: "sine", mult: 1, detune: 14, amp: 0.46 }, // chorus up — wide, drifting shimmer
+  { type: "sine", mult: 1, detune: -14, amp: 0.4 }, // chorus down — lush, spacy beating
+  { type: "sine", mult: 0.5, detune: 0, amp: 0.42 }, // strong sub-octave → bassy, cosy body
 ];
 
 // Music registers (A/C pentatonic — consonant over the whole bass progression), kept clear
@@ -100,7 +102,7 @@ class AudioEngine {
     sfxGain.connect(sfxComp);
     sfxComp.connect(master);
     const sfxWet = ctx.createGain();
-    sfxWet.gain.value = 0.06; // a hint of tail; placement stays crisp/dry
+    sfxWet.gain.value = 0.18; // a gentle reverb/echo send so the flower cues feel spacy & chill
     sfxGain.connect(sfxWet);
     sfxWet.connect(delay);
     this.sfxGain = sfxGain;
@@ -398,7 +400,7 @@ class AudioEngine {
         this.blip([1180], 0.05, 0.1, "triangle"); // tiny tick
         break;
       case "win":
-        this.winFanfare(player);
+        this.winChord(color, player);
         break;
     }
   }
@@ -407,20 +409,20 @@ class AudioEngine {
   // gently detuned sine and a faint sub-octave, run through a mellow lowpass with a soft
   // swell-in and a long, smooth release (rounded and pillowy, never percussive). `delaySec`
   // schedules it ahead of now; `tail` adds a reverb send (used by the win flourish).
-  private note(freq: number, gain = 0.3, delaySec = 0, tail = false): void {
+  private note(freq: number, gain = 0.26, delaySec = 0, tail = false): void {
     const ctx = this.ctx;
     if (!ctx || !this.sfxGain) return;
     const t = ctx.currentTime + delaySec;
 
     const lp = ctx.createBiquadFilter();
     lp.type = "lowpass";
-    lp.frequency.value = Math.min(3000, freq * 5); // roll off the highs for warmth
-    lp.Q.value = 0.4;
+    lp.frequency.value = Math.min(1700, freq * 3.2); // roll off more highs → soft, warm, never plinky
+    lp.Q.value = 0.8; // a touch of resonance for a rounded, synthy body
 
     const out = ctx.createGain();
     out.gain.setValueAtTime(0.0001, t);
-    out.gain.linearRampToValueAtTime(gain, t + 0.04); // soft swell-in (not a pluck)
-    out.gain.exponentialRampToValueAtTime(0.0001, t + 1.4); // long, smooth tail
+    out.gain.linearRampToValueAtTime(gain, t + 0.07); // gentle swell-in (no click/pluck)
+    out.gain.exponentialRampToValueAtTime(0.0001, t + 2.4); // long, airy tail that drifts away
     lp.connect(out);
     out.connect(this.sfxGain);
     if (tail && this.delay) out.connect(this.delay);
@@ -435,7 +437,7 @@ class AudioEngine {
       o.connect(g);
       g.connect(lp);
       o.start(t);
-      o.stop(t + 1.5);
+      o.stop(t + 2.5);
     }
   }
 
@@ -458,13 +460,44 @@ class AudioEngine {
     }
   }
 
-  // The win flourish: a rising arpeggio in the winner's quality, voiced on the warm synth
-  // with a reverb tail so it rings out.
-  private winFanfare(player: number): void {
-    if (!this.ctx) return;
-    const tri = triadFor(4, player); // a C-rooted triad in the winner's quality
-    const notes = [tri[0], tri[1], tri[2], tri[2] * 1.5, tri[2] * 2]; // rising flourish
-    notes.forEach((f, i) => this.note(f, 0.24, i * 0.14, true));
+  // The final chord: when the last flower lands, its colour's triad (in the WINNER's quality)
+  // blooms together, HOLDS at full, then tapers slowly to silence — a soft resolution rather
+  // than a fanfare. Voiced on the warm synth and sent through the reverb tail so it rings out.
+  private winChord(color: number, player: number): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.sfxGain) return;
+    const t = ctx.currentTime;
+    const tri = triadFor(color, player);
+    const freqs = [tri[0], tri[1], tri[2], tri[0] * 2]; // triad + an octave for fullness
+    for (const f of freqs) {
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = Math.min(1900, f * 3.2); // same warm, rolled-off tone as the cues
+      lp.Q.value = 0.8;
+
+      const out = ctx.createGain();
+      const peak = 0.16;
+      out.gain.setValueAtTime(0.0001, t);
+      out.gain.linearRampToValueAtTime(peak, t + 0.12); // swell in together
+      out.gain.setValueAtTime(peak, t + 2.0); // hold at full
+      out.gain.exponentialRampToValueAtTime(0.0001, t + 7.0); // long, slow taper
+      lp.connect(out);
+      out.connect(this.sfxGain);
+      if (this.delay) out.connect(this.delay); // bloom into the reverb tail
+
+      for (const v of WARM_VOICES) {
+        const o = ctx.createOscillator();
+        o.type = v.type;
+        o.frequency.value = f * v.mult;
+        o.detune.value = v.detune;
+        const g = ctx.createGain();
+        g.gain.value = v.amp;
+        o.connect(g);
+        g.connect(lp);
+        o.start(t);
+        o.stop(t + 7.2);
+      }
+    }
   }
 
   // Dev-only introspection for the playtest probe (not used in app logic).

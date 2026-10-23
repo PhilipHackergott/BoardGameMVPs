@@ -1,0 +1,68 @@
+/* PRISM — overworld + dialogue UI (Act I). */
+
+.world-wrap { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.overworld-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+
+.ow-top { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; gap: 14px; padding: 8px 14px; background: linear-gradient(180deg, rgba(13, 10, 28, 0.9), rgba(13, 10, 28, 0)); z-index: 5; }
+.ow-loc { font-family: var(--font-title); font-size: 14px; color: var(--gold); text-shadow: 0 2px 3px #000; }
+.ow-stats { display: flex; gap: 14px; font-size: 13px; color: var(--text); }
+.ow-top .btn { margin-left: auto; }
+
+.ow-objective { position: absolute; top: 44px; left: 14px; max-width: 60%; font-size: 13px; color: var(--text); background: rgba(13, 10, 28, 0.78); border-left: 3px solid var(--gold); border-radius: 0 4px 4px 0; padding: 6px 12px; z-index: 5; }
+.ow-prompt { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-family: var(--font-body); font-size: 15px; color: #14102a; background: var(--gold); border: 2px solid var(--gold-dim); border-bottom-width: 4px; border-radius: 4px; padding: 6px 16px; z-index: 5; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); }
+.ow-help { position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%); font-size: 11px; color: var(--text-dim); background: rgba(13, 10, 28, 0.7); padding: 4px 12px; border-radius: 99px; z-index: 5; }
+
+/* dialogue box (RPG-style, bottom of screen) */
+.dialogue-wrap { position: fixed; inset: 0; z-index: 55; display: flex; align-items: flex-end; justify-content: center; padding: 0 0 28px; cursor: pointer; }
+.dialogue-box { position: relative; width: min(720px, 88vw); background: linear-gradient(180deg, var(--panel-lite), var(--panel)); border: 3px solid var(--gold-dim); border-radius: 6px; box-shadow: 0 8px 0 rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 0, 0, 0.6); padding: 16px 18px 22px; }
+.dialogue-spk { position: absolute; top: -14px; left: 14px; font-family: var(--font-title); font-size: 12px; color: #14102a; background: var(--gold); padding: 4px 10px; border-radius: 4px; }
+.dialogue-text { font-size: 16px; line-height: 1.5; color: var(--text); min-height: 44px; }
+.dialogue-next { position: absolute; right: 14px; bottom: 6px; font-size: 12px; color: var(--gold); animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0.3; } }
+
+/* economy: shop / pack reveal / market */
+.shop-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--ink); border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; }
+.pack-reveal { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; padding: 8px 0; }
+.pack-card { animation: packflip 0.4s ease both; }
+@keyframes packflip { 0% { opacity: 0; transform: rotateY(90deg) scale(0.8); } 60% { opacity: 1; transform: rotateY(-10deg) scale(1.06); } 100% { transform: rotateY(0) scale(1); } }
+.market-list { display: flex; flex-direction: column; gap: 3px; }
+.market-row { display: grid; grid-template-columns: 16px 1fr 36px 18px 64px auto auto; gap: 8px; align-items: center; padding: 4px 8px; border-radius: 4px; font-size: 13px; }
+.market-row:hover { background: var(--panel); }
+.mk-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mk-trend.up { color: var(--good); }
+.mk-trend.down { color: var(--bad); }
+.mk-trend.flat { color: var(--text-dim); }
+.mk-price { color: var(--gold); text-align: right; }
+.mk-own { font-size: 11px; text-align: right; }
+
+/* status / stats */
+.stat-row { display: grid; grid-template-columns: 90px 1fr 28px; gap: 10px; align-items: center; font-size: 13px; }
+.stat-name { color: var(--text-dim); }
+.stat-track { height: 12px; background: var(--ink); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; }
+.stat-fill { height: 100%; background: linear-gradient(90deg, var(--gold-dim), var(--gold)); transition: width 0.2s; }
+.stat-val { text-align: right; color: var(--gold); font-family: var(--font-title); font-size: 11px; }
+
+/* tournament bracket */
+.bracket { list-style: none; padding: 0; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
+.bracket-row { display: grid; grid-template-columns: 32px 1fr auto; gap: 8px; align-items: center; padding: 7px 10px; border: 1px solid var(--line); border-radius: 4px; background: var(--ink); font-size: 13px; }
+.bracket-row.now { border-color: var(--gold); background: var(--panel-lite); }
+.bracket-row.win { opacity: 0.7; }
+.bracket-row.loss { border-color: var(--bad); }
+.br-n { font-family: var(--font-title); font-size: 10px; color: var(--text-dim); }
+.br-res { font-size: 12px; color: var(--gold); }
+.bracket-row.win .br-res { color: var(--good); }
+.bracket-row.loss .br-res { color: var(--bad); }
+
+/* community (PrismNexus): news / forum / blog */
+.news-item { border-left: 3px solid var(--line); padding: 8px 12px; margin-bottom: 8px; background: var(--ink); border-radius: 0 4px 4px 0; }
+.news-item.banlist { border-left-color: var(--bad); }
+.news-head { color: var(--gold); margin-bottom: 4px; }
+.thread { border: 1px solid var(--line); border-radius: 4px; padding: 10px; margin-bottom: 10px; }
+.thread-title { color: var(--gold); margin-bottom: 8px; font-size: 14px; }
+.post { border-top: 1px solid var(--line); padding: 6px 0; }
+.post:first-of-type { border-top: none; }
+.post-author { font-size: 12px; color: var(--text); }
+.post-sig { color: var(--text-dim); font-style: italic; }
+.post-text { font-size: 13px; line-height: 1.4; color: var(--text); margin-top: 2px; }
+.blog { border: 1px solid var(--line); border-radius: 4px; padding: 12px; margin-bottom: 10px; }
+.blog-title { font-family: var(--font-title); font-size: 13px; color: var(--gold); }

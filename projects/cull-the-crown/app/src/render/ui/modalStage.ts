@@ -43,6 +43,10 @@ export interface ModalContent {
   bare?: boolean;
   // 0..1 darken behind the panel (overrides the default 0.72). Ignored in `bare` mode.
   backdropAlpha?: number;
+  // Skip drawing the corner ✕ button while keeping click-outside dismissal (useful when the modal
+  // already has a "Back" affordance in its content). Different from `dismissable: false`, which kills
+  // both. Ignored in `bare` mode (which has no ✕ anyway).
+  noCloseButton?: boolean;
 }
 
 const PAD = 20;
@@ -188,15 +192,29 @@ export class ModalStage {
       this.target.addChild(s);
       return;
     }
-    if (this.texCache.has(url)) return; // null = in-flight/failed
+    if (this.texCache.has(url)) return; // null = in-flight
     this.texCache.set(url, null);
-    void Assets.load(url)
-      .then((t: Texture) => {
-        if (t.source) t.source.scaleMode = "nearest";
-        this.texCache.set(url, t);
-        this.draw();
-      })
-      .catch(() => {});
+    const tryLoad = (attempt: number) => {
+      void Assets.load(url)
+        .then((t: Texture) => {
+          if (t.source) t.source.scaleMode = "nearest";
+          this.texCache.set(url, t);
+          this.draw();
+        })
+        .catch(() => {
+          // One-shot retry — some SVGs intermittently fail to parse on first load (font @import
+          // network hiccup, etc.). Drop the in-flight marker AND schedule one redraw which will
+          // re-enter sprite() and start a fresh load. Prevents the "sword-and-shield slot is
+          // forever blank" symptom.
+          this.texCache.delete(url);
+          if (attempt < 1) {
+            setTimeout(() => { this.texCache.set(url, null); tryLoad(attempt + 1); }, 250);
+          } else {
+            setTimeout(() => this.draw(), 200);
+          }
+        });
+    };
+    tryLoad(0);
   }
   /** A filled rounded rect (panel/chip/divider) at content-relative coords. */
   rect(x: number, y: number, w: number, h: number, color: number, opts: { alpha?: number; radius?: number; stroke?: number } = {}): void {
@@ -318,7 +336,9 @@ export class ModalStage {
     // mode just suppresses the panel chrome (frame/header/✕); the backdrop still dims the underlying
     // layer (use `backdropAlpha: 0` to opt out entirely). app.stage's hitArea captures all pointer
     // events already, so the backdrop isn't needed as a "pointer trap".
-    const bdAlpha = c.backdropAlpha ?? (bare ? 0.55 : 0.72);
+    // Bare-mode backdrop is near-opaque so the felt content behind (shop tray, combat board) is
+    // fully hidden under the take-over — picks need to read as standalone, not layered on the shop.
+    const bdAlpha = c.backdropAlpha ?? (bare ? 0.92 : 0.72);
     if (bdAlpha > 0) {
       const bd = new Graphics();
       bd.rect(0, 0, sw, sh).fill({ color: 0x000000, alpha: bdAlpha });
@@ -345,8 +365,9 @@ export class ModalStage {
       if (hasHeader) this.wig.build(this.root, c.title, px + c.panelW / 2, py + 6 + (HEADER_H - 8) / 2, 19, accentBright, { font: TITLE_FONT, anchor: 0.5, anchorY: 0.5, bold: true });
     }
 
-    // close ✕ (top-right of the panel) — omitted for mandatory (non-dismissable) modals or bare mode
-    if (!bare && c.dismissable !== false) {
+    // close ✕ (top-right of the panel) — omitted for bare modals, non-dismissable modals, OR when
+    // the content explicitly opts out (e.g. it draws its own Back button instead).
+    if (!bare && c.dismissable !== false && !c.noCloseButton) {
       const xw = 30;
       const xx = px + c.panelW - xw - 8;
       const xy = py + 10;
@@ -362,7 +383,15 @@ export class ModalStage {
     this.cx = px + PAD;
     this.cy = py + (hasHeader ? HEADER_H : PAD);
     this.innerW = c.panelW - PAD * 2;
-    c.build(this);
+    // A throw inside build() used to leave the modal empty for the rest of its life (the root was
+    // already wiped at the top of draw()). Catch and log so an upstream change to a content object
+    // (e.g. pack contentIds going stale mid-rebuild) can't blank the canvas permanently.
+    try {
+      c.build(this);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("ModalStage.build threw:", e);
+    }
   }
 
   destroy(): void {

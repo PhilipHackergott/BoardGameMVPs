@@ -1559,6 +1559,32 @@ button {
   color: var(--muted);
 }
 
+/* Account chip tucked into the top-right corner of the main menu. */
+.account-corner {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: var(--ink);
+  backdrop-filter: blur(4px);
+  font-size: 0.82rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+.account-corner:hover {
+  border-color: var(--indigo-300);
+  background: rgba(49, 46, 129, 0.5);
+}
+.account-corner.signin {
+  color: var(--indigo-200);
+}
+
 .acct-field {
   margin-bottom: 14px;
 }

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FCM concept · Org Chart / Restructuring</title>
+<link rel="stylesheet" href="concept.css">
+<style>
+  .hdr{display:flex;align-items:center;justify-content:space-between;gap:var(--s4);
+    padding:var(--s4) var(--s5);background:var(--cream-3);border-bottom:var(--stroke)}
+  .hdr .ph{font-family:var(--font-display);font-size:1.2rem}
+  .hdr .hint{color:var(--ink-soft);font-size:.85rem}
+  .stage{position:relative;height:300px;margin:var(--s5);}
+  .org-svg{position:absolute;inset:0;width:100%;height:100%}
+  .node{position:absolute;width:158px;background:var(--cream);border:2px solid var(--ink);
+    border-radius:var(--r2);box-shadow:var(--shadow);font-size:.78rem;overflow:hidden;z-index:2}
+  .node .nb{font-family:var(--font-display);color:#fff;padding:4px 8px;font-size:.82rem;display:flex;justify-content:space-between;align-items:center}
+  .node .nbody{padding:5px 8px;display:flex;align-items:center;justify-content:space-between;gap:6px}
+  .node .nslots{display:flex;gap:3px}
+  .node .nslots i{width:11px;height:11px;border:1.5px solid var(--ink);border-radius:2px;background:#fff}
+  .node .nslots i.filled{background:var(--chrome)}
+  .node.fire::after{content:"✕ FIRE";position:absolute;inset:0;background:rgba(214,52,44,.92);color:#fff;
+    font-family:var(--font-display);display:grid;place-items:center;font-size:.95rem;letter-spacing:1px}
+  .nb.mgmt{background:var(--navy)} .nb.recruit{background:#7A5C9E} .nb.kitchen{background:var(--burger)}
+  .nb.market{background:var(--cherry)} .nb.buy{background:var(--soda)} .nb.sales{background:var(--mustard-d)}
+  .empslot{position:absolute;width:158px;height:48px;border:2px dashed var(--turquoise);border-radius:var(--r2);
+    background:#E7FBF6;display:grid;place-items:center;color:var(--turquoise-d);font-weight:700;font-size:.74rem;text-align:center;z-index:2}
+  .footrow{display:grid;grid-template-columns:1fr 1.3fr;gap:var(--s5);padding:0 var(--s5) var(--s5)}
+  .beachtray{display:flex;gap:var(--s3);flex-wrap:wrap}
+  .beachtray .node{position:static}
+  .salary-line{display:flex;justify-content:space-between;font-family:var(--font-mono);padding:3px 0;border-bottom:1px dashed var(--chrome)}
+  .salary-line.tot{border-bottom:none;border-top:2px solid var(--ink);margin-top:4px;font-weight:700;font-size:1.05rem}
+  .disc{color:var(--turquoise-d)}
+</style></head>
+<body>
+<div class="frame">
+  <a class="backlink" href="index.html">&larr; concept set</a>
+  <h1 class="caption">Org Chart / Restructuring</h1>
+  <p class="sub">The hero object. CEO at the top; managers carry report slots; line staff hang off them. Empty slots are turquoise drop-targets; benched cards sit "on the beach"; salary totals live, with milestone discounts applied.</p>
+
+  <div class="screen">
+    <div class="ribbon"></div>
+    <div class="hdr">
+      <div><div class="ph">PHASE 1 · RESTRUCTURING <span class="atomic-star cherry" style="display:inline-block;width:16px;height:16px;vertical-align:-2px"></span></div><div class="hint">Drag staff from the beach into legal slots · this turn's tree is locked on Confirm</div></div>
+      <button class="btn primary">CONFIRM TREE ▶</button>
+    </div>
+
+    <!-- TREE -->
+    <div class="stage">
+      <svg class="org-svg" viewBox="0 0 880 300" preserveAspectRatio="none">
+        <g stroke="#8A9298" stroke-width="2" fill="none">
+          <!-- CEO -> bus -> 3 managers -->
+          <path d="M440 56 V82 M149 82 H731 M149 82 V108 M440 82 V108 M731 82 V108"/>
+          <!-- Recruiting -> 2 children -->
+          <path d="M149 164 V190 M89 190 H249 M89 190 V216 M249 190 V216"/>
+          <!-- Brand -> 2 children -->
+          <path d="M440 164 V190 M379 190 H531 M379 190 V216 M531 190 V216"/>
+        </g>
+      </svg>
+
+      <!-- CEO -->
+      <div class="node" style="left:361px;top:6px">
+        <div class="nb mgmt">CEO <span class="chip free" style="font-size:.6rem;padding:0 6px">FREE</span></div>
+        <div class="nbody"><span class="muted">3 reports</span><span class="nslots"><i class="filled"></i><i class="filled"></i><i class="filled"></i></span></div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="node" style="left:70px;top:108px">
+        <div class="nb recruit">Recruiting Mgr <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">2 reports</span><span class="nslots"><i class="filled"></i><i></i></span></div>
+      </div>
+      <div class="node" style="left:361px;top:108px">
+        <div class="nb market">Brand Mgr <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">2 reports</span><span class="nslots"><i class="filled"></i><i class="filled"></i></span></div>
+      </div>
+      <div class="node fire" style="left:652px;top:108px" title="hover shows the fire affordance">
+        <div class="nb kitchen">Burger Cook <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">line staff</span><span class="prod"><span class="sw burger"></span></span></div>
+      </div>
+
+      <!-- Row 3 -->
+      <div class="node" style="left:10px;top:216px">
+        <div class="nb buy">Errand Boy <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">buys 1 drink</span><span class="prod"><span class="sw soda"></span></span></div>
+      </div>
+      <div class="empslot" style="left:170px;top:220px">＋ empty slot<br>hire here (Recruiting reaches 2 tiles)</div>
+      <div class="node" style="left:300px;top:216px">
+        <div class="nb market">Mktg Trainee <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">billboard</span><span>📣</span></div>
+      </div>
+      <div class="node" style="left:452px;top:216px">
+        <div class="nb sales">Waitress <span class="chip salary" style="font-size:.6rem;padding:0 6px">$5</span></div>
+        <div class="nbody"><span class="muted">+$3 dinner</span><span>☕</span></div>
+      </div>
+    </div>
+
+    <!-- SALARY + BEACH -->
+    <div class="footrow">
+      <div class="panel"><div class="panel-tt">Payday preview</div><div class="panel-body">
+        <div class="salary-line"><span>6 salaried cards × $5</span><span>$30</span></div>
+        <div class="salary-line disc"><span>★ "First to Train" milestone</span><span>−$15</span></div>
+        <div class="salary-line tot"><span>This turn's salary</span><span>$15</span></div>
+        <p class="note" style="margin-top:8px">Can't cover salary on Payday? You're forced to fire. The preview updates live as you slot/bench cards.</p>
+      </div></div>
+
+      <div class="panel"><div class="panel-tt">On the beach <span class="muted" style="font-size:.7rem;font-family:var(--font-body)">benched this turn — unpaid, inactive</span></div>
+        <div class="panel-body"><div class="beachtray">
+          <div class="node beached" style="width:150px">
+            <div class="nb price">Discount Mgr</div><div class="nbody"><span class="chip money" style="font-size:.6rem">−$3</span><span class="muted">drag in →</span></div>
+          </div>
+          <div class="node beached" style="width:150px">
+            <div class="nb train" style="background:#557A2E">Trainer</div><div class="nbody"><span class="muted">1 training</span><span>🎓</span></div>
+          </div>
+        </div></div>
+      </div>
+    </div>
+    <p class="note" style="padding:0 var(--s5) var(--s5)">Connectors drawn as classic org-chart elbows. Drag-drop slotting (DOM-native), legality enforced with reasons (turquoise = legal target, cherry = illegal-with-reason). This is the <b>locked layout spec</b> — not hand-wavy.</p>
+  </div>
+</div>
+</body></html>

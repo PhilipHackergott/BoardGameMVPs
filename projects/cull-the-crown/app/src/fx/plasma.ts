@@ -64,6 +64,12 @@ export class PlasmaBackground {
     this.render();
   }
 
+  /** Swap the colour stops live (used by the pack take-over to shift the felt to a cooler purple). */
+  setPalette(palette: Rgb[]): void {
+    this.palette = palette;
+    this.render();
+  }
+
   private render(): void {
     const { bw, bh, t, warp } = this;
     const data = this.img.data;

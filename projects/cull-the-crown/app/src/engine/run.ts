@@ -468,6 +468,12 @@ function doBuyLoose(run: RunState, offerId: string, targetCardId?: string): void
 
 function doRemoveCard(run: RunState, targetCardId: string): void {
   const shop = run.shop!;
+  // One Remove per shop visit (Balatro pattern — the coin flips to its back once spent and the
+  // player must wait until the next shop to remove another card).
+  if (shop.removeSpent) {
+    run.notice = "Remove already used this shop.";
+    return;
+  }
   const price = discountedPrice(shop.removeCardCost, run.edicts);
   if (run.gold - price < -creditLimit(run)) {
     run.notice = "Not enough gold to remove a card.";
@@ -484,6 +490,7 @@ function doRemoveCard(run: RunState, targetCardId: string): void {
   run.deckBaseline -= 1;
   run.culledThisAct = (run.culledThisAct ?? 0) + 1; // Cull's Reward
   shop.removeCardCost = run.config.removeBase + run.removeUses * run.config.removeStep;
+  shop.removeSpent = true;
   run.notice = "Card removed from your deck.";
 }
 
@@ -593,8 +600,9 @@ export function applyAction(run: RunState, action: Action): RunState {
       if (draft.phase === "shop") doRemoveCard(draft, action.targetCardId);
       break;
     case "useHeld":
-      // Held tarots are usable in the shop AND mid-combat.
-      if (draft.phase === "shop" || draft.phase === "combat") doUseHeld(draft, action.instanceId, action.targetCardId);
+      // Held tarots are usable ONLY mid-combat (they target hand cards; the hand only exists in
+      // combat). Shop/event/etc. are no-ops at the engine level too, not just in the UI.
+      if (draft.phase === "combat") doUseHeld(draft, action.instanceId, action.targetCardId);
       break;
     case "reroll":
       if (draft.phase === "shop") doReroll(draft);

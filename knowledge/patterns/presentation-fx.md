@@ -235,3 +235,71 @@ lifecycle gotcha. The recipe that worked (cozy animal-drafter, _projects/roomies
 
 When to use this vs. the Pixi `fx/` kit: **no canvas board ⇒ DOM-only** (cards, tableaus, drafters);
 **a real board / lots of sprites / screen-shake-and-particles game-feel ⇒ Pixi + the `fx/` kit.**
+
+## Whole-card enhancement overlays (Balatro Mult/Bonus/Steel pattern)
+
+When a card carries an *enhancement* (a sigil, seal, edition, mark), it must read **as enhanced at
+a glance**, not via a 1-character corner badge the player has to hunt for. The Balatro standard:
+the whole card face is **tinted/textured** so a 200ms glance tells you it's enhanced AND which kind.
+
+The recipe (from `cull-the-crown render/cardFace.ts`):
+1. Draw the card face normally (parchment + outline + rank/suit glyph).
+2. Between the face and the rank/suit text, drop a **`Graphics` overlay** sized to the card rect.
+3. Per enhancement, draw a **distinctive whole-face treatment** into the overlay — examples:
+   - Red horizontal banded streaks → Mult-like (Cull's `keen`).
+   - Green diagonal streaks → +value (Cull's `honed`).
+   - Silvery sheen + thicker bolt-stroke border → Steel (`steel`).
+   - Glassy diagonal light flash → Glass.
+   - Gold flecks on a gold tint → Gilded/Minted.
+   - Coloured edge halo (no fill) → Seal.
+4. Multiple enhancements **stack** by drawing into the same overlay sequentially.
+5. Export the overlay drawers as **standalone functions** (`drawSigilOverlay`, `drawSealOverlay`) so
+   the in-combat card node and the static `buildCardFace` share the exact same look — a sigil that
+   reads as "Mult-red" on the felt must read identically in deck-modals, pack reveals, and tooltips.
+
+Pair with a **tooltip block per enhancement** (each sigil/edition/seal gets its own
+`name — text` line) so the *meaning* is one hover away — the visual identifies, the tooltip explains.
+
+## Pack-takeover screen pattern (Balatro arcana-pack layout)
+
+When a between-fight shop opens a booster pack, the pack reveal should be a **full-felt take-over,
+not a dim modal on top of the shop tray**. The user reads "a tray over my wares" as cluttered; a
+clean felt-takeover reads as a deliberate beat.
+
+The recipe (from `cull-the-crown PixiPackModal`):
+1. **Slide the shop tray DOWN off the felt** (animate `tray.y` from 0 → bottom + alpha to 0).
+2. **Swap the felt's background colour** to a distinct palette — Balatro uses a cooler purple for
+   Arcana packs. The shift makes the take-over instantly recognisable as "different mode" without
+   text.
+3. **Layout from top to bottom:** (a) the player's hand at full battle-card size (only for hand-
+   packs — tarot/spectral that target a hand card); (b) the pack picks at the **same display size**
+   as the hand cards — no separate "tile" rendering; (c) a small bottom tray with the pack title +
+   "Choose N" subtitle + Skip button beside it.
+4. **No dim backdrop** — `backdropAlpha: 0`. The recoloured plasma + slid-down tray IS the
+   backdrop. Layered dim on top makes the picks look modal-imprisoned.
+5. **Cards in the pack reuse the deck's card-face renderer** at the deck's exact scale. If you have
+   one canvas at fixed logical resolution and another at CSS-pixel resolution, compute a scale
+   factor (`canvasW / STAGE_W`) so sizes match visually.
+
+The same shape works for any "open this collected item between rounds" reveal — Hearthstone packs,
+loot drops, deckbuilder card choices.
+
+## "One-shot used" + "view-only" UI states for shop items
+
+Shop items that are **once-per-shop** (Balatro's Voucher; Cull's Remove) need to read as **used**
+once spent — not just disabled, but visibly **flipped to the back of the coin / stamped USED /
+dimmed**. Greyed-out alone reads as "can't afford right now"; the player loops back hoping to find
+the gold.
+
+The recipe:
+- Engine tracks a per-shop `spent` flag (e.g. `shop.removeSpent`); enforce in the action handler so
+  even an engine-level dispatch is a no-op when set.
+- UI passes the flag through the VM; the button renders the **back-of-the-coin variant** (different
+  glyph: ✂ → ✓; different label: "REMOVE ◆N" → "USED THIS SHOP"; alpha ~0.55).
+- A **run-cumulative `× N` badge** (separate from `spent`) shows usage across shops so the player
+  still sees their economy decisions persist.
+
+Companion pattern: **inventory items that are usable only in some contexts** (Cull's pouch — usable
+in combat or while a pack is open, view-only in the bare shop) carry a `usable` boolean. Non-usable
+tiles render at low alpha + neutral tint + the tap is a no-op + the tooltip notes the rule. Don't
+hide them — visibility teaches the player what's in their pouch even when it's not actionable.

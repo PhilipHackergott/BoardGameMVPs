@@ -2,10 +2,16 @@
 
 ## Purpose
 
-A factory that converts board games into playable digital MVPs with minimal human effort,
+A factory that converts game concepts into playable digital MVPs with minimal human effort,
 while keeping a human in control at every decision point. It is optimized for **throughput
 across many titles in parallel** and for **compounding improvement** — every shipped project
 makes the next one cheaper to build.
+
+Two intake tracks feed the same pipeline: **board-game adaptations** (digitize an existing
+tabletop game) and **original video-game concepts** (a green-field design with no rulebook).
+The stages and gates are identical; the original-concept track adds a Game Design Document as
+the design foundation and may target a 3D substrate. See the root `CLAUDE.md` → "The
+original-concept track".
 
 ## Design principles
 

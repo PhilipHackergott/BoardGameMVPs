@@ -37,11 +37,12 @@ describe("card database", () => {
     for (const p of PROTOCOLS) expect(protocolDefIds(p).length).toBe(6);
   });
 
-  it("values are in 0..5 and id matches its protocol", () => {
+  it("values are in 0..6 and id matches its protocol", () => {
+    // Real Main 1 values: ten protocols use 0..5; Gravity uses {0,1,2,4,5,6} and Metal {0,1,2,3,5,6}.
     for (const id of Object.keys(CARD_DEFS)) {
       const def = CARD_DEFS[id];
       expect(def.value).toBeGreaterThanOrEqual(0);
-      expect(def.value).toBeLessThanOrEqual(5);
+      expect(def.value).toBeLessThanOrEqual(6);
       expect(def.id).toBe(id);
       expect(id.startsWith(`${def.protocol}-`)).toBe(true);
     }
@@ -56,7 +57,8 @@ describe("field math", () => {
   });
 
   it("face-up card uses printed value plus passive bonus", () => {
-    const metal0 = getDef("Metal-0"); // has +1 valueBonus passive in the placeholder set
+    // Real Metal-0 has no valueBonus passive; cardValue must still equal printed value + (bonus ?? 0).
+    const metal0 = getDef("Metal-0");
     const ci = { uid: "x", defId: "Metal-0", protocol: "Metal" as const, faceUp: true, owner: 0 as const };
     expect(cardValue(ci)).toBe(metal0.value + (metal0.passive?.valueBonus ?? 0));
   });
@@ -134,7 +136,7 @@ describe("compile detection", () => {
       { uid: "a", defId: "Metal-5", protocol: "Metal", faceUp: true, owner: 0 },
       { uid: "b", defId: "Metal-5", protocol: "Metal", faceUp: true, owner: 0 },
     ];
-    // Metal-5 value is 5 (+1 passive) => 6 each => 12 in the line
+    // "Metal-5" is slot 5 = the real Metal value-6 card => 6 each => 12 in the line
     expect(lineValue(s.players[0], 0)).toBeGreaterThanOrEqual(10);
     expect(compilableLines(s, 0)).toContain(0);
   });

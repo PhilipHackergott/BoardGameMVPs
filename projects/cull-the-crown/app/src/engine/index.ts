@@ -24,6 +24,7 @@ export {
   decreeById,
   SIGIL_INFO,
   SIGIL_IDS,
+  EDITION_INFO,
   EVENT_LIBRARY,
   eventById,
   TAROT_LIBRARY,

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>TCG Circuit — Concept Art</title>
+<style>
+  :root{
+    --bg:#14102a; --panel:#1f1838; --ink:#f4e9cf; --muted:#b6a8d8; --gold:#f4c430; --line:#3a2f60;
+    --ember:#d9442e; --tide:#2e7fb8; --verdant:#4a9e4a; --gloom:#7d5aa6; --order:#d8c24a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#241b46,#14102a);color:var(--ink);
+       font-family:'Trebuchet MS',system-ui,sans-serif;line-height:1.5}
+  header{padding:34px 24px 18px;text-align:center;border-bottom:1px solid var(--line)}
+  h1{margin:0;font-size:30px;letter-spacing:2px;color:#ffe9a0}
+  .sub{color:var(--muted);font-style:italic;margin-top:6px}
+  .tag{display:inline-block;margin-top:12px;padding:4px 12px;border:1px solid var(--gold);border-radius:20px;
+       font-size:12px;color:var(--gold)}
+  .wrap{max-width:1040px;margin:0 auto;padding:24px}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 6px}
+  .aff{display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
+       border-radius:8px;padding:6px 12px;font-size:13px}
+  .dot{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.4)}
+  figure{margin:0 0 34px;background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;
+         box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  figure img{display:block;width:100%;height:auto;background:#0f0c22}
+  figcaption{padding:14px 18px}
+  figcaption h2{margin:0 0 4px;font-size:18px;color:#ffd86b}
+  figcaption p{margin:0;color:var(--muted);font-size:14px}
+  .num{color:var(--gold);font-weight:bold}
+  footer{color:var(--muted);font-size:12px;text-align:center;padding:10px 24px 40px}
+  a{color:#9ad0ff}
+</style>
+</head>
+<body>
+<header>
+  <h1>TCG&nbsp;CIRCUIT</h1>
+  <div class="sub">working title — &ldquo;TCG Tournament Simulator&rdquo;</div>
+  <div class="sub">Concept art · 2D old-school JRPG · the whole TCG scene as a career</div>
+  <span class="tag">boards below = SUPERSEDED layout only (wrong style)</span>
+  <div class="sub" style="margin-top:14px;color:#ffd1ba">
+    ⚠ <b>Art direction changed (2026-05-25).</b> Target is now a <b>modern top-down ¾ pixel-art RPG</b>
+    (HGSS/DS Pokémon × Dragon Quest) — see <a href="../art-direction.md" style="color:#9ad0ff">art-direction.md</a>.
+    The flat-vector boards below + <a href="pixel-style-sample.html" style="color:#9ad0ff">pixel-style-sample.html</a>
+    are <b>layout reference only</b>; only the <b>forum (07)</b> + <b>blog (08)</b> <i>content</i> ideas
+    carry forward (reskinned to an in-game pixel UI). Real art = a sourced top-down tileset.
+  </div>
+  <div class="legend">
+    <div class="aff"><span class="dot" style="background:var(--ember)"></span>Ember · aggro/burn</div>
+    <div class="aff"><span class="dot" style="background:var(--tide)"></span>Tide · control/draw</div>
+    <div class="aff"><span class="dot" style="background:var(--verdant)"></span>Verdant · ramp/big</div>
+    <div class="aff"><span class="dot" style="background:var(--gloom)"></span>Gloom · disrupt/sac</div>
+    <div class="aff"><span class="dot" style="background:var(--order)"></span>Order · defense/synergy</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <figure>
+    <img src="01-overworld-town.svg" alt="Overworld town map"/>
+    <figcaption>
+      <h2><span class="num">01</span> · Overworld — the scene as places you walk</h2>
+      <p>Top-down Pokémon-style overworld. Every part of the hobby is a location: home (collection HQ),
+      the local card shop (the hub), school/uni (the life-sim spine), the tournament hall, and roads out
+      to Regionals. Content scales by adding maps, NPCs, and dialogue — no 3D asset wall.</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="02-card-shop-interior.svg" alt="Local card shop interior"/>
+    <figcaption>
+      <h2><span class="num">02</span> · The local card shop — the heart of the scene</h2>
+      <p>Booster boxes on the shelves, singles under glass, the owner behind the counter, an events
+      board, and two kids dueling at the play table. Where you buy packs, flip singles, meet your
+      rival, and grind Friday-night tournaments.</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="03-duel-screen.svg" alt="PRISM duel screen"/>
+    <figcaption>
+      <h2><span class="num">03</span> · The duel screen — PRISM (the in-world TCG)</h2>
+      <p>The card game you actually master. <b>3 lanes</b>: your unit hits the unit across from it, or the
+      <b>Nexus</b> (life, 20→0) if the lane is empty. <b>Light</b> escalates +1 each turn; <b>Refract</b> a
+      card from hand for +1 now — the skill lever. Cost ◔, power ◉, and frame colour = Affinity.</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="04-key-art.svg" alt="Key art — the World Championship"/>
+    <figcaption>
+      <h2><span class="num">04</span> · Key art — discover → World Championship → fame</h2>
+      <p>The career arc in one frame: you and your arc-rival on the Worlds stage, the trophy, the card
+      that started it all. From the back of the local shop to the spotlight.</p>
+    </figcaption>
+  </figure>
+
+  <h2 style="color:#ffd86b;border-top:1px solid #3a2f60;padding-top:22px;margin-top:8px">
+    The world — <span style="color:#b6a8d8;font-weight:normal">designed &amp; concept-arted this round; built in a later round.
+    The MVP is the card game (PRISM, #03 above).</span>
+  </h2>
+
+  <figure>
+    <img src="05-tournament-hall.svg" alt="Tournament hall"/>
+    <figcaption>
+      <h2><span class="num">05</span> · The tournament hall — the circuit</h2>
+      <p>Standings whiteboard, a feature-match stage, a vendor booth, rows of folding tables under the
+      fluorescents. The escalating venues (locals → the regional qualifier) you travel to.</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="06-card-market-ui.svg" alt="Online card market interface"/>
+    <figcaption>
+      <h2><span class="num">06</span> · The online singles market — <i>prismsingles.net</i></h2>
+      <p>The economy made tangible: search/filter by Affinity, a listings table with 30-day price
+      sparklines, a watchlist, a wallet, "hot this week." Rendered as the early-2000s web (the cohesive
+      "2003, kitchen table" look — see <a href="../art-direction.md">art-direction.md</a>).</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="07-community-forum.svg" alt="Community forum"/>
+    <figcaption>
+      <h2><span class="num">07</span> · The community forum — <i>PrismNexus</i></h2>
+      <p>phpBB-era deck-help culture: avatars, ranks, signatures, quoted replies, a mod telling everyone
+      it's "tempo, not aggro." The metagame conversation that makes the scene feel alive.</p>
+    </figcaption>
+  </figure>
+
+  <figure>
+    <img src="08-blog-article.svg" alt="Deck-tech blog article"/>
+    <figcaption>
+      <h2><span class="num">08</span> · Deck-tech / metagame blog — <i>PrismTheory</i></h2>
+      <p>A set-review / deck-tech article with an embedded importable decklist, a Light-curve readout,
+      tags, and a comment thread. The "content layer" of the hobby.</p>
+    </figcaption>
+  </figure>
+
+</div>
+
+<footer>
+  Concept art for <b>projects/tcg-circuit</b>. Design: <a href="../game-design-document.md">game-design-document.md</a> ·
+  cohesive style: <a href="../art-direction.md">art-direction.md</a> · finish target:
+  <a href="pixel-style-sample.html">pixel-style-sample.html</a>.<br/>
+  <b>MVP this round = the card game (PRISM).</b> The world (05–08) is designed + concept-arted, built later.
+  Names &amp; ruleset are placeholders; all art/cards/brand are original (no Magic/Pokémon/Yu-Gi-Oh).
+</footer>
+</body>
+</html>

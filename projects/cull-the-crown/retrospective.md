@@ -153,3 +153,88 @@ with the kit instead of re-deriving it.
   hand-maintain two palettes. → target-state / ui-architecture.
 - **One typed field in a canvas modal** (seed input) — overlay a positioned DOM `<input>`; canvas can't
   take keystrokes. → ui-architecture.
+
+---
+
+## Wave 8 — Balatro-fidelity pack/enhancement/balance pass (2026-05-30)
+
+A focused polish + balance round driven by point-by-point user feedback against the Balatro reference.
+Captures pack-opening take-over fidelity, whole-card visual enhancements, pendingPick safety, the
+one-shot Remove economy, gate-reveal timing, and a multi-epoch playtest harness lesson.
+
+### What changed
+- **Pack opening is now a full felt take-over against a recoloured plasma**, not a dim modal over
+  the shop. Shop tray slides DOWN off the felt while the pack is open (`ShopStage.setCovered`),
+  plasma palette swaps to a cooler purple (`PLASMA_PALETTE_PACK`), and the picks render at the
+  exact battle-card display size (compensating for the felt-canvas's logical-vs-CSS scale).
+  Bottom-tray layout: title + "Choose N" left, Skip button right. `src/render/{combatStage,shopStage}.ts`,
+  `src/fx/plasma.ts`, `src/ui/PixiPackModal.tsx`.
+- **Whole-card visual enhancements (Balatro Mult/Bonus/Steel/etc.)** — every sigil draws a tinted
+  overlay across the *whole face* (red streaks for keen, green diagonals for honed, silvery sheen
+  for steel, glass shimmer, gold flecks, …); seals draw an edge halo. Drawn ABOVE the parchment +
+  BELOW the rank/suit glyph so the card still reads. Exported from `cardFace.ts` and reused by the
+  in-combat `cardNode.ts` so the look is identical everywhere a card appears.
+- **Enhancement tooltips (hand + joker)** — hovering a hand card with sigils/seal/twin-suit
+  surfaces an explanation panel; the joker tooltip now also explains the edition (prismatic,
+  burnished, haloed, shadow) as its own block via a new `EDITION_INFO` lookup. `src/engine/content.ts`,
+  `src/render/hudLayer.ts`, `src/ui/PixiBoard.tsx`.
+- **PendingPick modals are non-dismissable + explicit Cancel** — clicking outside the panel rect
+  while a Remove or targeting tarot is armed used to dismiss the modal and burn the action. Now
+  `dismissable: !picking` keeps the picker open until the player either picks a card or hits
+  Cancel. `src/ui/PixiDeckModal.tsx`.
+- **Remove is once-per-shop, with a visible "USED" backside** — engine tracks `shop.removeSpent`,
+  the coin renders dim + ✓ + "USED THIS SHOP" once spent. Run-cumulative `× N` badge tracks
+  cross-shop usage. `src/engine/{types,run}.ts`, `src/render/shopStage.ts`, `src/ui/PixiBoard.tsx`.
+- **Pouch is view-only outside combat / pack-openings** — `usable` flag on `HudHeldVM`; non-usable
+  tiles render dim (alpha 0.55) with a fallback-tint and tap is a no-op. Tooltip notes
+  "(Held — usable in combat or while opening a pack.)". `src/render/hudLayer.ts`, `src/ui/PixiBoard.tsx`.
+- **Combat-gate reveal shortened** from 1150 ms → 450 ms (won) / 1500 ms → 900 ms (lost). The old
+  delay read as "stuck after killing the royal" — players quit before the gate appeared.
+- **Engine balance for doubled enemy HP** — Jack 20→40, Queen 30→60, King 40→72; attack scaled
+  sub-linearly (Jack 10→7, Queen 15→9, King 20→11) so longer fights don't drain the hand. Max
+  combo value 10→16. **Per-turn auto-draw was prototyped (+3) and then REVERTED on design
+  guidance:** the game's power curve has to come from **buying combo jokers and refresh
+  consumables in the shop**, not from a baseline freebie. The mid-fight hand-economy stays "your
+  starting hand + whatever you pay for" — Balatro's draws-per-round refill is the wrong analog
+  here; CTC is a deck-management game, not a refill-each-round game.
+  `src/engine/{cards,combat,resolution}.ts`.
+- **Card aspect ratio unified** — `buildCardFace` used 58/40 (1.45), `CardNode` used 62/44 (1.41).
+  Pack-revealed cards looked subtly wrong next to deck cards. Both now use 62/44 sourced from the
+  `CardNode` constants. `src/render/cardFace.ts`.
+- **Shop tray flicker on shop-entry** — `reset()` set `slide=0` but didn't snap `tray.y` off-felt,
+  so the first frame after re-entering shop showed the previous shop's tray at its old position
+  before the animation took over. Snap the tray to its off-felt resting position + `alpha=0` inside
+  `reset()` so the ticker animates from a *known* off-stage start. `src/render/shopStage.ts`.
+- **Pack-modal subscribe loop** — the modal now re-paints on every store change so back-to-back
+  packs (or a state mutation mid-pack) update the title/picks correctly without a remount.
+
+### Multi-epoch playtest harness (lessons from the attempt)
+A deck × stake parallel sweep harness was built (`tests/playtest/sweep.spec.ts` +
+`playwright.sweep.config.ts`) to drive multi-epoch balance passes. We only completed epoch 1
+(28 logged runs) before infrastructure issues forced a pivot back to the simpler `playtest-fullrun`
+spec. **Lessons for the next factory project:**
+- **Playwright `line` reporter drops `console.log` lines** under parallel workers because of TTY
+  cursor-up overwrites. The fix is the **`list` reporter** *or* the JSON reporter; line is great
+  for interactive runs but unfit for harvesting structured per-test data.
+- **Cancelled-sweep Chrome zombies** block subsequent runs by exhausting the page-setup budget.
+  Always reap (`Stop-Process -Name chrome -Force`) between sweeps; do it as a `pretest` script.
+- **Parallel workers each carry their own browser** so the WebGL-context limit doesn't apply
+  cross-worker — but workers > CPU-cores - 2 thrashes the host and tests time out in page-setup.
+  Default to `workers: min(4, cores - 2)`; dial down if you see "Test timeout while setting up page".
+- **The simpler 5-seed `playtest-fullrun` spec** was the right tool for the iteration loop. The
+  giant matrix sweep is great for a *single* end-of-build report; not for tight balance rounds.
+
+### Balance findings worth carrying forward
+- Doubled enemy HP without compensation collapses the AI's hand by mid-fight. We prototyped a
+  Balatro-style +3 draw per turn and confirmed it works *mechanically* (the AI then consistently
+  reached the Kings) — but **design rejected the pattern**: the power curve has to come from the
+  shop (combo jokers, refresh consumables), not from a baseline draw. So the correct compensation
+  for doubled HP in CTC is **economic** (more gold / better shop selection / more potent
+  consumables) plus the **sub-linear attack scaling** (which we kept), not a baseline draw.
+- Queens are the typical wall in HP-doubled play — they're the first tier with non-trivial
+  suit-immunity matter (mid-game cliff). King HP is the *climactic* dial, but Queens are where
+  most weak-AI runs ended in our sweep (~50% of all deaths).
+- Sub-linear attack scaling (≈ 75% of HP/6) keeps defence affordable as fights get longer.
+- The shop AI in tests matters: a no-shop AI ends most runs at the first Queen; a buy-one-relic AI
+  consistently reaches the final King. Real players shop more — so a balance tuned to the no-shop
+  AI is probably too easy for real play, and tuned to a strong shopping AI is probably too hard.

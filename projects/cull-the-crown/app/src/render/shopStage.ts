@@ -64,6 +64,8 @@ export interface ShopVM {
   gold: number;
   rerollCost: number;
   removeCost: number;
+  removeUses: number; // run-cumulative count of Removes already spent; shown on the coin badge
+  removeSpent: boolean; // true once Remove has been used THIS shop — coin flips to its back
 }
 
 const KIND_TINT: Record<string, number> = {
@@ -361,18 +363,31 @@ class CoinButton {
   private flip = 0; // >0 while a flip animates (0..1)
   private hovered = false;
   enabled: boolean;
-  constructor(price: number, enabled: boolean, private onTap: () => void) {
+  constructor(price: number, enabled: boolean, uses: number, spent: boolean, private onTap: () => void) {
     this.enabled = enabled;
     this.face.addChild(this.g);
-    const glyph = new Text({ text: "✂", style: { fill: enabled ? 0x1a1020 : THEME.frameDim, fontSize: 16, fontFamily: PIXEL_FONT } });
+    // FRONT face: scissors glyph + REMOVE label. BACK face (when spent): a dim crest with "USED".
+    const glyph = new Text({ text: spent ? "✓" : "✂", style: { fill: spent ? THEME.frameDim : (enabled ? 0x1a1020 : THEME.frameDim), fontSize: 16, fontFamily: PIXEL_FONT } });
     glyph.anchor.set(0.5);
     glyph.position.set(0, -2);
     this.face.addChild(glyph);
     this.view.addChild(this.face);
-    const cap = new Text({ text: `REMOVE ◆${price}`, style: { fill: enabled ? THEME.goldBright : THEME.frameDim, fontSize: 7.5, fontFamily: PIXEL_FONT } });
+    const capText = spent ? "USED THIS SHOP" : `REMOVE ◆${price}`;
+    const cap = new Text({ text: capText, style: { fill: spent ? THEME.frameDim : (enabled ? THEME.goldBright : THEME.frameDim), fontSize: 7.5, fontFamily: PIXEL_FONT } });
     cap.anchor.set(0.5);
     cap.position.set(0, 28);
     this.view.addChild(cap);
+    // Used-count badge — a small "×N" indicator showing run-cumulative removals so the player sees
+    // the action stuck across shops.
+    if (uses > 0) {
+      const stamp = new Text({ text: `× ${uses}`, style: { fill: THEME.parchmentEdge, fontSize: 7, fontFamily: PIXEL_FONT, fontWeight: "700" } });
+      stamp.anchor.set(0.5);
+      stamp.position.set(0, 38);
+      this.view.addChild(stamp);
+    }
+    // Spent coins render permanently flipped (visually different colour / dimmer) so it reads as
+    // "back of the coin, can't use again here".
+    if (spent) this.view.alpha = 0.55;
     this.draw();
     this.view.eventMode = "static";
     this.view.cursor = enabled ? "pointer" : "default";
@@ -433,6 +448,11 @@ export class ShopStage {
   private coin?: CoinButton;
   private time = 0;
   private slide = 0;
+  // Covered = a pack-opening (or similar take-over) is showing; the tray slides down off-felt so
+  // the picks read against the plasma background instead of stacking over the shop wares.
+  // `cover` interpolates 0 → 1 toward `coverTarget`; 1 = fully tucked below the felt.
+  private cover = 0;
+  private coverTarget = 0;
   private destroyed = false;
   private embedded: boolean;
   private tick = (t: { deltaMS: number }) => this.update(Math.min(t.deltaMS / 1000, 1 / 20));
@@ -466,6 +486,21 @@ export class ShopStage {
   /** Replay the slide-up (call when the shop re-opens in embedded mode). */
   reset(): void {
     this.slide = 0;
+    // Snap the tray off-felt (and invisible) BEFORE the ticker animates it up — otherwise the
+    // first paint after re-entering shop shows the previous shop's tray at full alpha for a frame,
+    // which reads as a flicker. The update() loop will smoothly slide+fade it in.
+    this.tray.y = (TRAY_BOT - TRAY_TOP) + 30;
+    this.tray.alpha = 0;
+    this.cover = 0;
+    this.coverTarget = 0;
+    // Invalidate the setShop signature so the first setShop call after re-entering shop actually
+    // rebuilds the contents (otherwise the tray slides up empty if the same shop offers came back).
+    this.lastShopSig = "";
+  }
+
+  /** Slide the tray down off-felt while a take-over (e.g. pack opening) is active. */
+  setCovered(covered: boolean): void {
+    this.coverTarget = covered ? 1 : 0;
   }
 
   /** Host-driven tick (embedded mode); standalone mode uses its own ticker. */
@@ -524,7 +559,26 @@ export class ShopStage {
     }
   }
 
+  private lastShopSig = "";
   setShop(vm: ShopVM): void {
+    // Skip the full destroy-and-rebuild when the shop offerings haven't actually changed —
+    // without this, every store change (Options modal open/close, Run Info, deck-hover, hand
+    // hover, etc.) tore down + re-created every ShopNode and the coin, visibly "reloading" the
+    // shop tray. The signature covers only what the player can see.
+    const sig = JSON.stringify({
+      p: vm.packs.map((o) => `${o.id}:${o.affordable ? 1 : 0}`),
+      w: vm.wares.map((o) => `${o.id}:${o.affordable ? 1 : 0}`),
+      e: vm.edicts.map((o) => `${o.id}:${o.affordable ? 1 : 0}`),
+      g: vm.gold,
+      r: vm.rerollCost,
+      rc: vm.removeCost,
+      rs: vm.removeSpent,
+      ru: vm.removeUses,
+      d: vm.deckId,
+      dc: vm.deckCount,
+    });
+    if (sig === this.lastShopSig) return;
+    this.lastShopSig = sig;
     for (const n of this.nodes) (this.nodeLayer.removeChild(n.view), n.destroy());
     for (const b of this.buttons) (this.btnLayer.removeChild(b.view), b.destroy());
     if (this.coin) { this.btnLayer.removeChild(this.coin.view); this.coin.destroy(); this.coin = undefined; }
@@ -580,7 +634,9 @@ export class ShopStage {
     };
     addBtn("NEXT\nFIGHT →", CTRL_X, TRAY_TOP + 42, 78, 32, 0xc0273f, true, () => this.onNextFight?.());
     addBtn(`⟳ REROLL\n◆${vm.rerollCost}`, CTRL_X, TRAY_TOP + 86, 78, 28, 0x4fae7f, vm.gold >= vm.rerollCost, () => this.onReroll?.());
-    this.coin = new CoinButton(vm.removeCost, vm.gold >= vm.removeCost, () => this.onRemove?.());
+    // The coin is spent once per shop visit — once vm.removeSpent flips true, the coin disables and
+    // flips to its back (handled inside CoinButton via the `spent` flag).
+    this.coin = new CoinButton(vm.removeCost, vm.gold >= vm.removeCost && !vm.removeSpent, vm.removeUses, vm.removeSpent, () => this.onRemove?.());
     this.coin.view.position.set(CTRL_X, TRAY_TOP + 148);
     this.btnLayer.addChild(this.coin.view);
 
@@ -646,11 +702,25 @@ export class ShopStage {
   private update(dt: number): void {
     this.time += dt;
     this.plasma?.update(dt);
-    this.slide = Math.min(1, this.slide + dt * 2.6);
-    const ease = 1 - Math.pow(1 - this.slide, 3);
-    // the tray rises from below the felt
-    this.tray.y = (1 - ease) * (TRAY_BOT - TRAY_TOP + 30);
-    this.tray.alpha = Math.min(1, ease * 1.4);
+    // Critically-damped smooth-damp: cover += (target - cover) * (1 - e^(-dt/τ)). Replaces the
+    // older linear-step + cubic-ease combo, which had a perceptible velocity change near the end
+    // (the "jumping" the player reported). With τ ≈ 0.22s the animation reaches 95% in ~0.6s
+    // and asymptotes smoothly — no pop, no overshoot.
+    const slideTau = 0.28;
+    const coverTau = 0.22;
+    const slideK = 1 - Math.exp(-dt / slideTau);
+    const coverK = 1 - Math.exp(-dt / coverTau);
+    this.slide += (1 - this.slide) * slideK;
+    if (this.slide > 0.9995) this.slide = 1;
+    this.cover += (this.coverTarget - this.cover) * coverK;
+    if (Math.abs(this.cover - this.coverTarget) < 0.001) this.cover = this.coverTarget;
+    // Tray Y combines the entrance slide-up and the pack-takeover cover slide-down.
+    const offUp = (1 - this.slide) * (TRAY_BOT - TRAY_TOP + 30);
+    const offDown = this.cover * (TRAY_BOT - TRAY_TOP + 80);
+    this.tray.y = offUp + offDown;
+    // Alpha: keep the tray mostly opaque during cover (less pop). At full cover (1.0) the tray
+    // is well off-felt anyway, so the residual alpha can't be seen.
+    this.tray.alpha = this.slide * (1 - this.cover * 0.5);
     for (const n of this.nodes) n.update(dt, this.time);
     this.coin?.update(dt);
   }

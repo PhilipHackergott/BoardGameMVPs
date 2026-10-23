@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" font-family="'Courier New',monospace">
+  <defs>
+    <style>
+      .btn{fill:#d8c24a;stroke:#9c8226;stroke-width:2;}
+      .h{fill:#1f1838;}
+      .body{fill:#2a2440;font-size:12px;}
+      .muted{fill:#5b6070;font-size:11px;}
+      .list{fill:#2a2440;font-size:12px;}
+      .tag{stroke:#1f1838;stroke-width:1;}
+    </style>
+  </defs>
+
+  <rect x="8" y="8" width="884" height="624" rx="4" fill="#c7ccd6" stroke="#5b6070" stroke-width="2"/>
+  <rect x="10" y="10" width="880" height="22" fill="#2a2440"/>
+  <text x="18" y="26" fill="#fff6df" font-size="12" font-weight="bold">PrismTheory — "Breaking the Format: Quiet Verdant Ramp"</text>
+  <g fill="#c7ccd6"><rect x="836" y="13" width="16" height="16" stroke="#5b6070"/><rect x="855" y="13" width="16" height="16" stroke="#5b6070"/><rect x="874" y="13" width="12" height="16" stroke="#5b6070"/></g>
+
+  <rect x="10" y="32" width="880" height="600" fill="#f4e8d0"/>
+
+  <!-- header -->
+  <rect x="10" y="32" width="880" height="44" fill="#1f1838"/>
+  <text x="26" y="62" fill="#ffe9a0" font-size="22" font-weight="bold">PRISMTHEORY</text>
+  <text x="250" y="58" fill="#cbb8f0" font-size="11">strategy · tech · metagame reports</text>
+  <text x="250" y="70" fill="#9ad0ff" font-size="11">Articles · Deck Tech · Set Reviews · Tier List · About</text>
+  <rect x="10" y="76" width="880" height="3" fill="#f4c430"/>
+
+  <!-- article title block -->
+  <text x="26" y="108" fill="#1f1838" font-size="20" font-weight="bold">Breaking the Format: Why Verdant Ramp</text>
+  <text x="26" y="132" fill="#1f1838" font-size="20" font-weight="bold">Is Quietly Winning Everything</text>
+  <text x="26" y="152" class="muted">by M. Reyes · posted 3 days ago · 47 comments</text>
+  <g transform="translate(26,160)">
+    <rect class="tag" x="0" y="0" width="64" height="16" fill="#4a9e4a"/><text x="32" y="12" text-anchor="middle" font-size="10" fill="#fff" font-weight="bold">Verdant</text>
+    <rect class="tag" x="70" y="0" width="64" height="16" fill="#d8c24a"/><text x="102" y="12" text-anchor="middle" font-size="10" fill="#3a2a10" font-weight="bold">Deck Tech</text>
+    <rect class="tag" x="140" y="0" width="74" height="16" fill="#2a2440"/><text x="177" y="12" text-anchor="middle" font-size="10" fill="#ffe9a0" font-weight="bold">Metagame</text>
+  </g>
+
+  <!-- article body (left) -->
+  <g transform="translate(26,196)">
+    <text class="body" x="0" y="0">Everyone's been racing with Ember and durdling with Tide control —</text>
+    <text class="body" x="0" y="18">and while they fight, Verdant Ramp has quietly put up the best Regional</text>
+    <text class="body" x="0" y="36">numbers two weeks running. The plan is simple: use Light efficiently,</text>
+    <text class="body" x="0" y="54">never Refract unless it wins the turn, and land an Oak Warden a full turn</text>
+    <text class="body" x="0" y="72">before the curve says you should. From there, you just out-size the board.</text>
+
+    <!-- pull quote -->
+    <rect x="0" y="90" width="510" height="46" fill="#efe6cc" stroke="#4a9e4a" stroke-width="3"/>
+    <text x="14" y="112" fill="#1f6b2a" font-size="13" font-style="italic" font-weight="bold">"Ramp doesn't race. Ramp makes the race</text>
+    <text x="14" y="130" fill="#1f6b2a" font-size="13" font-style="italic" font-weight="bold">irrelevant by turn five."</text>
+
+    <text class="body" x="0" y="160">The Order matchup is your only real fear — they go wide and you can't</text>
+    <text class="body" x="0" y="178">block three lanes with one fattie. The tech? A single copy of Pierce, and</text>
+    <text class="body" x="0" y="196">patience. Don't deploy into their removal. Let them durdle. Then drop the</text>
+    <text class="body" x="0" y="214">Warden and start swinging. (Full sideboard guide below the list.)</text>
+
+    <text class="muted" x="0" y="246">▸ Continue reading · 4,210 views</text>
+  </g>
+
+  <!-- the decklist (right) -->
+  <g transform="translate(560,196)">
+    <rect x="0" y="0" width="300" height="300" fill="#fbf3df" stroke="#9c9684" stroke-width="2"/>
+    <rect x="0" y="0" width="300" height="24" fill="#15301a"/>
+    <text x="10" y="17" fill="#6fc45a" font-size="12" font-weight="bold">THE LIST — "Quiet Ramp" (40)</text>
+    <g class="list" transform="translate(12,44)">
+      <text x="0" y="0" fill="#4a9e4a" font-weight="bold">UNITS (24)</text>
+      <text x="0" y="20">3x Oak Warden</text><text x="0" y="38">3x Sapling Scout</text>
+      <text x="0" y="56">3x Grovekeeper</text><text x="0" y="74">3x Elder Bloom</text>
+      <text x="0" y="92">2x Thornwall</text><text x="160" y="20">3x Mossback Brute</text>
+      <text x="160" y="38">3x Lightwarden</text><text x="160" y="56">1x Pierce Drake (tech)</text>
+      <text x="160" y="74" fill="#7d5aa6">3x Wild Tap (Refract+)</text>
+      <text x="0" y="120" fill="#2e7fb8" font-weight="bold">SPELLS (10)</text>
+      <text x="0" y="140">3x Overgrow</text><text x="0" y="158">3x Verdant Surge</text>
+      <text x="160" y="140">2x Cleansing Rain</text><text x="160" y="158">2x Root Snare</text>
+      <text x="0" y="186" fill="#d8c24a" font-weight="bold">GEAR (6)</text>
+      <text x="0" y="206">3x Aegis Sigil</text><text x="160" y="206">3x Verdant Crown</text>
+    </g>
+    <rect x="0" y="266" width="300" height="34" fill="#efe6cc"/>
+    <rect x="10" y="272" width="120" height="22" class="btn"/><text x="70" y="287" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">⇩ Import deck</text>
+    <text x="142" y="287" class="muted">Light curve: ▁▃▅▆▄▂</text>
+  </g>
+
+  <!-- comments -->
+  <g transform="translate(26,470)">
+    <rect x="0" y="0" width="834" height="2" fill="#d8c24a"/>
+    <text x="0" y="22" fill="#1f1838" font-size="13" font-weight="bold">47 Comments</text>
+    <g transform="translate(0,34)">
+      <rect x="0" y="0" width="834" height="40" fill="#fbf3df" stroke="#cdbf99"/>
+      <text x="10" y="17" font-size="11" fill="#d9442e" font-weight="bold">EmberLord99</text>
+      <text x="10" y="33" class="body" font-size="11">ramp is a coward's game. race or go home. but ok the numbers don't lie 😤</text>
+    </g>
+    <g transform="translate(0,78)">
+      <rect x="0" y="0" width="834" height="40" fill="#f4e8d0" stroke="#cdbf99"/>
+      <text x="10" y="17" font-size="11" fill="#4a9e4a" font-weight="bold">noob_brewer</text>
+      <text x="10" y="33" class="body" font-size="11">saving this. my whole local meta is Order so the Pierce tip is clutch, ty!!</text>
+    </g>
+  </g>
+
+  <text x="26" y="616" fill="#5b6070" font-size="11">CONCEPT — deck-tech blog / metagame article (in-fiction web; world feature, concept only)</text>
+</svg>

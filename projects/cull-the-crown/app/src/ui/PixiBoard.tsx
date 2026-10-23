@@ -7,7 +7,7 @@ import { ShopItemVM, ShopVM } from "../render/shopStage";
 import { HudHeldVM, HudJokerVM, HudVM } from "../render/hudLayer";
 import { FeltControlsVM } from "../render/feltControls";
 import { applyPixiFixes, releaseApp } from "../render/pixiFixes";
-import { contentMeta, discountedPrice, edictById, heldMax, jokerById, makeCardFromTemplate, maxSlots, tarotById } from "../engine/index";
+import { contentMeta, discountedPrice, edictById, heldMax, jokerById, makeCardFromTemplate, maxSlots, SIGIL_INFO, tarotById } from "../engine/index";
 import { PACK_LABEL, PACK_PICKS, SIZE_LABEL, LOOSE_TIP_TYPE } from "./packMeta";
 import { useTooltip } from "./tooltip";
 
@@ -84,7 +84,7 @@ export default function PixiBoard() {
   function buildShopVM(): ShopVM {
     const run = useGame.getState().run;
     const shop = run.shop;
-    if (!shop) return { packs: [], wares: [], edicts: [], deckId: run.deckId, deckCount: run.deck.length, gold: run.gold, rerollCost: 0, removeCost: 0 };
+    if (!shop) return { packs: [], wares: [], edicts: [], deckId: run.deckId, deckCount: run.deck.length, gold: run.gold, rerollCost: 0, removeCost: 0, removeUses: run.removeUses ?? 0, removeSpent: false };
     const packs: ShopItemVM[] = shop.packs.map((p) => {
       const price = discountedPrice(p.price, run.edicts);
       return { id: p.id, group: "pack", kind: p.kind, contentId: p.id, name: `${PACK_LABEL[p.kind]} · ${SIZE_LABEL[p.size]}`, text: `${SIZE_LABEL[p.size]} pack — ${PACK_PICKS[p.size]}.`, art: "", price, affordable: run.gold >= price, packLabel: PACK_LABEL[p.kind], packSize: SIZE_LABEL[p.size], shimmer: true, tipType: "booster" };
@@ -105,7 +105,7 @@ export default function PixiBoard() {
       const price = discountedPrice(ed.price, run.edicts);
       return [{ id, group: "edict" as const, kind: "edict", contentId: id, name: ed.name, text: ed.text, art: ed.art, price, affordable: run.gold >= price, shimmer: true, tipType: "edict" }];
     });
-    return { packs, wares, edicts, deckId: run.deckId, deckCount: run.deck.length, gold: run.gold, rerollCost: shop.rerollCost, removeCost: discountedPrice(shop.removeCardCost, run.edicts) };
+    return { packs, wares, edicts, deckId: run.deckId, deckCount: run.deck.length, gold: run.gold, rerollCost: shop.rerollCost, removeCost: discountedPrice(shop.removeCardCost, run.edicts), removeUses: run.removeUses ?? 0, removeSpent: !!shop.removeSpent };
   }
 
   // The guild/pouch HUD band: your jokers (sellable in the shop) + the consumable pouch.
@@ -117,10 +117,14 @@ export default function PixiBoard() {
       if (!j) return [];
       return [{ id, artId: j.id, name: j.name, text: j.text, rarity: j.rarity, edition: run.slotEditions?.[id], sellValue: j.sellValue, sellable: inShop }];
     });
+    // Pouch usability: held items are usable ONLY inside combat — they target cards that are in
+    // the hand, and the hand only exists during a real fight. Shop (with or without a pack open)
+    // is view-only.
+    const heldUsable = !inShop;
     const held: HudHeldVM[] = run.held.flatMap((h) => {
       const t = tarotById(h.tarotId);
       if (!t) return [];
-      return [{ id: h.id, tarotId: h.tarotId, name: t.name, text: t.text }];
+      return [{ id: h.id, tarotId: h.tarotId, name: t.name, text: t.text, usable: heldUsable }];
     });
     return { jokers, jokerMax: maxSlots(run), showPouch: inShop || !run.combat?.outcome, held, heldMax: heldMax(run) };
   }
@@ -242,9 +246,40 @@ export default function PixiBoard() {
         useGame.getState().setPileModal("discard");
       };
       stage.onDeckHover = (over) => useGame.getState().setDeckHover(over);
-      stage.onHover = (id) => {
+      stage.onHover = (id, rect) => {
         if (id) sfx.leaf();
         useGame.getState().setHoverId(id);
+        // Tooltip rule: VANILLA cards (no enhancements) have NO tooltip — the card face already
+        // tells you "5 of Spades". ENHANCED cards show only enhancement explanations, with the
+        // enhancement name as the tooltip title (not the card name) — one block per enhancement.
+        const card = id ? useGame.getState().run.hand.find((h) => h.id === id) : undefined;
+        if (id && rect && card) {
+          // Collect enhancements as {name, text} pairs.
+          const enhancements: { name: string; text: string }[] = [];
+          for (const sg of card.sigils ?? []) {
+            const info = SIGIL_INFO[sg];
+            if (info) enhancements.push({ name: info.name, text: info.text });
+          }
+          if (card.extraSuit) {
+            const suitName = card.extraSuit === "H" ? "Hearts" : card.extraSuit === "D" ? "Diamonds" : card.extraSuit === "C" ? "Clubs" : "Spades";
+            enhancements.push({ name: "Twin-Suit", text: `Also counts as ${suitName}.` });
+          }
+          if (card.seal) {
+            const sealName = card.seal[0].toUpperCase() + card.seal.slice(1) + " Seal";
+            enhancements.push({ name: sealName, text: "See the Compendium for the effect." });
+          }
+          if (enhancements.length > 0) {
+            // First enhancement is the title; all enhancement texts are concatenated as the body
+            // so "one tooltip per enhancement" reads in a single hover bubble.
+            const title = enhancements[0].name;
+            const body = enhancements.map((e) => enhancements.length > 1 ? `${e.name} — ${e.text}` : e.text).join("\n");
+            useTooltip.getState().show(TIP, { title, text: body, anchor: rect });
+          } else {
+            useTooltip.getState().hide(TIP);
+          }
+        } else {
+          useTooltip.getState().hide(TIP);
+        }
       };
       stage.onCardBlock = (id) => {
         const g = useGame.getState();
@@ -353,6 +388,7 @@ export default function PixiBoard() {
       if (useGame.getState().run.phase === "shop") {
         stage.setMode("shop");
         stage.syncShop(buildShopVM());
+        stage.setShopCovered(!!useGame.getState().run.shop?.openPack);
       }
       syncFromState();
       stage.syncHud(buildHudVM());
@@ -371,6 +407,8 @@ export default function PixiBoard() {
       if (s.run.phase === "shop") {
         stage.setMode("shop");
         stage.syncShop(buildShopVM());
+        // Pack-opening take-over: slide the tray off-felt so the pack picks read against plasma.
+        stage.setShopCovered(!!s.run.shop?.openPack);
         syncFromState(); // the felt's draw pile keeps rendering under the tray
         return;
       }

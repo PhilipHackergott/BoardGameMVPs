@@ -13,7 +13,10 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
   trauma shake, staggered text pops) for PixiJS; drop-in `fx/` folder + the cascade/lifecycle wiring
   that makes it sing (first built in **Cull the Crown**). Also the **DOM-only juice recipe** for
   card/tableau games with no canvas (animated CSS backdrop, Web-Animations-API card flights, emoji
-  art) — from **Roomies**.
+  art) — from **Roomies**. **Plus** (CTC wave 8): **whole-card enhancement overlays**
+  (Balatro Mult/Bonus/Steel — a tinted face per sigil, not a corner badge), the **pack-takeover
+  screen pattern** (slide tray off-felt + recolour plasma + bottom tray with title/skip), and the
+  **"USED / view-only" UI states** for one-shot shop items.
 - [IP precedents](patterns/ip-precedents.md) — how specific publishers/designers tend to react.
 
 ## Playbooks (process)
@@ -37,11 +40,18 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
   A headless AI-vs-AI sim (`npm run sim`) → win-rate sweeps → compress the spread; verify the difficulty
   ladder climbs; the patch→re-sim loop. The two traps: **balance is relative to AI skill** (re-tune
   against the AI you ship; don't over-fit noise) and **AI-blind content reads low for the wrong reason**
-  (fix the AI or flag for `/test`, don't buff it broken). (Lacuna's `07-balance-report.md`.)
+  (fix the AI or flag for `/test`, don't buff it broken). (Lacuna's `07-balance-report.md`.) **Plus**
+  (CTC wave 8): the **doubled-stat compensation pattern** (a +X% enemy-HP buff is a -X% player
+  resource hit by default — compensate with sub-linear attack + per-turn draw refill) and the
+  **shop-AI gap signal** (compare a no-shop AI to a buy-greedy AI to bracket the difficulty range
+  real human play occupies).
 - [Discovery](playbooks/discovery.md) — what kinds of games adapt well.
 - [Market](playbooks/market.md) — recurring market/positioning patterns.
 - [Spec](playbooks/spec.md) — spec practices that kept builds tight.
-- [Playtest](playbooks/playtest.md) — heuristics that caught real problems.
+- [Playtest](playbooks/playtest.md) — heuristics that caught real problems. **Plus** (CTC wave 8):
+  the **parallel deck×stake sweep harness pattern** — `playwright.sweep.config.ts` with
+  `workers: 2-4` (separate from the serial visual e2e suite), `PLAYTEST_RESULT` tagged console
+  logs, and a chrome-zombie reap between sweeps.
 - [Visual first-try](playbooks/visual-first-try.md) — **make the MVP look intentional on the first
   build, not flat-then-polished.** Checklist + principles: themed living background (#1 win),
   **outcomes are beats not cuts** (no auto-switch; Continue/Claim screens that show what changed),
@@ -116,6 +126,15 @@ _Filling in as projects ship via `/learn`. First title through: **Lacuna**._
     play/block**, **stage-level geometry input** (Pixi hit-test is unreliable): `render/combatStage.ts`.
   - **Tutorial + tooltips**, **real-pointer e2e**, screenshot-driven visual iteration:
     `ui/HelpOverlay.tsx`, `tests/e2e/{look,input}.spec.ts`.
+  - **Pack-takeover screen** (Balatro Arcana layout): `app/src/ui/PixiPackModal.tsx` +
+    `render/shopStage.ts#setCovered` + `fx/plasma.ts#setPalette`.
+  - **Whole-card enhancement overlays** (Balatro Mult/Bonus/Steel per sigil): `app/src/render/cardFace.ts`
+    (exported `drawSigilOverlay`/`drawSealOverlay` reused by `cardNode.ts`).
+  - **Once-per-shop economy ("USED" backside) + view-only inventory tiles** (Remove coin + pouch
+    in bare shop): `app/src/engine/{types,run}.ts#removeSpent` + `render/{shopStage,hudLayer}.ts`.
+  - **Parallel deck×stake playtest sweep** (separate Playwright config; `PLAYTEST_RESULT`-tagged
+    logs): `app/playwright.sweep.config.ts` + `app/tests/playtest/sweep.spec.ts` +
+    `app/scripts/analyze-sweep.cjs`.
   - Retrospective: `projects/cull-the-crown/retrospective.md`. Read with `playbooks/visual-first-try.md`.
 - **Roomies** (`projects/roomies/`, in build — round 2 at the build gate) — **the** example for a
   **card drafting + tableau game done DOM-only** (no Pixi) and for **two-phase rounds**. Best bits to copy:

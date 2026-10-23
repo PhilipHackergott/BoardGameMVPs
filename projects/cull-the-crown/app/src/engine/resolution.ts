@@ -72,7 +72,7 @@ export function cardSuits(card: Card, wild?: Suit): Suit[] {
 }
 
 /** Validate a selection of hand cards and aggregate it into a value + active suits. */
-export function parseSelection(cards: Card[], wildSuits: Record<string, Suit> = {}, comboMax = 10): Parsed {
+export function parseSelection(cards: Card[], wildSuits: Record<string, Suit> = {}, comboMax = 16): Parsed {
   const empty: Parsed = {
     ok: false,
     value: 0,
@@ -169,7 +169,7 @@ export function resolvePlay(
   wildSuits: Record<string, Suit> = {},
   styleLevels: Record<FightingStyleId, number> = NO_STYLES,
 ): ResolutionResult {
-  const comboMax = 10 + jokers.reduce((a, j) => a + (j.comboMaxBonus ?? 0), 0); // Loose Grip raises it
+  const comboMax = 16 + jokers.reduce((a, j) => a + (j.comboMaxBonus ?? 0), 0); // Loose Grip raises it
   const parsed = parseSelection(cards, wildSuits, comboMax);
   if (!parsed.ok) {
     return {

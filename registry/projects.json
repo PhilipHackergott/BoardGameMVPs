@@ -1,6 +1,39 @@
 {
-  "updated": "2026-05-24",
+  "updated": "2026-05-26",
   "projects": [
+    {
+      "slug": "food-chain-magnate",
+      "title": "Food Chain Magnate",
+      "stage": "build",
+      "status": "awaiting-approval",
+      "ip": "clear",
+      "updated": "2026-05-26",
+      "stack": "react-ts-pixi (MVP UI built DOM+SVG board — recorded D4 fallback deviation; Pixi reserved)",
+      "note": "Splotter economic heavyweight; manual seed. Real-IP non-distributed prototype (WotR basis). BUILT M1->M8 in one pass; AWAITING BUILD GATE (playtest). Pure deterministic engine COMPLETE + tested: map/distance, Dinnertime resolution (incl. rulebook $125 example), pricing, payday, bank two-break end, full employee registry+training tree (mgmt edges, VP slots 2/3/4/5/10), org-chart capacity, working actions, job market, 7-phase machine, marketing footprints+demand, all 18 milestones, full-turn orchestrator, AI (tiers+personalities), campaign objectives/scenarios/medals. Playable UI vs AI (DOM+SVG board, menu/setup/shell/end, synth audio+mute). PASS 2: recruiting-discount salary rule; climbing AI ladder; front-of-house (Pause/Settings/Continue/Past-Games); Dinnertime step-through (engine trace + step UI). PASS 3: Campaign UI fully wired (12-scenario/4-era hub + medals + career dossier + briefing + live objectives + debrief + persistence, e2e). PASS 4: built the full Hard MULTI-TURN GAME-TREE SEARCH (src/ai/search.ts) — deterministic best-response plan search, Med opponent model, 2-turn rollouts via playTurn, leaf=cash advantage, move-ordering + iterative-deepening + node-budget (deterministic sim count) + branch-and-bound; candidate plans vary marketing product × targeting, status-quo always included so no regression; Low/Med untouched (one shared parameterized heuristic). Ladder now Hard>Low 100%, Med>Low 82%, Hard>Med 76% — clears the 65% target AND the 70%+ decisive ideal. New search budget+dominance test; balance floors raised to 0.90/0.70/0.70; flaky campaign e2e (random seed) fixed. VERIFIED: 67 vitest, npm run sim (100/76/82), 4 Playwright e2e, vite build clean (~211kB), tsc clean. REMAINING: per-card deck counts unsourceable (physical-only, flagged default). Artifacts: 01-06 specs/GDD/card-ref + concept/ + app/ + build-report.md. D1 LOCKED. No open decisions.",
+      "path": "projects/food-chain-magnate"
+    },
+    {
+      "slug": "tcg-circuit",
+      "title": "TCG Circuit (working title)",
+      "stage": "build",
+      "status": "awaiting-approval",
+      "ip": "clear",
+      "updated": "2026-05-26",
+      "stack": "react-ts-pixi (MVP built DOM+Canvas2D — recorded deviation; Pixi reserved for the deferred world)",
+      "note": "BUILT — everything except Acts II-IV (see projects/tcg-circuit/build-report.md). PRISM card game (engine + 3 SETS/~132 cards: First Light + Tideturn[Rally/Vengeance] + Deeproots[Momentum], 14-opp skill ladder + 14 prebuilt decks + deckbuilder + gallery + Free-Play/Gauntlet/Starter + synth audio); Act I world (walkable Canvas2D overworld home/town/shop/school, NPCs + RPG dialogue, 8-beat 'Discovery' story w/ 3 story duels, day/slot loop, bed-save/Continue); ECONOMY (collection, booster packs + pack-rip reveal, PrismSingles.net market w/ daily-drift prices, collection-aware deckbuilder); LIFE-SIM (year-level context, 5 character stats, slot activities study/work/socialize/practice, Status, exams + skip-school risk, sleep restores Stamina); TOURNAMENTS (AI brackets FNM + fame-gated Shop Cup -> money/fame/prize packs/trophies) + FAME/sponsorship perk; LIVE METAGAME (set calendar + B&R that shift deck legality over the campaign); COMMUNITY (PrismNexus forum + deck-tech blog + news on the home PC). Procedural placeholder art behind the asset-manifest seam. Verified: tsc, 45 engine tests, npm run sim (~37pts spread, ladder monotone), build, Playwright 4/4. Remaining: Act II-IV story (deferred) + final human balance tuning. Awaiting build-gate playtest.",
+      "path": "projects/tcg-circuit"
+    },
+    {
+      "slug": "spaeti",
+      "title": "Späti Simulator (working title)",
+      "stage": "specification",
+      "status": "in-progress",
+      "ip": "clear",
+      "updated": "2026-05-25",
+      "stack": "react-ts-r3f",
+      "note": "Original concept; 3D (R3F), first 3D pilot. Berlin kiosk: eco-management + narrative vignettes. GDD done; awaiting design sign-off before formal spec.",
+      "path": "projects/spaeti"
+    },
     {
       "slug": "war-of-the-ring",
       "title": "War of the Ring",
@@ -72,7 +105,7 @@
       "stage": "build",
       "status": "awaiting-approval",
       "ip": "risky",
-      "updated": "2026-05-23",
+      "updated": "2026-05-30",
       "path": "projects/cull-the-crown"
     },
     {
@@ -81,7 +114,7 @@
       "stage": "build",
       "status": "awaiting-approval",
       "ip": "risky",
-      "updated": "2026-05-21",
+      "updated": "2026-05-26",
       "path": "projects/compile"
     }
   ]

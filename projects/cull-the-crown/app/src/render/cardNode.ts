@@ -7,6 +7,7 @@ import { Spring } from "../fx";
 import { SIGIL_INFO } from "../engine/index";
 import { Card, Suit } from "../engine/types";
 import { PIXEL_FONT, SUIT_GLYPH, suitInkColor, THEME } from "./theme";
+import { drawSealOverlay, drawSigilOverlay } from "./cardFace";
 
 export const CARD_W = 44;
 export const CARD_H = 62;
@@ -91,7 +92,15 @@ export class CardNode {
     glyphText.anchor.set(0.5);
     glyphText.position.set(0, 3);
 
-    this.body.addChild(this.glow, outline, face, cornerText, glyphText);
+    // Whole-card enhancement overlay (Balatro Mult/Bonus/Steel-style colored treatment) — sits over
+    // the parchment but BELOW the rank/suit glyphs so the card still reads clearly.
+    const overlay = new Graphics();
+    for (const sg of this.card.sigils ?? []) {
+      if (sg === "companion" || sg === "extra") continue;
+      drawSigilOverlay(overlay, sg, w, h, RADIUS);
+    }
+    if (this.card.seal) drawSealOverlay(overlay, this.card.seal, w, h, RADIUS);
+    this.body.addChild(this.glow, outline, face, overlay, cornerText, glyphText);
 
     // "⊘" badge: this card's suit power is nullified by the royal's immunity
     this.immuneBadge = new Graphics();

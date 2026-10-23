@@ -136,8 +136,9 @@ function Setup() {
         </button>
       </div>
       <p className="fine dim">
-        ⚠ Card effects are placeholder stand-ins (the rulebook PDF has no card texts). The full rules
-        system, draft, control, compile and AI are real — drop in the published card data for 1:1.
+        Card names, values & texts are the <b>real</b> published Compile: Main 1 data. The full rules
+        system, draft, control, compile and AI are real too. Cards tagged <b>SIMPLIFIED</b> have real
+        text but approximate effect logic, pending a fuller rules runtime.
       </p>
     </div>
   );
@@ -721,7 +722,7 @@ function CodexCard({ def }: { def: CardDef }) {
         {def.bottomText && <p className="cmd bot">▼ {def.bottomText}</p>}
         {noText && <p className="cmd dim">— pure value, no command —</p>}
       </div>
-      {def.placeholder && <span className="cc-flag" title="Stand-in effect, pending the published card data">PLACEHOLDER</span>}
+      {def.placeholder && <span className="cc-flag" title="Real published card text & value; effect logic is simplified pending a fuller rules runtime">SIMPLIFIED</span>}
     </div>
   );
 }
@@ -739,8 +740,9 @@ function Codex() {
         </button>
       </div>
       <p className="fine dim">
-        Played FACE-DOWN, any card is worth <b>2</b> and has no command. The effect texts below are
-        placeholders pending the published card data — the rules system is fully implemented.
+        Played FACE-DOWN, any card is worth <b>2</b> and has no command. The names, values & texts
+        below are the <b>real</b> published Compile: Main 1 cards. Cards tagged <b>SIMPLIFIED</b> have
+        real text but approximate effect logic pending a fuller rules runtime.
       </p>
       <div className="codex-chips">
         <button className={filter === "ALL" ? "on" : ""} onClick={() => setFilter("ALL")}>
@@ -929,8 +931,8 @@ const TUTORIAL_STEPS: TutStep[] = [
     body: (
       <p>
         Compile all three protocols to win. Face-down plays are great for racing value or bluffing.
-        Note: card effect <b>texts</b> are placeholders for now — the full rules are implemented and
-        tested. Good luck, operator.
+        Note: card names, values & <b>texts</b> are the real published cards; some effect logic is
+        SIMPLIFIED for now — the full rules are implemented and tested. Good luck, operator.
       </p>
     ),
   },

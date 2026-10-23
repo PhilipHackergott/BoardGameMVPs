@@ -1158,6 +1158,31 @@ button:focus-visible {
   min-width: 0;
   align-self: stretch;
 }
+/* The pack-opening modal host sits over the felt inside .combat-field. Pin it to position+z so it
+   reliably renders ABOVE the felt's plasma — the user reported tooltips firing on hover (canvas
+   under the pointer) while the pack visuals stayed hidden behind the felt background. */
+.combat-field > .pixi-modal-host {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  pointer-events: auto;
+}
+/* Pack-opening transition veil — fade-to-dark that hides the plasma-palette swap + shop-tray
+   slide-out during shop↔pack transitions. Set z above the modal host so it covers the still-
+   resolving canvas, and rely on pointer-events:none so it doesn't eat clicks while fading out. */
+.combat-field > .pack-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 110;
+  background: #0a0712;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease-out;
+}
+.combat-field > .pack-veil.on {
+  opacity: 0.92;
+  transition: opacity 0.05s ease-in;
+}
 .combat .pixi-host {
   position: absolute;
   inset: 0;

@@ -124,7 +124,14 @@ export class SidebarStage {
     this.draw();
   }
 
+  private lastVmSig = "";
   sync(vm: SidebarVM): void {
+    // Skip the full redraw when nothing the sidebar actually shows has changed — without this the
+    // sidebar visibly "reloads" (wipe + rebuild every state change), even when only an unrelated
+    // field flipped. Cheap structural signature; if it differs, the panel really did change.
+    const sig = JSON.stringify(vm);
+    if (sig === this.lastVmSig) return;
+    this.lastVmSig = sig;
     this.vm = vm;
     this.draw();
   }
@@ -187,7 +194,10 @@ export class SidebarStage {
     const vm = this.vm;
     const suit = vm.royalSuit ?? "S";
     const accent = SUIT_COLOR[suit];
-    const royalH = 116 + (vm.decrees?.length ?? 0) * 18;
+    // Per-decree row allows for two wrapped lines (the "Vampire King · heals itself when it strikes
+    // you" style notes regularly wrap past 252px at 10px). Drawing height below uses the same step.
+    const decreeRowH = 26;
+    const royalH = 120 + (vm.decrees?.length ?? 0) * decreeRowH;
     const styleH = 250; // taller effect boxes (see fxBox) need more panel height before Play/Clear
 
     // Lay the sections out top→bottom, distributing the leftover height as even gaps so the
@@ -242,7 +252,7 @@ export class SidebarStage {
     let ry = hpY + 36;
     for (const d of vm.decrees ?? []) {
       this.text(`⚜ ${d.name}${d.note ? ` · ${d.note}` : ""}`, PAD + 14, ry, 10, THEME.goldBright, { wrap: INNER - 28 });
-      ry += 18;
+      ry += 26; // matches decreeRowH above — two-line capacity per decree
     }
   }
 

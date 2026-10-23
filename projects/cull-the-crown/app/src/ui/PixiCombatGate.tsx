@@ -33,7 +33,9 @@ export default function PixiCombatGate() {
       return;
     }
     setPurse(run.gold);
-    const t = window.setTimeout(() => setShown(true), outcome === "lost" ? 1500 : 1150);
+    // Brief reveal delay so the kill animation finishes — long enough to feel earned, short enough
+    // that the player doesn't think the game is stuck after a clean kill (was 1150 ms → felt frozen).
+    const t = window.setTimeout(() => setShown(true), outcome === "lost" ? 900 : 450);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active, outcome]);
@@ -95,18 +97,29 @@ function GateModal(props: GateProps) {
     if (!m) return;
     const p = propsRef.current;
     const r = p.reward;
-    const rows: [string, string][] = [];
+    // Balatro Cash Out — each row shows the gold source on the left, a coin/icon, and a string of
+    // ◆ symbols on the right (one per gold). Capped at a max-width so a 25-coin Boss bounty doesn't
+    // run off the panel. Source: https://balatrowiki.org/w/Cash_Out
+    type Row = { label: string; tag?: string; gold: number; warn?: boolean };
+    const rows: Row[] = [];
     if (p.won && r) {
-      rows.push([r.exact ? `Bounty (exact ×${r.exactMult})` : "Bounty", `+${r.reward} ◆`]);
-      if (r.perFight > 0) rows.push(["Guild tribute", `+${r.perFight} ◆`]);
-      if (r.interest > 0) rows.push(["Interest", `+${r.interest} ◆`]);
+      rows.push({ label: r.exact ? `Defeat the royal (exact ×${r.exactMult})` : "Defeat the royal", gold: r.reward });
+      if (r.perFight > 0) rows.push({ label: "Guild tribute (relics)", gold: r.perFight });
+      if (r.deckBonus > 0) rows.push({ label: "Deck bonus (cards in hand)", gold: r.deckBonus });
+      // ALWAYS show the interest row when the deck supports interest — even at 0 — so the player
+      // sees the system exists and learns to save gold. Matches Balatro's Cash Out.
+      rows.push({ label: "Interest (1 per ◆5, cap 5)", gold: r.interest });
     }
-    const title = p.won ? (p.lastRoyal ? "THE LAST ROYAL FALLS" : "ROYAL FELLED") : "YOU FALL";
+    const title = p.won ? (p.lastRoyal ? "THE LAST ROYAL FALLS" : `Cash Out: ◆${r?.total ?? 0}`) : "YOU FALL";
     const accent = p.won ? THEME.gold : THEME.blood;
-    const bodyH = p.won && r ? (r.exact ? 26 : 0) + rows.length * 26 + 36 + 32 + 60 : 70 + 60;
+    const ROW_H = 24;
+    const bodyH = p.won && r
+      ? 16 + rows.length * ROW_H + 18 + 28 + 60   // header + rows + divider + purse + button
+      : 70 + 60;
+    // Wider panel to fit the long ◆-strings on the right — mirrors the shop-tray width.
     m.show({
       title,
-      panelW: 424,
+      panelW: 560,
       panelH: 60 + bodyH,
       dismissable: false,
       accent,
@@ -114,25 +127,31 @@ function GateModal(props: GateProps) {
         const w = mm.width;
         let y = 14;
         if (p.won && r) {
-          if (r.exact) {
-            mm.text("★ EXACT KILL ★", w / 2, y, 12, THEME.goldBright, { anchor: 0.5, bold: true });
-            y += 26;
+          // Coins-as-text on the right (capped to MAX_COINS so the row stays readable; show the
+          // numeric overflow as "+N more").
+          const MAX_COINS = 18;
+          for (const row of rows) {
+            mm.text(row.label, 6, y, 12, THEME.parchmentLite);
+            const coins = Math.min(row.gold, MAX_COINS);
+            const overflow = row.gold > MAX_COINS ? `  +${row.gold - MAX_COINS}` : "";
+            const coinStr = row.gold === 0 ? "—" : "◆".repeat(coins) + overflow;
+            mm.text(coinStr, w - 6, y, 12, row.gold === 0 ? THEME.frameDim : THEME.goldBright, { anchor: 1 });
+            y += ROW_H;
           }
-          for (const [lbl, val] of rows) {
-            mm.text(lbl, 4, y, 12, THEME.parchmentLite);
-            mm.text(val, w - 4, y, 12, THEME.goldBright, { anchor: 1 });
-            y += 26;
-          }
-          mm.text("Spoils", 4, y, 13, THEME.gold, { bold: true });
-          mm.text(`+${r.total} gold`, w - 4, y, 13, THEME.gold, { anchor: 1, bold: true });
-          y += 36;
+          // Divider
+          mm.rect(0, y - 4, w, 1, THEME.frameDim);
+          y += 14;
+          // Total + running purse
+          mm.text("Total spoils", 6, y, 13, THEME.gold, { bold: true });
+          mm.text(`◆ ${r.total}`, w - 6, y, 13, THEME.gold, { anchor: 1, bold: true });
+          y += 28;
           mm.text(`Purse  ◆ ${p.purse}`, w / 2, y, 16, 0xffffff, { anchor: 0.5, bold: true });
           y += 32;
         } else {
           mm.text(p.notice ?? "The gauntlet claims you.", w / 2, y, 12, THEME.parchmentLite, { anchor: 0.5, wrap: w });
           y += 70;
         }
-        mm.button(p.won ? (p.claiming ? "Claiming…" : "Claim ▸") : "See the End ▸", 0, y, w, 48, accent, !p.claiming, () => propsRef.current.onClaim());
+        mm.button(p.won ? (p.claiming ? "Cashing out…" : "Cash Out ▸") : "See the End ▸", 0, y, w, 48, accent, !p.claiming, () => propsRef.current.onClaim());
       },
     });
   };

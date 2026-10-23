@@ -44,20 +44,38 @@ export function AudioController() {
   // flower rings its colour's whole chord as it's assigned — a final symphony — then the win
   // flourish plays once the harvest finishes.
   useEffect(() => {
+    let prevSeed: number | null = null;
     let prevSelA: number | null = null;
     let prevBeacons = 0;
-    let prevFlights = 0;
+    let prevCollected = 0;
     let prevWon = false;
     let prevReveal = 0;
     let lastCollect = 0;
+    const totalCollected = (g: { collected: number[][] }) => {
+      let n = 0;
+      for (const row of g.collected) for (const c of row) n += c;
+      return n;
+    };
     const unsub = useGame.subscribe((s) => {
       const g = s.game;
       if (!g) {
+        prevSeed = null;
         prevSelA = null;
         prevBeacons = 0;
-        prevFlights = 0;
+        prevCollected = 0;
         prevWon = false;
         prevReveal = 0;
+        return;
+      }
+      // A brand-new game (incl. a fresh online match — same seed across its state updates):
+      // snapshot the baselines so we don't retro-fire cues for the initial deal.
+      if (g.seed !== prevSeed) {
+        prevSeed = g.seed;
+        prevSelA = s.selection.aStarId;
+        prevBeacons = g.beacons.length;
+        prevCollected = totalCollected(g);
+        prevReveal = 0;
+        prevWon = false;
         return;
       }
       const p = g.current;
@@ -81,18 +99,21 @@ export function AudioController() {
       }
       prevBeacons = beacons;
 
-      // Taking flowers (the placement pair, a claim, a free pick, a steal) rings the fifth
-      // of that colour's terz, a beat after the pawn lands.
-      const flights = s.flights.length;
-      if (g.phase === "play" && flights > prevFlights) {
+      // Taking flowers (the placement pair, a claim, a free pick, a steal) rings the fifth of
+      // that colour's terz, a beat after the pawn lands. Driven by the authoritative collected
+      // TOTALS (not the local flight animation), so it fires for online matches too — the
+      // server replaces the game state wholesale and never creates client-side flights.
+      const collected = totalCollected(g);
+      if (g.phase === "play" && collected > prevCollected) {
         const now = performance.now();
         if (now - lastCollect > 60) {
-          const cf = s.flights[s.flights.length - 1]?.color ?? 0;
-          audio.play("collect", cf, p);
+          const cf = g.lastPlace ? g.lastPlace.color : (s.flights[s.flights.length - 1]?.color ?? selColor);
+          const owner = g.lastPlace ? g.lastPlace.owner : p;
+          audio.play("collect", cf, owner);
           lastCollect = now;
         }
       }
-      prevFlights = flights;
+      prevCollected = collected;
 
       // Nightfall harvest: each newly-assigned leftover flower rings its colour's whole chord
       // (in its owner's quality), so the assignment animation plays out as a final symphony.
@@ -110,8 +131,14 @@ export function AudioController() {
         prevReveal = 0;
       }
 
-      const won = g.phase === "ended" && s.reveal >= (g.territory?.length ?? 0);
-      if (won && !prevWon && s.revealAuto) audio.play("win", 0, typeof g.result === "number" ? g.result : 0);
+      const total = g.territory?.length ?? 0;
+      const won = g.phase === "ended" && s.reveal >= total;
+      if (won && !prevWon && s.revealAuto) {
+        // The final chord is voiced on the LAST flower to land (its colour's triad), in the
+        // winner's quality — it holds and tapers off as the win screen settles.
+        const lastColor = total > 0 && g.territory ? g.territory[total - 1].color : (g.lastPlace?.color ?? 4);
+        audio.play("win", lastColor, typeof g.result === "number" ? g.result : 0);
+      }
       prevWon = won;
     });
     return unsub;

@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="620" viewBox="0 0 900 620" font-family="'Courier New',monospace">
+  <defs>
+    <style>
+      .bevel{stroke:#8a8f9c;stroke-width:2;}
+      .hi{stroke:#ffffff;stroke-width:2;}
+      .lo{stroke:#5b6070;stroke-width:2;}
+      .btn{fill:#d8c24a;stroke:#9c8226;stroke-width:2;}
+      .th{fill:#2a2440;}
+      .thtxt{fill:#ffe9a0;font-size:11px;font-weight:bold;}
+      .cell{fill:#2a2440;font-size:12px;}
+      .price{fill:#1f6b2a;font-size:13px;font-weight:bold;}
+      .chip{stroke:#00000033;stroke-width:1;}
+    </style>
+  </defs>
+
+  <!-- browser window -->
+  <rect x="8" y="8" width="884" height="604" rx="4" fill="#c7ccd6" stroke="#5b6070" stroke-width="2"/>
+  <!-- titlebar -->
+  <rect x="10" y="10" width="880" height="22" fill="#2a2440"/>
+  <text x="18" y="26" fill="#fff6df" font-size="12" font-weight="bold">PrismSingles — Buy &amp; Sell PRISM Singles — Netscape</text>
+  <g fill="#c7ccd6"><rect x="836" y="13" width="16" height="16" stroke="#5b6070"/><rect x="855" y="13" width="16" height="16" stroke="#5b6070"/><rect x="874" y="13" width="12" height="16" stroke="#5b6070"/></g>
+  <!-- address bar -->
+  <rect x="10" y="32" width="880" height="24" fill="#dfe3ea"/>
+  <text x="18" y="49" fill="#5b6070" font-size="11">Address:</text>
+  <rect x="70" y="36" width="700" height="16" fill="#ffffff" stroke="#8a8f9c"/>
+  <text x="76" y="48" fill="#2a2440" font-size="11">http://www.prismsingles.net/browse?set=base&amp;sort=hot</text>
+  <rect x="780" y="35" width="60" height="18" class="btn"/><text x="810" y="48" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">GO</text>
+
+  <!-- page -->
+  <rect x="10" y="56" width="880" height="554" fill="#f4e8d0"/>
+
+  <!-- header band -->
+  <rect x="10" y="56" width="880" height="50" fill="#1f1838"/>
+  <text x="26" y="90" fill="#ffe9a0" font-size="26" font-weight="bold" letter-spacing="1">PRISMSINGLES<tspan fill="#6fb8e0">.net</tspan></text>
+  <text x="330" y="78" fill="#cbb8f0" font-size="11">the marketplace for collectors &amp; grinders — est. 2003</text>
+  <text x="330" y="95" fill="#9ad0ff" font-size="11">Browse · Sell · Watchlist · Price Guide · Forums</text>
+  <rect x="700" y="68" width="176" height="26" fill="#2a2440" stroke="#f4c430" stroke-width="2"/>
+  <text x="712" y="85" fill="#fff6df" font-size="12">Wallet:</text><text x="868" y="85" text-anchor="end" fill="#ffe49a" font-size="13" font-weight="bold">¤ 1,240</text>
+  <rect x="10" y="106" width="880" height="3" fill="#f4c430"/>
+
+  <!-- filter bar -->
+  <g transform="translate(26,120)">
+    <text x="0" y="14" fill="#2a2440" font-size="12" font-weight="bold">Search:</text>
+    <rect x="56" y="0" width="220" height="20" fill="#fff" stroke="#8a8f9c"/><text x="62" y="14" fill="#2a2440" font-size="11">oak warden</text>
+    <text x="292" y="14" fill="#2a2440" font-size="12" font-weight="bold">Affinity:</text>
+    <g transform="translate(360,2)">
+      <rect class="chip" x="0" width="22" height="16" fill="#e0573f"/><rect class="chip" x="26" width="22" height="16" fill="#2e7fb8"/>
+      <rect class="chip" x="52" width="22" height="16" fill="#4a9e4a" stroke="#1f1838" stroke-width="2"/>
+      <rect class="chip" x="78" width="22" height="16" fill="#7d5aa6"/><rect class="chip" x="104" width="22" height="16" fill="#d8c24a"/>
+    </g>
+    <text x="500" y="14" fill="#2a2440" font-size="12" font-weight="bold">Rarity:</text>
+    <rect x="552" y="0" width="120" height="20" fill="#fff" stroke="#8a8f9c"/><text x="558" y="14" fill="#2a2440" font-size="11">All ▾</text>
+    <rect x="690" y="-1" width="74" height="22" class="btn"/><text x="727" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="#3a2a10">Search</text>
+  </g>
+
+  <!-- listings table -->
+  <g transform="translate(26,156)">
+    <!-- header -->
+    <rect x="0" y="0" width="600" height="22" class="th"/>
+    <text class="thtxt" x="8" y="15">CARD</text><text class="thtxt" x="250" y="15">SET</text>
+    <text class="thtxt" x="330" y="15">COND</text><text class="thtxt" x="410" y="15">30-DAY</text>
+    <text class="thtxt" x="500" y="15" text-anchor="end">PRICE</text><text class="thtxt" x="560" y="15">BUY</text>
+
+    <!-- rows -->
+    <g font-size="12">
+      <!-- row helper: thumb + name -->
+      <!-- 1 Oak Warden (Verdant, Mythic) -->
+      <g transform="translate(0,22)">
+        <rect x="0" y="0" width="600" height="46" fill="#fbf3df"/>
+        <rect x="8" y="6" width="26" height="34" rx="3" fill="#15301a" stroke="#4a9e4a" stroke-width="2"/><circle cx="14" cy="12" r="5" fill="#4a9e4a"/>
+        <text class="cell" x="44" y="22" font-weight="bold">Oak Warden</text><text x="44" y="37" fill="#7d5aa6" font-size="10">Verdant · Mythic ★</text>
+        <text class="cell" x="250" y="29">Base</text><text class="cell" x="330" y="29">NM</text>
+        <polyline points="408,38 418,34 428,36 438,28 448,30 458,20 468,22" fill="none" stroke="#1f6b2a" stroke-width="2"/>
+        <text class="price" x="500" y="30" text-anchor="end">¤ 84</text>
+        <rect x="540" y="12" width="50" height="22" class="btn"/><text x="565" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">Buy</text>
+      </g>
+      <!-- 2 Ember Whelp -->
+      <g transform="translate(0,68)">
+        <rect x="0" y="0" width="600" height="46" fill="#f4e8d0"/>
+        <rect x="8" y="6" width="26" height="34" rx="3" fill="#2a1814" stroke="#d9442e" stroke-width="2"/><circle cx="14" cy="12" r="5" fill="#d9442e"/>
+        <text class="cell" x="44" y="22" font-weight="bold">Ember Whelp</text><text x="44" y="37" fill="#9aa3b2" font-size="10">Ember · Common</text>
+        <text class="cell" x="250" y="29">Base</text><text class="cell" x="330" y="29">LP</text>
+        <polyline points="408,30 418,30 428,32 438,30 448,33 458,33 468,34" fill="none" stroke="#9c3f28" stroke-width="2"/>
+        <text class="price" x="500" y="30" text-anchor="end">¤ 1</text>
+        <rect x="540" y="12" width="50" height="22" class="btn"/><text x="565" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">Buy</text>
+      </g>
+      <!-- 3 Tidal Pull (Prismatic) -->
+      <g transform="translate(0,114)">
+        <rect x="0" y="0" width="600" height="46" fill="#fbf3df"/>
+        <rect x="8" y="6" width="26" height="34" rx="3" fill="#142634" stroke="#2e7fb8" stroke-width="2"/><circle cx="14" cy="12" r="5" fill="#2e7fb8"/>
+        <text class="cell" x="44" y="22" font-weight="bold">Tidal Pull</text><text x="44" y="37" fill="#d8c24a" font-size="10">Tide · Rare · ✦ Prismatic</text>
+        <text class="cell" x="250" y="29">Base</text><text class="cell" x="330" y="29">NM</text>
+        <polyline points="408,40 418,36 428,30 438,32 448,24 458,18 468,12" fill="none" stroke="#1f6b2a" stroke-width="2"/>
+        <text class="price" x="500" y="30" text-anchor="end">¤ 156</text>
+        <rect x="540" y="12" width="50" height="22" class="btn"/><text x="565" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">Buy</text>
+      </g>
+      <!-- 4 Grave Imp -->
+      <g transform="translate(0,160)">
+        <rect x="0" y="0" width="600" height="46" fill="#f4e8d0"/>
+        <rect x="8" y="6" width="26" height="34" rx="3" fill="#221830" stroke="#7d5aa6" stroke-width="2"/><circle cx="14" cy="12" r="5" fill="#7d5aa6"/>
+        <text class="cell" x="44" y="22" font-weight="bold">Grave Imp</text><text x="44" y="37" fill="#6fc45a" font-size="10">Gloom · Uncommon</text>
+        <text class="cell" x="250" y="29">Base</text><text class="cell" x="330" y="29">NM</text>
+        <polyline points="408,28 418,30 428,28 438,31 448,29 458,32 468,30" fill="none" stroke="#43295e" stroke-width="2"/>
+        <text class="price" x="500" y="30" text-anchor="end">¤ 6</text>
+        <rect x="540" y="12" width="50" height="22" class="btn"/><text x="565" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">Buy</text>
+      </g>
+      <!-- 5 Aegis Sigil -->
+      <g transform="translate(0,206)">
+        <rect x="0" y="0" width="600" height="46" fill="#fbf3df"/>
+        <rect x="8" y="6" width="26" height="34" rx="3" fill="#2e2810" stroke="#d8c24a" stroke-width="2"/><circle cx="14" cy="12" r="5" fill="#d8c24a"/>
+        <text class="cell" x="44" y="22" font-weight="bold">Aegis Sigil</text><text x="44" y="37" fill="#6fb8e0" font-size="10">Order · Rare</text>
+        <text class="cell" x="250" y="29">Base</text><text class="cell" x="330" y="29">MP</text>
+        <polyline points="408,34 418,32 428,33 438,28 448,29 458,26 468,27" fill="none" stroke="#a8861f" stroke-width="2"/>
+        <text class="price" x="500" y="30" text-anchor="end">¤ 22</text>
+        <rect x="540" y="12" width="50" height="22" class="btn"/><text x="565" y="27" text-anchor="middle" font-size="11" font-weight="bold" fill="#3a2a10">Buy</text>
+      </g>
+    </g>
+    <!-- pager -->
+    <g transform="translate(0,266)" font-size="11" fill="#2a2440">
+      <text x="0" y="12">Page:</text>
+      <rect x="40" y="0" width="18" height="16" fill="#d8c24a" stroke="#9c8226"/><text x="49" y="12" text-anchor="middle" font-weight="bold">1</text>
+      <text x="66" y="12">2 3 4 … 31  ▸</text>
+      <text x="600" y="12" text-anchor="end" fill="#5b6070">1,482 results</text>
+    </g>
+  </g>
+
+  <!-- sidebar: watchlist + hot -->
+  <g transform="translate(648,156)">
+    <rect x="0" y="0" width="226" height="22" class="th"/><text class="thtxt" x="8" y="15">★ YOUR WATCHLIST</text>
+    <rect x="0" y="22" width="226" height="120" fill="#fbf3df" stroke="#8a8f9c"/>
+    <g transform="translate(10,30)">
+      <rect x="0" y="0" width="22" height="30" rx="2" fill="#15301a" stroke="#4a9e4a" stroke-width="2"/>
+      <text x="30" y="13" font-size="11" fill="#2a2440" font-weight="bold">Oak Warden</text><text x="30" y="26" font-size="10" fill="#1f6b2a">¤84 ▲ +9%</text>
+    </g>
+    <g transform="translate(10,68)">
+      <rect x="0" y="0" width="22" height="30" rx="2" fill="#142634" stroke="#2e7fb8" stroke-width="2"/>
+      <text x="30" y="13" font-size="11" fill="#2a2440" font-weight="bold">Tidal Pull ✦</text><text x="30" y="26" font-size="10" fill="#1f6b2a">¤156 ▲ +21%</text>
+    </g>
+    <g transform="translate(10,106)">
+      <rect x="0" y="0" width="22" height="30" rx="2" fill="#2a1814" stroke="#d9442e" stroke-width="2"/>
+      <text x="30" y="13" font-size="11" fill="#2a2440" font-weight="bold">Cinder Rite</text><text x="30" y="26" font-size="10" fill="#b6391f">¤12 ▼ −4%</text>
+    </g>
+
+    <rect x="0" y="156" width="226" height="22" class="th"/><text class="thtxt" x="8" y="171">🔥 HOT THIS WEEK</text>
+    <rect x="0" y="178" width="226" height="120" fill="#fbf3df" stroke="#8a8f9c"/>
+    <g font-size="11" fill="#2a2440">
+      <text x="10" y="198">1. Tidal Pull ✦ <tspan fill="#1f6b2a">+21%</tspan></text>
+      <text x="10" y="218">2. Oak Warden <tspan fill="#1f6b2a">+9%</tspan></text>
+      <text x="10" y="238">3. Spadeworn Knight <tspan fill="#1f6b2a">+7%</tspan></text>
+      <text x="10" y="258">4. Dusk Wraith <tspan fill="#b6391f">−3%</tspan></text>
+      <text x="10" y="278">5. Ember Whelp <tspan fill="#5b6070">±0%</tspan></text>
+      <text x="10" y="292" font-size="9" fill="#5b6070">driven by the new metagame...</text>
+    </g>
+  </g>
+
+  <text x="450" y="600" text-anchor="middle" fill="#5b6070" font-size="11">CONCEPT — online singles market (in-fiction web; world feature, concept only)</text>
+</svg>
