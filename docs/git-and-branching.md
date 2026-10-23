@@ -114,20 +114,25 @@ unaffected.
 > grows heavy, migrate `**/tests/refs/**` to **Git LFS** — that's the first thing to reach
 > for, not history rewriting.
 
-## 5. Connecting a remote (GitHub)
+## 5. Remotes (GitHub)
 
-The repo is currently **local only** — there is no GitHub remote yet, and this machine has
-no `gh` CLI and no stored git credentials. To publish and enable push (one-time):
+Both repos are published as **private** repos under the `PhilipHackergott` account:
 
-```powershell
-# Option A — GitHub CLI (install once): winget install GitHub.cli
-gh auth login
-gh repo create BoardGameMVPs --private --source . --remote origin --push
+| Repo | Remote | Branches |
+|------|--------|----------|
+| The factory monorepo | `https://github.com/PhilipHackergott/BoardGameMVPs` | `main` (default), plus each `<slug>/<topic>` working branch |
+| Späti (standalone) | `https://github.com/PhilipHackergott/spaeti` | `main` (default), `godot-vertical-slice` |
 
-# Option B — by hand: create an empty repo on github.com, then
-git remote add origin https://github.com/<you>/BoardGameMVPs.git
-git push -u origin main
-```
+Späti is a **separate repo**, not a submodule — it sits as a nested git repo at
+`projects/spaeti/` and is gitignored by the parent. Commit and push it from inside that
+folder; the factory repo neither tracks nor pushes it.
 
-After that, `git push` from any worktree publishes its branch; open a PR per project branch
-to review at the gate. See `PUSH-INSTRUCTIONS.md` (repo root) for the exact current state.
+Auth is via the GitHub CLI acting as git's credential helper (`gh auth setup-git`), so no
+token prompt appears on push. If a push ever fails with `Repository not found` on a repo
+that does exist, that helper has been displaced — re-run `gh auth setup-git`.
+
+Every local branch tracks its `origin` counterpart, so a bare `git push` publishes the
+current branch from any worktree. Open a PR per project branch to review at the gate.
+
+> Pushing remains **on request only** — see §3. A configured remote is not standing
+> permission to publish.

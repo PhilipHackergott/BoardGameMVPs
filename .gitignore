@@ -59,6 +59,7 @@ registry/queue.lock
 test-results/
 playwright-report/
 
-# Späti lives in its own standalone private repo (github.com/libratech), not in this
-# monorepo — it is a nested git repo in place at projects/spaeti/. Work on it there.
+# Späti lives in its own standalone private repo — github.com/PhilipHackergott/spaeti —
+# not in this monorepo. It is a nested git repo in place at projects/spaeti/; commit and
+# push it from inside that folder.
 projects/spaeti/
